@@ -5,9 +5,8 @@
  *
  *   import { getServices } from "@/lib/api";
  *
- * Every function in these modules currently throws ApiNotImplementedError.
- * That is intentional: the UI is finished, but the HTTP requests are yours to
- * write. Read API_INTEGRATION.md for the full contract.
+ * The shared fetch logic lives in src/lib/api-client.ts. Each module below only
+ * defines endpoint paths, request bodies and response types.
  */
 export * from "./config";
 export * from "./errors";
