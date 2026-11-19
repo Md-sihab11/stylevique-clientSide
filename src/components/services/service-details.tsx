@@ -11,22 +11,21 @@ import { SafeImage } from "@/components/common/safe-image";
 import { Skeleton } from "@/components/common/skeleton-loader";
 import { ErrorState } from "@/components/common/error-state";
 import { EmptyState } from "@/components/common/empty-state";
-import { PendingIntegration } from "@/components/common/pending-integration";
 import { BookingForm } from "@/components/appointments/booking-form";
 
 const OBJECT_ID_PATTERN = /^[a-fA-F0-9]{24}$/;
 
 /**
  * Service details page.
- * Reads the dynamic route ID with useParams so the page can stay a Client
- * Component and load the service through the documented API placeholder.
+ * Reads the dynamic route ID and loads the active service from
+ * GET /api/services/:id.
  */
 export function ServiceDetails() {
   const params = useParams<{ id: string }>();
   const serviceId = Array.isArray(params?.id) ? params.id[0] : (params?.id ?? "");
   const isValidId = OBJECT_ID_PATTERN.test(serviceId);
 
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () => getServiceById(serviceId),
     serviceId,
   );
@@ -60,30 +59,12 @@ export function ServiceDetails() {
     );
   }
 
-  if (isPendingIntegration) {
-    return (
-      <div className="page-width py-14 lg:py-20">
-        <Link
-          href="/services"
-          className="mb-8 inline-flex items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="size-3.5" aria-hidden="true" />
-          Back to all services
-        </Link>
-        <PendingIntegration
-          apiName={`getServiceById("${serviceId}")`}
-          filePath="src/lib/api/services.ts"
-        />
-      </div>
-    );
-  }
-
   if (error || !data?.service) {
     return (
       <div className="page-width py-20">
         <ErrorState
           title="This service could not be loaded"
-          description="The service may be inactive, or the API request may not be connected yet."
+          description="The service may be inactive or no longer available. Return to the menu to choose another service."
           onRetry={reload}
         />
         <div className="mt-6 text-center">

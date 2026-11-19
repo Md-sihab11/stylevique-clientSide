@@ -15,7 +15,6 @@ import { ServiceGrid } from "@/components/services/service-grid";
 import { ServiceGridSkeleton } from "@/components/common/skeleton-loader";
 import { EmptyState } from "@/components/common/empty-state";
 import { ErrorState } from "@/components/common/error-state";
-import { PendingIntegration } from "@/components/common/pending-integration";
 import { PaginationControls } from "@/components/common/pagination-controls";
 import { Input } from "@/components/ui/input";
 
@@ -40,7 +39,7 @@ export function ServicesBrowse() {
 
   const [searchInput, setSearchInput] = useState(search);
 
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () =>
       getServices({
         search: search || undefined,
@@ -52,8 +51,8 @@ export function ServicesBrowse() {
     `services|${search}|${category}|${sort}|${page}`,
   );
 
-  // Categories are loaded separately. While that endpoint is TODO, the
-  // editorial category names below still make the filter usable.
+  // Categories come from the backend. The editorial names remain as a fallback
+  // while the request is loading or if the category endpoint is unavailable.
   const { data: categoryData } = useApiResource(
     () => getServiceCategories(),
     "service-categories",
@@ -253,9 +252,7 @@ export function ServicesBrowse() {
           <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
             {isLoading
               ? "Loading the menu"
-              : isPendingIntegration
-                ? "Waiting for API integration"
-                : `${resultCount} service${resultCount === 1 ? "" : "s"}`}
+              : `${resultCount} service${resultCount === 1 ? "" : "s"}`}
           </p>
           {data && data.pagination.totalPages > 1 && (
             <p className="text-xs text-muted-foreground">
@@ -267,23 +264,15 @@ export function ServicesBrowse() {
         <div className="mt-6">
           {isLoading && <ServiceGridSkeleton count={PAGE_SIZE} />}
 
-          {!isLoading && isPendingIntegration && (
-            <PendingIntegration
-              apiName="getServices()"
-              filePath="src/lib/api/services.ts"
-              compact
-            />
-          )}
-
           {!isLoading && Boolean(error) && (
             <ErrorState
               title="The menu could not load"
-              description="Your filters are still selected. Check the API request and try again."
+              description="Your filters are still selected. Check the backend connection and try again."
               onRetry={reload}
             />
           )}
 
-          {!isLoading && !isPendingIntegration && !error && data?.services.length === 0 && (
+          {!isLoading && !error && data?.services.length === 0 && (
             <EmptyState
               icon={Search}
               title="No services match these filters"
@@ -296,7 +285,7 @@ export function ServicesBrowse() {
             />
           )}
 
-          {!isLoading && !isPendingIntegration && !error && data && data.services.length > 0 && (
+          {!isLoading && !error && data && data.services.length > 0 && (
             <>
               <ServiceGrid services={data.services} />
               <PaginationControls

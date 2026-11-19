@@ -9,16 +9,14 @@ import { ServiceGrid } from "@/components/services/service-grid";
 import { ServiceGridSkeleton } from "@/components/common/skeleton-loader";
 import { ErrorState } from "@/components/common/error-state";
 import { EmptyState } from "@/components/common/empty-state";
-import { PendingIntegration } from "@/components/common/pending-integration";
 import { Scissors } from "lucide-react";
 
 /**
  * This section is a Client Component because it loads data with the API.
- * When you implement getServices() in src/lib/api/services.ts, the cards will
- * appear here automatically — no JSX changes are needed.
+ * getServices() calls GET /api/services and returns only active services.
  */
 export function FeaturedServices() {
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () => getServices({ page: 1, limit: 6, sort: "newest" }),
     "home-featured",
   );
@@ -41,23 +39,15 @@ export function FeaturedServices() {
         <div className="mt-12 lg:mt-16">
           {isLoading && <ServiceGridSkeleton count={6} />}
 
-          {!isLoading && isPendingIntegration && (
-            <PendingIntegration
-              apiName="getServices()"
-              filePath="src/lib/api/services.ts"
-              compact
-            />
-          )}
-
           {!isLoading && Boolean(error) && (
             <ErrorState
               title="The service menu could not load"
-              description="Check the backend URL and your implemented getServices() request, then try again."
+              description="Check that the backend is running and NEXT_PUBLIC_API_URL is correct, then try again."
               onRetry={reload}
             />
           )}
 
-          {!isLoading && !error && !isPendingIntegration && data?.services.length === 0 && (
+          {!isLoading && !error && data?.services.length === 0 && (
             <EmptyState
               icon={Scissors}
               title="The service menu is being prepared"
@@ -70,7 +60,7 @@ export function FeaturedServices() {
             />
           )}
 
-          {!isLoading && !error && !isPendingIntegration && data && data.services.length > 0 && (
+          {!isLoading && !error && data && data.services.length > 0 && (
             <ServiceGrid services={data.services.slice(0, 6)} />
           )}
         </div>
