@@ -1,26 +1,123 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+/*
+ * Stylevique design tokens
+ * ------------------------
+ * The palette follows the brief: warm ivory, soft beige, dusty rose,
+ * charcoal, muted bronze and white. Keeping the values here means every
+ * component shares the same visual language.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f5f0;
+  --foreground: #302b2b;
+  --card: #ffffff;
+  --card-foreground: #302b2b;
+  --popover: #ffffff;
+  --popover-foreground: #302b2b;
+  --primary: #8d5360;
+  --primary-foreground: #fff9f5;
+  --secondary: #e8dcd0;
+  --secondary-foreground: #302b2b;
+  --muted: #f0e9e1;
+  --muted-foreground: #756a65;
+  --accent: #b68c70;
+  --accent-foreground: #2e2623;
+  --destructive: #a33a36;
+  --destructive-foreground: #ffffff;
+  --border: #e3d8cc;
+  --input: #dcd0c3;
+  --ring: #8d5360;
+  --radius: 0.75rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-josefin-sans);
+  --font-heading: var(--font-cormorant);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "kern" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: #e8dcd0;
+    color: #302b2b;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .page-width {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+  }
+
+  .section-space {
+    @apply py-16 md:py-24;
+  }
+
+  .eyebrow {
+    @apply text-[0.7rem] font-medium uppercase tracking-[0.28em] text-primary;
+  }
+
+  .editorial-rule {
+    @apply h-px w-12 bg-accent/70;
+  }
+
+  .image-warmth {
+    filter: sepia(0.18) saturate(0.85) contrast(1.02);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
 }
