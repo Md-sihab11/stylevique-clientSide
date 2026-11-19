@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { isApiNotImplementedError } from "@/lib/api";
 
 interface ResourceResult<T> {
   key: string;
   data: T | null;
   error: unknown;
-  isPendingIntegration: boolean;
 }
 
 /**
@@ -15,10 +13,6 @@ interface ResourceResult<T> {
  *
  * - `loader` is the API function, e.g. () => getServices({ page: 1 }).
  * - `reloadKey` tells the hook when to fetch again (filters, page, retry).
- *
- * While the API functions are still TODO, the loader throws
- * ApiNotImplementedError. The hook exposes `isPendingIntegration` so the page
- * can show an honest "API integration pending" state instead of fake data.
  *
  * Loading is derived from the request key instead of being set synchronously
  * inside the effect. That keeps the hook compatible with the React Compiler
@@ -35,7 +29,6 @@ export function useApiResource<T>(
     key: "",
     data: null,
     error: null,
-    isPendingIntegration: false,
   });
 
   // Keep the newest loader without forcing the effect to re-run on every render.
@@ -52,22 +45,11 @@ export function useApiResource<T>(
       .then(() => loaderRef.current())
       .then((data) => {
         if (isCancelled) return;
-        setResult({
-          key: requestKey,
-          data,
-          error: null,
-          isPendingIntegration: false,
-        });
+        setResult({ key: requestKey, data, error: null });
       })
       .catch((caughtError: unknown) => {
         if (isCancelled) return;
-
-        setResult({
-          key: requestKey,
-          data: null,
-          error: isApiNotImplementedError(caughtError) ? null : caughtError,
-          isPendingIntegration: isApiNotImplementedError(caughtError),
-        });
+        setResult({ key: requestKey, data: null, error: caughtError });
       });
 
     return () => {
@@ -81,7 +63,6 @@ export function useApiResource<T>(
     data: isCurrent ? result.data : null,
     error: isCurrent ? result.error : null,
     isLoading: !isCurrent,
-    isPendingIntegration: isCurrent ? result.isPendingIntegration : false,
     reload: () => setReloadCount((count) => count + 1),
   };
 }
