@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  CalendarDays,
   ChevronDown,
   LayoutDashboard,
   LogOut,
@@ -20,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -74,6 +74,7 @@ export function Navbar() {
       <div className="page-width flex h-20 items-center justify-between gap-6">
         <Logo />
 
+        {/* Desktop Main Navigation */}
         <nav aria-label="Main navigation" className="hidden items-center gap-8 lg:flex">
           {MAIN_NAV_LINKS.map((link) => (
             <Link
@@ -96,9 +97,13 @@ export function Navbar() {
           ))}
         </nav>
 
+        {/* Desktop Actions & Account Menu */}
         <div className="hidden items-center gap-4 lg:flex">
           {isPending ? (
-            <div className="size-9 animate-pulse rounded-full bg-secondary" aria-label="Loading account" />
+            <div
+              className="size-9 animate-pulse rounded-full bg-secondary"
+              aria-label="Loading account"
+            />
           ) : user ? (
             <>
               <PrimaryButton href="/services" size="sm">
@@ -120,34 +125,46 @@ export function Navbar() {
                   <span className="sr-only">Open account menu</span>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent align="end" className="w-60">
-                  <DropdownMenuLabel className="px-2 py-2">
-                    <span className="block truncate text-sm font-medium text-foreground">
-                      {user.name}
-                    </span>
-                    <span className="mt-0.5 block truncate text-xs font-normal text-muted-foreground">
-                      {user.email}
-                    </span>
-                  </DropdownMenuLabel>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="truncate text-sm font-medium leading-none">{user.name}</p>
+                        <p className="truncate text-xs leading-none text-muted-foreground">
+                          {user.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                  </DropdownMenuGroup>
+
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => router.push(dashboardHref)}>
-                    <LayoutDashboard aria-hidden="true" />
-                    Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push(`${dashboardHref}/profile`)}>
-                    <UserRound aria-hidden="true" />
-                    My profile
-                  </DropdownMenuItem>
+
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      onClick={() => router.push(dashboardHref)}
+                      className="cursor-pointer"
+                    >
+                      <LayoutDashboard className="mr-2 size-4" aria-hidden="true" />
+                      <span>Dashboard</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() => router.push(`${dashboardHref}/profile`)}
+                      className="cursor-pointer"
+                    >
+                      <UserRound className="mr-2 size-4" aria-hidden="true" />
+                      <span>My profile</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+
+                  <DropdownMenuSeparator />
+
                   <DropdownMenuItem
-                    onClick={() => router.push("/dashboard/customer/appointments")}
+                    onClick={handleSignOut}
+                    className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
                   >
-                    <CalendarDays aria-hidden="true" />
-                    My appointments
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
-                    <LogOut aria-hidden="true" />
-                    Sign out
+                    <LogOut className="mr-2 size-4" aria-hidden="true" />
+                    <span>Sign out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -167,6 +184,7 @@ export function Navbar() {
           )}
         </div>
 
+        {/* Mobile Menu Trigger */}
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
@@ -178,6 +196,7 @@ export function Navbar() {
         </button>
       </div>
 
+      {/* Mobile Navigation Drawer */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="right" className="w-full max-w-sm overflow-y-auto bg-background p-0">
           <SheetHeader className="border-b border-border p-6">
