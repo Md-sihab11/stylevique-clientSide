@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Cormorant_Garamond, Josefin_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     "Stylevique is a premium salon and beauty studio for hair, skin, makeup and mindful self-care. Explore services and book your moment.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
