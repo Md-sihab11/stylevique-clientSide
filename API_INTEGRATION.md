@@ -1,12 +1,12 @@
 # Stylevique API Integration Guide
 
-This frontend is **complete at the UI layer**. Every HTTP request is deliberately
-left as a typed TODO inside `src/lib/api/`. That is not a bug and not missing
-data: the app never pretends a request succeeded.
+This frontend is **fully integrated** with the existing Express/MongoDB backend.
+Every API function in `src/lib/api/` makes a real request through the shared
+fetch client in `src/lib/api-client.ts`. The UI is unchanged — implementing the
+requests brought the existing screens to life.
 
-This guide maps each screen to the exact Express endpoint it needs. When you
-replace a TODO with a working request, the existing page will start showing real
-data without a redesign.
+This guide maps each screen to the exact Express endpoint it needs and documents
+the shared client, authentication, response handling and known backend gaps.
 
 ---
 
@@ -15,17 +15,19 @@ data without a redesign.
 | Layer | Status |
 | --- | --- |
 | Pages, layouts, navigation, forms, dialogs, filters, dashboards | Implemented |
-| Validation and loading / error / empty / pending states | Implemented |
+| Validation and loading / error / empty / retry states | Implemented |
 | Better Auth sign-in, sign-up, Google OAuth, sign-out | Implemented |
-| Server-side customer / admin route guards | Implemented |
-| `fetch` / Axios requests to the Express API | **TODO on purpose** |
-| Fake data, fake auth success, fake payments | **Not present** |
-| Image upload route | **Not available in the supplied backend** |
+| Shared `fetch` client with JWT, typed errors and FormData | Implemented in `src/lib/api-client.ts` |
+| Public service APIs | Implemented |
+| Customer appointment, dashboard, profile and payment APIs | Implemented |
+| Admin service, appointment, user and transaction APIs | Implemented |
+| Stripe checkout redirect and verified payment success | Implemented |
+| `POST /api/uploads/image` | Client/UI implemented; route **not registered** in supplied backend |
 
-Every API placeholder throws `ApiNotImplementedError`. Pages catch it and render
-the `PendingIntegration` component or an honest Sonner toast. When you implement
-a function, remove nothing in the page: the same component will receive real
-data automatically.
+Every API function returns the inner `data` object of the backend's
+`{ success, message, data }` envelope. Pages catch network/HTTP errors and show
+loading, empty, error, retry, unauthorized and conflict states. There is no fake
+data, no fake auth success and no client-side payment confirmation.
 
 ---
 
@@ -167,96 +169,31 @@ Status codes you should expect:
 
 ---
 
-## 6. Suggested request helper
+## 6. Shared API client (`src/lib/api-client.ts`)
 
-The repository deliberately does not include a working HTTP helper. Add one
-inside `src/lib/api/` when you are ready, for example `client.ts`:
+The client is already implemented. Every page calls it through the endpoint
+modules in `src/lib/api/`. Key behavior:
 
-```ts
-import { authClient } from "@/lib/auth-client";
-import { API_BASE_URL } from "./config";
+- `apiRequest(path, options)` reads `NEXT_PUBLIC_API_URL`, builds query strings
+  and posts JSON or `FormData`.
+- Protected calls pass `auth: true`. The client asks Better Auth for a fresh
+  JWT via `authClient.token()` and sends `Authorization: Bearer <token>`.
+- Public calls pass no auth header.
+- FormData uploads do **not** set `Content-Type` manually; the browser adds the
+  multipart boundary.
+- Network failures become `ApiError` with `isNetworkError = true`.
+- HTTP errors read the backend's `message` and `errors[]` and expose them via
+  `ApiError.status`, `ApiError.details`, `ApiError.isUnauthorized`,
+  `isForbidden`, `isNotFound`, `isConflict`, `isValidationError`.
+- Responses are unwrapped: pages receive `data`, not the whole envelope.
 
-export class ApiRequestError extends Error {
-  status: number;
-  fields: Array<{ field: string; message: string }>;
-
-  constructor(
-    message: string,
-    status: number,
-    fields: Array<{ field: string; message: string }> = [],
-  ) {
-    super(message);
-    this.name = "ApiRequestError";
-    this.status = status;
-    this.fields = fields;
-  }
-}
-
-export async function getAccessToken() {
-  const { data, error } = await authClient.token();
-
-  if (error || !data?.token) {
-    throw new Error("Your session has expired. Please sign in again.");
-  }
-
-  return data.token;
-}
-
-export async function apiRequest<T>(
-  path: string,
-  options: {
-    method?: "GET" | "POST" | "PATCH" | "DELETE";
-    body?: unknown;
-    auth?: boolean;
-    query?: Record<string, string | number | boolean | undefined>;
-  } = {},
-) {
-  const url = new URL(path, API_BASE_URL);
-
-  for (const [key, value] of Object.entries(options.query ?? {})) {
-    if (value !== undefined && value !== "") {
-      url.searchParams.set(key, String(value));
-    }
-  }
-
-  const headers: Record<string, string> = { Accept: "application/json" };
-
-  if (options.body !== undefined) {
-    headers["Content-Type"] = "application/json";
-  }
-
-  if (options.auth !== false) {
-    headers.Authorization = `Bearer ${await getAccessToken()}`;
-  }
-
-  const response = await fetch(url, {
-    method: options.method ?? "GET",
-    headers,
-    body: options.body === undefined ? undefined : JSON.stringify(options.body),
-  });
-
-  const payload = await response.json().catch(() => null);
-
-  if (!response.ok || !payload?.success) {
-    throw new ApiRequestError(
-      payload?.message ?? "The request could not be completed.",
-      response.status,
-      payload?.errors ?? [],
-    );
-  }
-
-  return payload.data as T;
-}
-```
-
-Then a TODO becomes:
+Example (public services):
 
 ```ts
-export async function getServices(
-  params: ServiceListParams = {},
-): Promise<ServiceListResponse> {
-  return apiRequest<ServiceListResponse>("/api/services", {
-    auth: false,
+import { apiRequest } from "@/lib/api-client";
+
+export async function getServices(params = {}) {
+  return apiRequest("/api/services", {
     query: {
       search: params.search,
       category: params.category,
@@ -264,6 +201,18 @@ export async function getServices(
       page: params.page,
       limit: params.limit,
     },
+  });
+}
+```
+
+Example (protected appointments):
+
+```ts
+export async function createAppointment(input) {
+  return apiRequest("/api/appointments", {
+    method: "POST",
+    auth: true,
+    body: input,
   });
 }
 ```
@@ -522,12 +471,12 @@ ready for future screens; the current pages do not require them.
 
 | Gap | Impact | Suggested fix |
 | --- | --- | --- |
-| No admin service-detail endpoint | Inactive services cannot be edited | Add `GET /api/admin/services/:id` and update `getServiceById`/page loader |
-| Upload route documented but not registered | Image upload cannot be wired | Register `POST /api/uploads/image` with ImgBB or use URLs |
-| No reschedule endpoint | Confirmed appointments need salon contact | Add a reschedule endpoint or keep the contact flow |
-| No refund endpoint | Admin cancellation keeps the payment | Handle refunds in Stripe separately and link the record |
-| No customer search over appointments | Admin filters only status/date | Add a customer query if needed |
-| Public service has no currency field | Cards display `USD` by default | Expose `currency` or set the frontend constant |
+| No admin service-detail endpoint | Inactive services cannot be edited through a direct route | The frontend works around this with `getAdminServiceById()`, which pages through `GET /api/admin/services`. A backend endpoint would still be cleaner. |
+| Upload route documented but not registered | Image upload cannot be wired end-to-end yet | Register `POST /api/uploads/image` with ImgBB or another host. Until then, `uploadImage()` returns a 404 and the UI shows image URL fields instead. |
+| No reschedule endpoint | Confirmed appointments need salon contact | Add a reschedule endpoint or keep the contact flow. |
+| No refund endpoint | Admin cancellation keeps the payment | Handle refunds in Stripe separately and link the record. |
+| No customer search over appointments | Admin filters only status/date | Add a customer query if needed. |
+| Public service has no currency field | Cards display `USD` by default | Expose `currency` or set the frontend constant. |
 
 The frontend already labels these limitations where a customer or admin would
 encounter them. Do not hide them behind optimistic UI.

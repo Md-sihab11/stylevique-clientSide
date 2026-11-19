@@ -5,10 +5,10 @@ can explore treatments, request appointments, manage their bookings and pay for
 confirmed visits. Administrators get a full back office for services,
 appointments, customers and transactions.
 
-The interface is finished. **HTTP integration with the Express API is
-intentionally left as documented TODOs in `src/lib/api/`.** Nothing in this app
-invents data, fakes a login, or pretends a payment succeeded. Implement the API
-functions and the existing screens come alive without a redesign.
+HTTP integration with the Express API is complete. Every call goes through the
+shared `fetch` client in `src/lib/api-client.ts` and the endpoint modules in
+`src/lib/api/`. Nothing in this app invents data, fakes a login, or pretends a
+payment succeeded.
 
 - [`API_INTEGRATION.md`](./API_INTEGRATION.md) — endpoint-by-endpoint handoff guide
 - [`.env.example`](./.env.example) — every environment variable the frontend needs
@@ -115,8 +115,8 @@ source of truth.
 
 ### Cross-cutting UX
 
-- Loading skeletons, empty states, error states with retry, and honest
-  "API integration pending" panels
+- Loading skeletons, empty states, error states with retry, and honest action
+  outcomes
 - Sonner toasts for every action outcome
 - Dialog and destructive-action confirmations
 - Responsive tables that become readable cards on small screens
@@ -136,7 +136,7 @@ source of truth.
 | Forms | React Hook Form + Zod |
 | Auth | Better Auth with JWT plugin and MongoDB adapter |
 | Database (auth) | MongoDB (shared with the Express API) |
-| HTTP | `fetch` once implemented in `src/lib/api/` |
+| HTTP | `fetch` via `src/lib/api-client.ts` |
 | Payments | Stripe-hosted Checkout (redirect only) |
 | Notifications | Sonner |
 | Icons | Lucide React |
@@ -341,21 +341,29 @@ cannot open the admin area (the API enforces this too).
 
 ## API integration status
 
-**The UI is complete. The HTTP layer is deliberate homework.**
+Every function in `src/lib/api/` makes real requests to the Express API through
+the shared client in `src/lib/api-client.ts`:
 
-Every function in `src/lib/api/` is typed and throws `ApiNotImplementedError`.
-Pages use `useApiResource`, detect that error and render a clear
-"API integration pending" panel or toast. There is:
+| Group | Functions | Endpoints |
+| --- | --- | --- |
+| Public services | `getServices`, `getServiceCategories`, `getServiceById` | `GET /api/services`, `/api/services/categories`, `/api/services/:id` |
+| Admin services | `getAdminServices`, `getAdminServiceById`, `createService`, `updateService`, `updateServiceStatus`, `deleteService` | `GET /api/admin/services`, `POST /api/services`, `PATCH /api/services/:id`, `/api/services/:id/status`, `DELETE /api/services/:id` |
+| Customer appointments | `createAppointment`, `getMyAppointments`, `getAppointmentById`, `cancelAppointment` | `POST /api/appointments`, `GET /api/appointments/my`, `/api/appointments/:id`, `/api/appointments/:id/cancel` |
+| Admin appointments | `getAdminAppointments`, `updateAdminAppointmentStatus` | `GET /api/admin/appointments`, `PATCH /api/admin/appointments/:id/status` |
+| Users | `getMyProfile`, `updateMyProfile`, `getCustomers`, `getCustomerById`, `blockCustomer`, `unblockCustomer` | `GET/PATCH /api/users/me`, `GET /api/admin/users`, `/api/admin/users/:id`, `/api/admin/users/:id/block`, `/api/admin/users/:id/unblock` |
+| Dashboards | `getCustomerDashboard`, `getAdminDashboard` | `GET /api/dashboard/customer`, `GET /api/dashboard/admin` |
+| Payments | `createCheckoutSession`, `verifyPayment` | `POST /api/payments/checkout`, `GET /api/payments/verify?session_id=` |
+| Transactions | `getMyTransactions`, `getAdminTransactions` | `GET /api/transactions/my`, `GET /api/admin/transactions` |
+| Uploads | `uploadImage` | `POST /api/uploads/image` |
 
-- no fake service list
-- no fake appointment
-- no fake dashboard number
-- no fake auth success
-- no client-side payment confirmation
+All protected requests attach a fresh Better Auth JWT as
+`Authorization: Bearer <token>`. The API returns the inner `data` object of the
+backend's `{ success, message, data }` envelope, and pages handle loading,
+empty, error, retry, unauthorized and conflict states.
 
-When you implement a function, the page that calls it starts rendering real data
-with no component changes. Start with the request helper and endpoint map in
-[`API_INTEGRATION.md`](./API_INTEGRATION.md).
+See [`API_INTEGRATION.md`](./API_INTEGRATION.md) for the full contract,
+including the 409 slot-conflict handling, customer-only cancellation rules,
+admin transition rules, and the verified-payment-only success screen.
 
 Protected requests must send a fresh Better Auth JWT:
 
@@ -370,6 +378,11 @@ minutes, so request a token per call.
 Payment truth lives on the server: the Stripe webhook writes the transaction and
 the browser may only trust the `verifyPayment()` response. The success page shows
 "Payment confirmed" only when the backend returns `status: "paid"`.
+
+Image uploads: `uploadImage()` sends `POST /api/uploads/image` with the file in
+the `image` FormData field. The supplied backend source does not yet register
+that route, so upload calls return a 404 until the route is added. This is
+documented in `API_INTEGRATION.md` and should not block launch.
 
 ---
 
