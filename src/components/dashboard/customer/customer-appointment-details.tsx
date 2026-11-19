@@ -22,7 +22,6 @@ import {
 import { Skeleton } from "@/components/common/skeleton-loader";
 import { StatusBadge } from "@/components/common/status-badge";
 import { ErrorState } from "@/components/common/error-state";
-import { PendingIntegration } from "@/components/common/pending-integration";
 import { PrimaryButton } from "@/components/common/primary-button";
 import { SafeImage } from "@/components/common/safe-image";
 import { CustomerAppointmentActions } from "@/components/appointments/customer-appointment-actions";
@@ -35,7 +34,7 @@ export function CustomerAppointmentDetails() {
   const appointmentId = Array.isArray(params?.id) ? params.id[0] : (params?.id ?? "");
   const isValidId = OBJECT_ID_PATTERN.test(appointmentId);
 
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () => getAppointmentById(appointmentId),
     appointmentId,
   );
@@ -75,25 +74,13 @@ export function CustomerAppointmentDetails() {
     );
   }
 
-  if (isPendingIntegration) {
-    return (
-      <div className="space-y-8">
-        {backLink}
-        <PendingIntegration
-          apiName="getAppointmentById()"
-          filePath="src/lib/api/appointments.ts"
-        />
-      </div>
-    );
-  }
-
   if (error || !data?.appointment) {
     return (
       <div className="space-y-8">
         {backLink}
         <ErrorState
           title="Appointment could not be loaded"
-          description="It may belong to another account, or the request may not be connected yet."
+          description="It may belong to another account or no longer be available. Check the connection and try again."
           onRetry={reload}
         />
       </div>

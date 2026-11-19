@@ -22,7 +22,6 @@ import { StatusBadge } from "@/components/common/status-badge";
 import { TableSkeleton, Skeleton } from "@/components/common/skeleton-loader";
 import { ErrorState } from "@/components/common/error-state";
 import { EmptyState } from "@/components/common/empty-state";
-import { PendingIntegration } from "@/components/common/pending-integration";
 import { AppointmentServiceInfo } from "@/components/appointments/appointment-service-info";
 import { CustomerAppointmentActions } from "@/components/appointments/customer-appointment-actions";
 
@@ -36,7 +35,7 @@ export function CustomerAppointments() {
   const [status, setStatus] = useState<AppointmentStatus | "">("");
   const [page, setPage] = useState(1);
 
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () =>
       getMyAppointments({
         status,
@@ -166,23 +165,15 @@ export function CustomerAppointments() {
         </>
       )}
 
-      {!isLoading && isPendingIntegration && (
-        <PendingIntegration
-          apiName="getMyAppointments()"
-          filePath="src/lib/api/appointments.ts"
-          compact
-        />
-      )}
-
       {!isLoading && Boolean(error) && (
         <ErrorState
           title="Your appointments could not load"
-          description="The list and action buttons are ready. Implement getMyAppointments() and try again."
+          description="Check the backend connection and try again."
           onRetry={reload}
         />
       )}
 
-      {!isLoading && !isPendingIntegration && !error && data?.appointments.length === 0 && (
+      {!isLoading && !error && data?.appointments.length === 0 && (
         <EmptyState
           icon={status ? Search : CalendarDays}
           title={status ? "No appointments with this status" : "No appointments yet"}
@@ -205,7 +196,7 @@ export function CustomerAppointments() {
         />
       )}
 
-      {!isLoading && !isPendingIntegration && !error && data && data.appointments.length > 0 && (
+      {!isLoading && !error && data && data.appointments.length > 0 && (
         <>
           <div className="hidden md:block">
             <DataTable

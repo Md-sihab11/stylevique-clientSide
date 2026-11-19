@@ -9,7 +9,7 @@ import { z } from "zod";
 import { CalendarDays, Clock3, LockKeyhole } from "lucide-react";
 import { toast } from "sonner";
 import type { SalonService } from "@/types";
-import { createAppointment, isApiNotImplementedError } from "@/lib/api";
+import { createAppointment, getApiErrorMessage, isApiError } from "@/lib/api";
 import { useSession } from "@/lib/auth-client";
 import { TIME_SLOTS } from "@/constants/salon";
 import { formatCurrency, formatDuration, formatTimeSlot, getTodayInputValue } from "@/lib/format";
@@ -49,15 +49,14 @@ interface BookingFormProps {
 /**
  * Appointment booking form.
  *
- * The form validates first, then calls createAppointment() from src/lib/api.
- * That function is intentionally TODO, so submitting currently shows an
- * honest "integration pending" toast rather than a fake success.
+ * The form validates first, then calls createAppointment(), which sends
+ * POST /api/appointments with the customer's JWT. The backend's 409 response
+ * means the chosen slot has just been taken.
  */
 export function BookingForm({ service }: BookingFormProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { data: session, isPending } = useSession();
-  const [isPendingIntegration, setIsPendingIntegration] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -138,8 +137,13 @@ export function BookingForm({ service }: BookingFormProps) {
   }
 
   async function onSubmit(values: BookingFormValues) {
+    // The button is disabled while submitting, but this guard also stops a
+    // double click or a repeated Enter key from creating two appointments.
+    if (isSubmitting) {
+      return;
+    }
+
     setIsSubmitting(true);
-    setIsPendingIntegration(false);
 
     try {
       await createAppointment({
@@ -154,18 +158,17 @@ export function BookingForm({ service }: BookingFormProps) {
       });
       router.push("/dashboard/customer/appointments");
     } catch (error) {
-      if (isApiNotImplementedError(error)) {
-        setIsPendingIntegration(true);
-        toast.info("API integration pending", {
-          description:
-            "The booking form is complete. Implement createAppointment() in src/lib/api/appointments.ts to send this request.",
+      if (isApiError(error) && error.isConflict) {
+        toast.error("That time slot is no longer available", {
+          description: error.message,
+        });
+      } else if (isApiError(error) && error.isUnauthorized) {
+        toast.error("Please sign in again", {
+          description: error.message,
         });
       } else {
         toast.error("Could not submit the appointment", {
-          description:
-            error instanceof Error
-              ? error.message
-              : "Please check your connection and try again.",
+          description: getApiErrorMessage(error),
         });
       }
     } finally {
@@ -263,15 +266,6 @@ export function BookingForm({ service }: BookingFormProps) {
       <PrimaryButton type="submit" className="w-full" isLoading={isSubmitting}>
         Request appointment
       </PrimaryButton>
-
-      {isPendingIntegration && (
-        <p className="rounded-md border border-accent/30 bg-accent/10 p-3 text-xs leading-5 text-foreground">
-          Integration pending: implement{" "}
-          <code className="font-semibold">createAppointment()</code> in{" "}
-          <code className="font-semibold">src/lib/api/appointments.ts</code>. See
-          API_INTEGRATION.md for the exact request and response.
-        </p>
-      )}
     </form>
   );
 }

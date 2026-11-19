@@ -16,17 +16,15 @@ import { PageHeader } from "@/components/common/page-header";
 import { StatCard } from "@/components/common/stat-card";
 import { Skeleton } from "@/components/common/skeleton-loader";
 import { ErrorState } from "@/components/common/error-state";
-import { PendingIntegration } from "@/components/common/pending-integration";
 import { PrimaryButton } from "@/components/common/primary-button";
 
 /**
  * Customer overview.
- * The four cards read from GET /api/dashboard/customer through the TODO API
- * function. Until it is implemented, values show a dash and a clear notice.
+ * The four cards read from GET /api/dashboard/customer.
  */
 export function CustomerOverview() {
   const { data: session } = useSession();
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () => getCustomerDashboard(),
     "customer-dashboard",
   );
@@ -93,18 +91,10 @@ export function CustomerOverview() {
         </div>
       )}
 
-      {isPendingIntegration && (
-        <PendingIntegration
-          apiName="getCustomerDashboard()"
-          filePath="src/lib/api/dashboard.ts"
-          compact
-        />
-      )}
-
       {Boolean(error) && (
         <ErrorState
           title="Your overview could not load"
-          description="The statistic cards are ready. Check the dashboard API request and try again."
+          description="Check the dashboard API connection and try again."
           onRetry={reload}
         />
       )}

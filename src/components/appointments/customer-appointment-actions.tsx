@@ -8,7 +8,8 @@ import type { Appointment } from "@/types";
 import {
   cancelAppointment,
   createCheckoutSession,
-  isApiNotImplementedError,
+  getApiErrorMessage,
+  isApiError,
 } from "@/lib/api";
 import { canCustomerCancel, canCustomerPay } from "@/lib/appointment-rules";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
@@ -39,6 +40,10 @@ export function CustomerAppointmentActions({
   const canPay = canCustomerPay(appointment);
 
   async function handleCancel() {
+    if (isCancelling) {
+      return;
+    }
+
     setIsCancelling(true);
 
     try {
@@ -49,22 +54,24 @@ export function CustomerAppointmentActions({
       setIsCancelOpen(false);
       onChanged?.();
     } catch (error) {
-      if (isApiNotImplementedError(error)) {
-        toast.info("API integration pending", {
-          description:
-            "Implement cancelAppointment() in src/lib/api/appointments.ts to cancel this request.",
-        });
-      } else {
-        toast.error("Could not cancel the appointment", {
-          description: error instanceof Error ? error.message : "Please try again.",
-        });
-      }
+      toast.error(
+        isApiError(error) && error.isConflict
+          ? "This appointment cannot be cancelled"
+          : "Could not cancel the appointment",
+        {
+          description: getApiErrorMessage(error),
+        },
+      );
     } finally {
       setIsCancelling(false);
     }
   }
 
   async function handlePay() {
+    if (isPaying) {
+      return;
+    }
+
     setIsPaying(true);
 
     try {
@@ -78,16 +85,14 @@ export function CustomerAppointmentActions({
       // backend on /payment/success; we never mark anything paid here.
       window.location.assign(checkout.checkoutUrl);
     } catch (error) {
-      if (isApiNotImplementedError(error)) {
-        toast.info("API integration pending", {
-          description:
-            "Implement createCheckoutSession() in src/lib/api/payments.ts to start Stripe Checkout.",
-        });
-      } else {
-        toast.error("Could not start payment", {
-          description: error instanceof Error ? error.message : "Please try again.",
-        });
-      }
+      toast.error(
+        isApiError(error) && error.isConflict
+          ? "Payment cannot be started"
+          : "Could not start payment",
+        {
+          description: getApiErrorMessage(error),
+        },
+      );
       setIsPaying(false);
     }
   }
@@ -116,7 +121,7 @@ export function CustomerAppointmentActions({
           size="sm"
           className="rounded-full"
           onClick={() => setIsCancelOpen(true)}
-          disabled={isPaying}
+          disabled={isPaying || isCancelling}
         >
           <XCircle className="size-3.5" aria-hidden="true" />
           Cancel
