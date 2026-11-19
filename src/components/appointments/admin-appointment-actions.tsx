@@ -5,7 +5,8 @@ import { CalendarCheck, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import type { AdminAppointment } from "@/types";
 import {
-  isApiNotImplementedError,
+  getApiErrorMessage,
+  isApiError,
   updateAdminAppointmentStatus,
 } from "@/lib/api";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
@@ -36,7 +37,7 @@ export function AdminAppointmentActions({
     appointment.status === "pending" || appointment.status === "confirmed";
 
   async function handleConfirm() {
-    if (!targetStatus) return;
+    if (!targetStatus || isUpdating) return;
 
     setIsUpdating(true);
 
@@ -62,17 +63,15 @@ export function AdminAppointmentActions({
       setTargetStatus(null);
       onChanged();
     } catch (error) {
-      if (isApiNotImplementedError(error)) {
-        toast.info("API integration pending", {
-          description:
-            "Implement updateAdminAppointmentStatus() in src/lib/api/appointments.ts to change this appointment.",
-        });
-        setTargetStatus(null);
-      } else {
-        toast.error("Could not update the appointment", {
-          description: error instanceof Error ? error.message : "Please try again.",
-        });
-      }
+      toast.error(
+        isApiError(error) && error.isConflict
+          ? "The appointment status changed"
+          : "Could not update the appointment",
+        {
+          description: getApiErrorMessage(error),
+        },
+      );
+      setTargetStatus(null);
     } finally {
       setIsUpdating(false);
     }
@@ -89,6 +88,7 @@ export function AdminAppointmentActions({
           size="sm"
           className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
           onClick={() => setTargetStatus("confirmed")}
+          disabled={isUpdating}
         >
           <CalendarCheck className="size-3.5" aria-hidden="true" />
           Confirm
@@ -101,6 +101,7 @@ export function AdminAppointmentActions({
           size="sm"
           className="rounded-full"
           onClick={() => setTargetStatus("cancelled")}
+          disabled={isUpdating}
         >
           <XCircle className="size-3.5" aria-hidden="true" />
           Cancel

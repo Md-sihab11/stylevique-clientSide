@@ -26,7 +26,6 @@ import { PaginationControls } from "@/components/common/pagination-controls";
 import { StatusBadge } from "@/components/common/status-badge";
 import { EmptyState } from "@/components/common/empty-state";
 import { ErrorState } from "@/components/common/error-state";
-import { PendingIntegration } from "@/components/common/pending-integration";
 import { TableSkeleton, Skeleton } from "@/components/common/skeleton-loader";
 import { AppointmentServiceInfo } from "@/components/appointments/appointment-service-info";
 import { AdminAppointmentActions } from "@/components/appointments/admin-appointment-actions";
@@ -68,7 +67,7 @@ export function AdminAppointments() {
   const [date, setDate] = useState("");
   const [page, setPage] = useState(1);
 
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () =>
       getAdminAppointments({
         status: status || undefined,
@@ -255,23 +254,15 @@ export function AdminAppointments() {
         </>
       )}
 
-      {!isLoading && isPendingIntegration && (
-        <PendingIntegration
-          apiName="getAdminAppointments()"
-          filePath="src/lib/api/appointments.ts"
-          compact
-        />
-      )}
-
       {!isLoading && Boolean(error) && (
         <ErrorState
           title="Appointments could not load"
-          description="The filters and status actions are ready. Implement getAdminAppointments() and try again."
+          description="Check the backend connection and try again."
           onRetry={reload}
         />
       )}
 
-      {!isLoading && !isPendingIntegration && !error && data?.appointments.length === 0 && (
+      {!isLoading && !error && data?.appointments.length === 0 && (
         <EmptyState
           icon={hasFilters ? Search : CalendarDays}
           title={hasFilters ? "No appointments match these filters" : "No appointments yet"}
@@ -290,7 +281,7 @@ export function AdminAppointments() {
         />
       )}
 
-      {!isLoading && !isPendingIntegration && !error && data && data.appointments.length > 0 && (
+      {!isLoading && !error && data && data.appointments.length > 0 && (
         <>
           <div className="hidden md:block">
             <DataTable

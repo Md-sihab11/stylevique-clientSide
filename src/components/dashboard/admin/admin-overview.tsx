@@ -21,7 +21,6 @@ import { StatCard } from "@/components/common/stat-card";
 import { PrimaryButton } from "@/components/common/primary-button";
 import { Skeleton } from "@/components/common/skeleton-loader";
 import { ErrorState } from "@/components/common/error-state";
-import { PendingIntegration } from "@/components/common/pending-integration";
 
 const QUICK_ACTIONS = [
   {
@@ -52,12 +51,10 @@ const QUICK_ACTIONS = [
 
 /**
  * Administrator overview.
- * Every number comes from GET /api/dashboard/admin via the TODO API function.
- * While that function is unimplemented the cards show dashes and the page
- * clearly says the integration is pending.
+ * Every number comes from GET /api/dashboard/admin.
  */
 export function AdminOverview() {
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () => getAdminDashboard(),
     "admin-dashboard",
   );
@@ -179,18 +176,10 @@ export function AdminOverview() {
         </div>
       )}
 
-      {!isLoading && isPendingIntegration && (
-        <PendingIntegration
-          apiName="getAdminDashboard()"
-          filePath="src/lib/api/dashboard.ts"
-          compact
-        />
-      )}
-
       {!isLoading && Boolean(error) && (
         <ErrorState
           title="The salon overview could not load"
-          description="The dashboard cards are ready. Check the admin dashboard API request and try again."
+          description="Check the admin dashboard API connection and try again."
           onRetry={reload}
         />
       )}
@@ -257,9 +246,7 @@ export function AdminOverview() {
           ) : (
             <div className="mt-6 rounded-md border border-dashed border-border px-5 py-8 text-center">
               <p className="text-sm text-muted-foreground">
-                {isPendingIntegration
-                  ? "The appointment mix appears once GET /api/dashboard/admin is connected."
-                  : "There are no appointments to summarise yet."}
+                There are no appointments to summarise yet.
               </p>
             </div>
           )}
