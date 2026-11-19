@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,10 +11,16 @@ import {
   Mail,
   Phone,
   ShieldAlert,
+  Upload,
   UserRound,
 } from "lucide-react";
 import { toast } from "sonner";
-import { updateMyProfile, isApiNotImplementedError } from "@/lib/api";
+import {
+  getApiErrorMessage,
+  isApiError,
+  updateMyProfile,
+  uploadImage,
+} from "@/lib/api";
 import { useSession } from "@/lib/auth-client";
 import { formatDate, getInitials } from "@/lib/format";
 import { FormField } from "@/components/common/form-field";
@@ -22,6 +28,7 @@ import { PrimaryButton } from "@/components/common/primary-button";
 import { Skeleton } from "@/components/common/skeleton-loader";
 import { StatusBadge } from "@/components/common/status-badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const profileSchema = z.object({
@@ -61,18 +68,21 @@ interface ProfileFormProps {
  * PATCH /api/users/me. Email, role, verification and blocked status are
  * managed by Better Auth or the salon backend and are shown read-only.
  *
- * Saving calls updateMyProfile() in src/lib/api/users.ts. That function is
- * intentionally a TODO, so the form shows an honest integration notice.
+ * Saving calls PATCH /api/users/me through updateMyProfile(). The image can be
+ * uploaded first with POST /api/uploads/image, or pasted as a URL.
  */
 export function ProfileForm({ role }: ProfileFormProps) {
   const router = useRouter();
   const { data: session, isPending } = useSession();
-  const [isPendingIntegration, setIsPendingIntegration] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const {
     register,
     handleSubmit,
     reset,
+    setError,
+    setValue,
     control,
     formState: { errors, isSubmitting, isDirty },
   } = useForm<ProfileValues>({
@@ -95,10 +105,14 @@ export function ProfileForm({ role }: ProfileFormProps) {
   }, [user, reset]);
 
   async function onSubmit(values: ProfileValues) {
-    setIsPendingIntegration(false);
-
     try {
       await updateMyProfile({
+        name: values.name.trim(),
+        phone: values.phone.trim(),
+        image: values.image.trim(),
+      });
+
+      reset({
         name: values.name.trim(),
         phone: values.phone.trim(),
         image: values.image.trim(),
@@ -109,19 +123,54 @@ export function ProfileForm({ role }: ProfileFormProps) {
       });
       router.refresh();
     } catch (error) {
-      if (isApiNotImplementedError(error)) {
-        setIsPendingIntegration(true);
-        toast.info("API integration pending", {
-          description:
-            "The profile form is ready. Implement updateMyProfile() in src/lib/api/users.ts to save these changes.",
-        });
-        return;
+      // Show backend field errors next to the matching inputs.
+      if (isApiError(error)) {
+        for (const detail of error.details) {
+          if (
+            detail.field === "name" ||
+            detail.field === "phone" ||
+            detail.field === "image"
+          ) {
+            setError(detail.field, { message: detail.message });
+          }
+        }
       }
 
       toast.error("Could not update your profile", {
-        description:
-          error instanceof Error ? error.message : "Please try again.",
+        description: getApiErrorMessage(error),
       });
+    }
+  }
+
+  async function handleImageUpload(file: File | undefined) {
+    if (!file) {
+      return;
+    }
+
+    if (!/^image\/(jpeg|png|webp|gif)$/i.test(file.type)) {
+      toast.error("Choose a supported image", {
+        description: "Use a JPEG, PNG, WebP or GIF file.",
+      });
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const uploaded = await uploadImage(file);
+      setValue("image", uploaded.url, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      toast.success("Image uploaded", {
+        description: "Save changes to attach the new picture to your profile.",
+      });
+    } catch (error) {
+      toast.error("Image upload failed", {
+        description: getApiErrorMessage(error),
+      });
+    } finally {
+      setIsUploading(false);
     }
   }
 
@@ -239,25 +288,55 @@ export function ProfileForm({ role }: ProfileFormProps) {
           </FormField>
 
           <FormField
-            label="Profile image URL"
+            label="Profile image"
             htmlFor="profile-image"
             error={errors.image?.message}
-            hint="Optional"
+            hint="Upload a file or paste a URL"
             className="sm:col-span-2"
           >
-            <div className="relative">
-              <ImageIcon
-                className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-                aria-hidden="true"
-              />
-              <Input
-                id="profile-image"
-                type="url"
-                placeholder="https://…"
-                className="h-11 bg-background pl-9 text-sm"
-                aria-invalid={Boolean(errors.image)}
-                {...register("image")}
-              />
+            <div className="space-y-2">
+              <div className="relative">
+                <ImageIcon
+                  className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <Input
+                  id="profile-image"
+                  type="url"
+                  placeholder="https://…"
+                  className="h-11 bg-background pl-9 text-sm"
+                  aria-invalid={Boolean(errors.image)}
+                  {...register("image")}
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="sr-only"
+                  onChange={(event) => {
+                    void handleImageUpload(event.target.files?.[0]);
+                    // Allow choosing the same file again later.
+                    event.target.value = "";
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full"
+                  disabled={isUploading}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload className="size-3.5" aria-hidden="true" />
+                  {isUploading ? "Uploading…" : "Upload image"}
+                </Button>
+                <span className="text-xs text-muted-foreground">
+                  JPEG, PNG, WebP or GIF
+                </span>
+              </div>
             </div>
           </FormField>
         </div>
@@ -269,22 +348,12 @@ export function ProfileForm({ role }: ProfileFormProps) {
           <PrimaryButton
             type="submit"
             isLoading={isSubmitting}
-            disabled={!isDirty}
+            disabled={!isDirty || isUploading}
             className="w-full sm:w-auto"
           >
             Save changes
           </PrimaryButton>
         </div>
-
-        {isPendingIntegration && (
-          <p className="mt-4 rounded-md border border-accent/30 bg-accent/10 p-3.5 text-xs leading-5 text-foreground">
-            Integration pending: implement{" "}
-            <code className="font-semibold">updateMyProfile()</code> in{" "}
-            <code className="font-semibold">src/lib/api/users.ts</code>, then this
-            button will save through <code>PATCH /api/users/me</code>. See
-            API_INTEGRATION.md.
-          </p>
-        )}
       </form>
 
       <aside className="space-y-4">
@@ -357,8 +426,9 @@ export function ProfileForm({ role }: ProfileFormProps) {
               <p className="eyebrow">Good to know</p>
             </div>
             <p className="mt-2 text-xs leading-5 text-muted-foreground">
-              Your profile image is a URL. Upload a picture to any image host, or
-              ask the salon to enable image uploads before adding a file here.
+              Upload a JPEG, PNG, WebP or GIF through the salon backend, or paste a
+              public image URL. If uploads are not enabled on the server, the URL
+              field still works.
             </p>
           </div>
         )}

@@ -10,20 +10,18 @@ import {
   RefreshCw,
   ShieldCheck,
 } from "lucide-react";
-import { verifyPayment } from "@/lib/api";
+import { getApiErrorMessage, verifyPayment } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useSession } from "@/lib/auth-client";
 import { formatCurrency } from "@/lib/format";
 import { PrimaryButton } from "@/components/common/primary-button";
-import { PendingIntegration } from "@/components/common/pending-integration";
 import { Skeleton } from "@/components/common/skeleton-loader";
 
 /**
  * Stripe sends the customer back here with ?session_id=...
  *
  * This screen NEVER assumes success. It asks the backend to verify the session
- * and renders only the verified response. While verifyPayment() is still a
- * TODO, the page explicitly says payment cannot be confirmed.
+ * and shows the success design only when the backend returns status "paid".
  */
 export function PaymentSuccess() {
   const searchParams = useSearchParams();
@@ -107,7 +105,7 @@ export function PaymentSuccess() {
 }
 
 function PaymentVerificationPanel({ sessionId }: { sessionId: string }) {
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () => verifyPayment(sessionId),
     sessionId,
   );
@@ -135,63 +133,6 @@ function PaymentVerificationPanel({ sessionId }: { sessionId: string }) {
     );
   }
 
-  if (isPendingIntegration) {
-    return (
-      <div className="page-width max-w-3xl py-14 sm:py-20">
-        <div className="rounded-lg border border-accent/40 bg-card p-6 sm:p-8">
-          <div className="flex items-start gap-4">
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent-foreground">
-              <AlertTriangle className="size-5" aria-hidden="true" />
-            </span>
-            <div>
-              <p className="eyebrow">Verification unavailable</p>
-              <h1 className="mt-2 text-4xl font-medium leading-tight text-foreground">
-                Payment status is not confirmed yet.
-              </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-                This page is intentionally not showing a success message. The
-                frontend cannot know whether Stripe charged you until{" "}
-                <code className="text-foreground">verifyPayment()</code> is
-                implemented and the backend returns a verified status.
-              </p>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-                Do not submit a second payment based on this screen alone. Check your
-                saved appointment once the API is connected, or contact the salon with
-                the Stripe reference below.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-6 rounded-md bg-muted/60 p-4">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Stripe session reference
-            </p>
-            <p className="mt-1 break-all font-mono text-xs text-foreground">
-              {sessionId}
-            </p>
-          </div>
-
-          <div className="mt-6">
-            <PendingIntegration
-              apiName={`verifyPayment("${sessionId.slice(0, 14)}…")`}
-              filePath="src/lib/api/payments.ts"
-              compact
-            />
-          </div>
-
-          <div className="mt-6 flex flex-col gap-2 sm:flex-row">
-            <PrimaryButton href="/dashboard/customer/appointments" size="md">
-              Check my appointments
-            </PrimaryButton>
-            <PrimaryButton href="/contact" variant="outline" size="md">
-              Contact the salon
-            </PrimaryButton>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <PaymentMessage
@@ -199,7 +140,7 @@ function PaymentVerificationPanel({ sessionId }: { sessionId: string }) {
         icon={AlertTriangle}
         eyebrow="Verification unavailable"
         title="We could not confirm this payment"
-        description="The verification request failed. Your appointment has not been changed by this page. Try again, then check your appointments or contact the salon if the problem continues."
+        description={getApiErrorMessage(error)}
       >
         <PrimaryButton size="md" onClick={reload}>
           <RefreshCw className="size-4" aria-hidden="true" />
