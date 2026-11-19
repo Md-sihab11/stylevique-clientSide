@@ -1,3 +1,4 @@
+import { apiRequest } from "@/lib/api-client";
 import type {
   CreateServiceInput,
   ServiceCategoriesResponse,
@@ -7,113 +8,121 @@ import type {
   ServiceStatus,
   UpdateServiceInput,
 } from "@/types";
-import { ApiNotImplementedError } from "./errors";
+import { ApiError } from "./errors";
 
 /**
  * PUBLIC SERVICES
  * ---------------
- * These three functions power the homepage, the browse page and the service
- * detail page. Only services with status "active" are returned publicly.
+ * These functions power the homepage, browse page and service details page.
+ * The backend only returns services with status "active" here.
  */
 
-// TODO: Implement GET /api/services.
-// Auth: none.
-// Query: search, category, sort, page, limit.
-// Response: ServiceListResponse ({ services, pagination }).
-// Used by: HomePage featured services, BrowseServicesPage.
 export async function getServices(
   params: ServiceListParams = {},
 ): Promise<ServiceListResponse> {
-  void params;
-  throw new ApiNotImplementedError("getServices");
+  return apiRequest<ServiceListResponse>("/api/services", {
+    query: {
+      search: params.search,
+      category: params.category,
+      sort: params.sort,
+      page: params.page,
+      limit: params.limit,
+    },
+  });
 }
 
-// TODO: Implement GET /api/services/categories.
-// Auth: none.
-// Response: ServiceCategoriesResponse ({ categories: string[] }).
-// Used by: HomePage category strip, BrowseServicesPage filter,
-// AdminServiceForm category suggestions.
 export async function getServiceCategories(): Promise<ServiceCategoriesResponse> {
-  throw new ApiNotImplementedError("getServiceCategories");
+  return apiRequest<ServiceCategoriesResponse>("/api/services/categories");
 }
 
-// TODO: Implement GET /api/services/:id.
-// Auth: none.
-// Response: ServiceResponse ({ service }).
-// Used by: ServiceDetailsPage and the admin edit page fallback.
-// Note: the public endpoint only returns active services.
 export async function getServiceById(id: string): Promise<ServiceResponse> {
-  void id;
-  throw new ApiNotImplementedError("getServiceById");
+  return apiRequest<ServiceResponse>(`/api/services/${id}`);
 }
 
 /**
  * ADMIN SERVICES
  * --------------
- * Every function below requires a signed-in admin. Send the Better Auth JWT
- * as `Authorization: Bearer <token>`.
+ * These calls attach the Better Auth JWT automatically because auth is true.
  */
 
-// TODO: Implement GET /api/admin/services.
-// Auth: admin JWT.
-// Query: search, category, status, sort, page, limit.
-// Response: ServiceListResponse ({ services, pagination }).
-// Used by: AdminServicesPage.
 export async function getAdminServices(
   params: ServiceListParams = {},
 ): Promise<ServiceListResponse> {
-  void params;
-  throw new ApiNotImplementedError("getAdminServices");
+  return apiRequest<ServiceListResponse>("/api/admin/services", {
+    auth: true,
+    query: {
+      search: params.search,
+      category: params.category,
+      status: params.status,
+      sort: params.sort,
+      page: params.page,
+      limit: params.limit,
+    },
+  });
 }
 
-// TODO: Implement POST /api/services.
-// Auth: admin JWT.
-// Body: CreateServiceInput.
-// Response: ServiceResponse.
-// Used by: AdminAddServicePage.
+/**
+ * The backend has no GET /api/admin/services/:id endpoint. To let admins edit
+ * inactive services too, this helper pages through the admin list and finds the
+ * matching service. It only uses a real backend endpoint.
+ */
+export async function getAdminServiceById(id: string): Promise<ServiceResponse> {
+  const limit = 100;
+  let page = 1;
+  let totalPages = 1;
+
+  while (page <= totalPages && page <= 50) {
+    const result = await getAdminServices({ page, limit });
+    const service = result.services.find((item) => item.id === id);
+
+    if (service) {
+      return { service };
+    }
+
+    totalPages = result.pagination.totalPages;
+    page += 1;
+  }
+
+  throw new ApiError("Service not found.", 404);
+}
+
 export async function createService(
   input: CreateServiceInput,
 ): Promise<ServiceResponse> {
-  void input;
-  throw new ApiNotImplementedError("createService");
+  return apiRequest<ServiceResponse>("/api/services", {
+    method: "POST",
+    auth: true,
+    body: input,
+  });
 }
 
-// TODO: Implement PATCH /api/services/:id.
-// Auth: admin JWT.
-// Body: UpdateServiceInput (serviceName, category, description, price,
-// duration, image). Status is changed with a separate endpoint.
-// Response: ServiceResponse.
-// Used by: AdminEditServicePage.
 export async function updateService(
   id: string,
   input: UpdateServiceInput,
 ): Promise<ServiceResponse> {
-  void id;
-  void input;
-  throw new ApiNotImplementedError("updateService");
+  return apiRequest<ServiceResponse>(`/api/services/${id}`, {
+    method: "PATCH",
+    auth: true,
+    body: input,
+  });
 }
 
-// TODO: Implement PATCH /api/services/:id/status.
-// Auth: admin JWT.
-// Body: { status: "active" | "inactive" }.
-// Response: ServiceResponse.
-// Used by: AdminServicesPage activate/deactivate confirmation.
 export async function updateServiceStatus(
   id: string,
   status: ServiceStatus,
 ): Promise<ServiceResponse> {
-  void id;
-  void status;
-  throw new ApiNotImplementedError("updateServiceStatus");
+  return apiRequest<ServiceResponse>(`/api/services/${id}/status`, {
+    method: "PATCH",
+    auth: true,
+    body: { status },
+  });
 }
 
-// TODO: Implement DELETE /api/services/:id.
-// Auth: admin JWT.
-// Response: ServiceResponse wrapper with { deletedServiceId: string }.
-// Used by: AdminServicesPage delete confirmation.
 export async function deleteService(
   id: string,
 ): Promise<{ deletedServiceId: string }> {
-  void id;
-  throw new ApiNotImplementedError("deleteService");
+  return apiRequest<{ deletedServiceId: string }>(`/api/services/${id}`, {
+    method: "DELETE",
+    auth: true,
+  });
 }
