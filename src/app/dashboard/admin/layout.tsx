@@ -1,13 +1,5 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
-import {
-  CalendarDays,
-  CreditCard,
-  LayoutDashboard,
-  Scissors,
-  UserRound,
-  UsersRound,
-} from "lucide-react";
 import { getServerSession } from "@/lib/server-session";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 
@@ -16,15 +8,6 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell";
  * so this segment is allowed to block instead of producing a static shell.
  */
 export const instant = false;
-
-const ADMIN_NAV = [
-  { label: "Overview", href: "/dashboard/admin", icon: LayoutDashboard, exact: true },
-  { label: "Services", href: "/dashboard/admin/services", icon: Scissors },
-  { label: "Appointments", href: "/dashboard/admin/appointments", icon: CalendarDays },
-  { label: "Customers", href: "/dashboard/admin/users", icon: UsersRound },
-  { label: "Transactions", href: "/dashboard/admin/transactions", icon: CreditCard },
-  { label: "My profile", href: "/dashboard/admin/profile", icon: UserRound },
-];
 
 /**
  * Server-side admin guard. Customers are redirected to their own dashboard
@@ -48,7 +31,6 @@ export default async function AdminDashboardLayout({
   return (
     <DashboardShell
       role="admin"
-      navItems={ADMIN_NAV}
       user={{
         name: session.user.name,
         email: session.user.email,

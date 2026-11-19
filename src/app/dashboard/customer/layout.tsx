@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
-import { CalendarDays, LayoutDashboard, Scissors, UserRound } from "lucide-react";
 import { getServerSession } from "@/lib/server-session";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 
@@ -10,13 +9,6 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell";
  * shell.
  */
 export const instant = false;
-
-const CUSTOMER_NAV = [
-  { label: "Overview", href: "/dashboard/customer", icon: LayoutDashboard, exact: true },
-  { label: "My appointments", href: "/dashboard/customer/appointments", icon: CalendarDays },
-  { label: "My profile", href: "/dashboard/customer/profile", icon: UserRound },
-  { label: "Browse services", href: "/services", icon: Scissors },
-];
 
 /**
  * Server-side role guard.
@@ -40,7 +32,6 @@ export default async function CustomerDashboardLayout({
   return (
     <DashboardShell
       role="customer"
-      navItems={CUSTOMER_NAV}
       user={{
         name: session.user.name,
         email: session.user.email,

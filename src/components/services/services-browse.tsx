@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, startTransition, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { getServiceCategories, getServices } from "@/lib/api";
@@ -82,7 +82,9 @@ export function ServicesBrowse() {
     }
 
     const query = params.toString();
-    router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    startTransition(() => {
+      router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    });
   }
 
   function handleSearchSubmit(event: FormEvent<HTMLFormElement>) {
@@ -92,7 +94,9 @@ export function ServicesBrowse() {
 
   function clearFilters() {
     setSearchInput("");
-    router.push(pathname, { scroll: false });
+    startTransition(() => {
+      router.push(pathname, { scroll: false });
+    });
   }
 
   const hasFilters = Boolean(search || category || sort !== DEFAULT_SERVICE_SORT);

@@ -18,9 +18,62 @@ if (!mongoUri) {
   );
 }
 
-const mongoClient = new MongoClient(mongoUri);
+declare global {
+  var _styleviqueMongoClient: MongoClient | undefined;
+}
+
+function isClientAlive(client?: MongoClient): boolean {
+  if (!client) return false;
+  // @ts-expect-error topology is an internal driver property
+  const topology = client.topology;
+  if (!topology) return false;
+  if (typeof topology.isClosed === "function" && topology.isClosed()) return false;
+  if (topology.s && topology.s.state === "closed") return false;
+  return true;
+}
+
+function getMongoClient(): MongoClient {
+  if (!isClientAlive(globalThis._styleviqueMongoClient)) {
+    globalThis._styleviqueMongoClient = new MongoClient(mongoUri!, {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 15000,
+      connectTimeoutMS: 15000,
+      socketTimeoutMS: 45000,
+    });
+  }
+  return globalThis._styleviqueMongoClient!;
+}
+
 const databaseName = process.env.MONGODB_DB_NAME ?? "stylevique";
-const database = mongoClient.db(databaseName);
+
+/**
+ * Proxy the database instance so every collection operation automatically
+ * uses an alive, active MongoClient. If a serverless container woke up after
+ * idle timeout and the connection topology closed, it transparently recreates
+ * the client without throwing MongoTopologyClosedError.
+ */
+const databaseProxy = new Proxy({} as ReturnType<MongoClient["db"]>, {
+  get(target, prop, receiver) {
+    const activeClient = getMongoClient();
+    const activeDb = activeClient.db(databaseName);
+    const value = Reflect.get(activeDb, prop, receiver);
+    if (typeof value === "function") {
+      return value.bind(activeDb);
+    }
+    return value;
+  },
+});
+
+const clientProxy = new Proxy({} as MongoClient, {
+  get(target, prop, receiver) {
+    const activeClient = getMongoClient();
+    const value = Reflect.get(activeClient, prop, receiver);
+    if (typeof value === "function") {
+      return value.bind(activeClient);
+    }
+    return value;
+  },
+});
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
@@ -38,8 +91,8 @@ export const auth = betterAuth({
     },
   },
 
-  database: mongodbAdapter(database, {
-    client: mongoClient,
+  database: mongodbAdapter(databaseProxy, {
+    client: clientProxy,
   }),
 
   /**
