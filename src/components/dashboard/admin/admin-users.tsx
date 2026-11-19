@@ -16,8 +16,8 @@ import { toast } from "sonner";
 import type { User } from "@/types";
 import {
   blockCustomer,
+  getApiErrorMessage,
   getCustomers,
-  isApiNotImplementedError,
   unblockCustomer,
 } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
@@ -29,7 +29,6 @@ import { PaginationControls } from "@/components/common/pagination-controls";
 import { StatusBadge } from "@/components/common/status-badge";
 import { EmptyState } from "@/components/common/empty-state";
 import { ErrorState } from "@/components/common/error-state";
-import { PendingIntegration } from "@/components/common/pending-integration";
 import { TableSkeleton, Skeleton } from "@/components/common/skeleton-loader";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -76,7 +75,7 @@ export function AdminUsers() {
   const [blockTarget, setBlockTarget] = useState<User | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () =>
       getCustomers({
         search: search || undefined,
@@ -101,7 +100,7 @@ export function AdminUsers() {
   }
 
   async function handleBlockToggle() {
-    if (!blockTarget) return;
+    if (!blockTarget || isUpdating) return;
 
     setIsUpdating(true);
 
@@ -122,19 +121,10 @@ export function AdminUsers() {
       setDetailsCustomer(null);
       reload();
     } catch (actionError) {
-      if (isApiNotImplementedError(actionError)) {
-        toast.info("API integration pending", {
-          description: blockTarget.isBlocked
-            ? "Implement unblockCustomer() in src/lib/api/users.ts to restore this account."
-            : "Implement blockCustomer() in src/lib/api/users.ts to block this account.",
-        });
-        setBlockTarget(null);
-      } else {
-        toast.error("Could not update the customer", {
-          description:
-            actionError instanceof Error ? actionError.message : "Please try again.",
-        });
-      }
+      toast.error("Could not update the customer", {
+        description: getApiErrorMessage(actionError),
+      });
+      setBlockTarget(null);
     } finally {
       setIsUpdating(false);
     }
@@ -291,23 +281,15 @@ export function AdminUsers() {
         </>
       )}
 
-      {!isLoading && isPendingIntegration && (
-        <PendingIntegration
-          apiName="getCustomers()"
-          filePath="src/lib/api/users.ts"
-          compact
-        />
-      )}
-
       {!isLoading && Boolean(error) && (
         <ErrorState
           title="The customer list could not load"
-          description="Search and account actions are ready. Implement getCustomers() and try again."
+          description="Check the backend connection and try again."
           onRetry={reload}
         />
       )}
 
-      {!isLoading && !isPendingIntegration && !error && data?.users.length === 0 && (
+      {!isLoading && !error && data?.users.length === 0 && (
         <EmptyState
           icon={search ? Search : UsersRound}
           title={search ? "No customers match this search" : "No customers yet"}
@@ -326,7 +308,7 @@ export function AdminUsers() {
         />
       )}
 
-      {!isLoading && !isPendingIntegration && !error && data && data.users.length > 0 && (
+      {!isLoading && !error && data && data.users.length > 0 && (
         <>
           <div className="hidden md:block">
             <DataTable

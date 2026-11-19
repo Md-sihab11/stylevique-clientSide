@@ -26,7 +26,6 @@ import { PaginationControls } from "@/components/common/pagination-controls";
 import { StatusBadge } from "@/components/common/status-badge";
 import { EmptyState } from "@/components/common/empty-state";
 import { ErrorState } from "@/components/common/error-state";
-import { PendingIntegration } from "@/components/common/pending-integration";
 import { TableSkeleton, Skeleton } from "@/components/common/skeleton-loader";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -86,7 +85,7 @@ export function AdminTransactions() {
   const [status, setStatus] = useState<TransactionStatus | "">("");
   const [page, setPage] = useState(1);
 
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () =>
       getAdminTransactions({
         status: status || undefined,
@@ -225,23 +224,15 @@ export function AdminTransactions() {
         </>
       )}
 
-      {!isLoading && isPendingIntegration && (
-        <PendingIntegration
-          apiName="getAdminTransactions()"
-          filePath="src/lib/api/transactions.ts"
-          compact
-        />
-      )}
-
       {!isLoading && Boolean(error) && (
         <ErrorState
           title="Transactions could not load"
-          description="The filter and table are ready. Implement getAdminTransactions() and try again."
+          description="Check the backend connection and try again."
           onRetry={reload}
         />
       )}
 
-      {!isLoading && !isPendingIntegration && !error && data?.transactions.length === 0 && (
+      {!isLoading && !error && data?.transactions.length === 0 && (
         <EmptyState
           icon={status ? Search : ReceiptText}
           title={status ? "No transactions with this status" : "No transactions yet"}
@@ -267,7 +258,7 @@ export function AdminTransactions() {
         />
       )}
 
-      {!isLoading && !isPendingIntegration && !error && data && data.transactions.length > 0 && (
+      {!isLoading && !error && data && data.transactions.length > 0 && (
         <>
           <div className="hidden md:block">
             <DataTable
