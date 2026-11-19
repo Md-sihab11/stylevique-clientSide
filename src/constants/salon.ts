@@ -1,0 +1,98 @@
+/**
+ * SALON DETAILS
+ * ------------
+ * These are the only places you need to edit the salon's public information.
+ * The values below are clearly marked placeholders. Replace them before launch.
+ */
+export const SALON = {
+  name: "Stylevique",
+  tagline: "Salon & Beauty Studio",
+  description:
+    "A calm, considered beauty studio for hair, skin and the small rituals that make you feel like yourself again.",
+  // TODO: Replace with the salon's real phone number.
+  phone: "+1 (000) 000-0000",
+  // TODO: Replace with the salon's real email address.
+  email: "hello@stylevique.example",
+  // TODO: Replace with the salon's real address.
+  address: ["000 Example Avenue", "Suite 000", "Your City, 00000"],
+  // TODO: Replace with the salon's real opening hours.
+  openingHours: [
+    { days: "Monday – Friday", hours: "9:00 AM – 7:00 PM" },
+    { days: "Saturday", hours: "9:00 AM – 6:00 PM" },
+    { days: "Sunday", hours: "Closed" },
+  ],
+  // TODO: Replace these platform links with the salon's real profiles.
+  socialLinks: [
+    { label: "Instagram", href: "https://www.instagram.com/" },
+    { label: "Facebook", href: "https://www.facebook.com/" },
+    { label: "Pinterest", href: "https://www.pinterest.com/" },
+  ],
+} as const;
+
+/**
+ * Main navigation links. They are shared by the desktop navbar and the
+ * mobile menu so both stay in sync.
+ */
+export const MAIN_NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "Services", href: "/services" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+] as const;
+
+/** Editorial categories shown on the homepage. Each one opens the filtered
+ * services page. These labels must match the categories saved by the admin. */
+export const FEATURED_CATEGORIES = [
+  { name: "Haircut & Styling", blurb: "Shape, movement and finish.", number: "01" },
+  { name: "Hair Coloring", blurb: "Tone, depth and dimension.", number: "02" },
+  { name: "Hair Treatment", blurb: "Repair and lasting softness.", number: "03" },
+  { name: "Facial & Skincare", blurb: "A clearer, calmer complexion.", number: "04" },
+  { name: "Makeup", blurb: "Considered looks for real moments.", number: "05" },
+  { name: "Manicure & Pedicure", blurb: "Precise details, beautifully kept.", number: "06" },
+  { name: "Spa & Massage", blurb: "Space to slow down and reset.", number: "07" },
+] as const;
+
+/**
+ * The backend accepts appointments from 09:00 to 18:30 in 30-minute steps.
+ * Keeping this list here lets the booking form and documentation share it.
+ */
+export const TIME_SLOTS = [
+  "09:00",
+  "09:30",
+  "10:00",
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "12:30",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+] as const;
+
+export const SORT_OPTIONS = [
+  { value: "newest", label: "Newest first" },
+  { value: "oldest", label: "Oldest first" },
+  { value: "price_asc", label: "Price: low to high" },
+  { value: "price_desc", label: "Price: high to low" },
+] as const;
+
+export const APPOINTMENT_STATUS_OPTIONS = [
+  { value: "pending", label: "Pending" },
+  { value: "confirmed", label: "Confirmed" },
+  { value: "cancelled", label: "Cancelled" },
+] as const;
+
+export const TRANSACTION_STATUS_OPTIONS = [
+  { value: "paid", label: "Paid" },
+  { value: "failed", label: "Failed" },
+] as const;
