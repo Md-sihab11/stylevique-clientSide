@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,14 +12,17 @@ import {
   ImageIcon,
   Layers3,
   Sparkles,
+  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { SalonService } from "@/types";
 import {
   createService,
+  getApiErrorMessage,
   getServiceCategories,
-  isApiNotImplementedError,
+  isApiError,
   updateService,
+  uploadImage,
 } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { FEATURED_CATEGORIES } from "@/constants/salon";
@@ -28,6 +31,7 @@ import { PageHeader } from "@/components/common/page-header";
 import { FormField } from "@/components/common/form-field";
 import { PrimaryButton } from "@/components/common/primary-button";
 import { SafeImage } from "@/components/common/safe-image";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
@@ -86,12 +90,15 @@ interface AdminServiceFormProps {
 export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormProps) {
   const router = useRouter();
   const isEdit = mode === "edit";
-  const [isPendingIntegration, setIsPendingIntegration] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const {
     register,
     handleSubmit,
     control,
+    setError,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ServiceValues>({
     resolver: zodResolver(serviceSchema),
@@ -136,8 +143,6 @@ export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormP
   ).sort((a, b) => a.localeCompare(b));
 
   async function onSubmit(values: ServiceValues) {
-    setIsPendingIntegration(false);
-
     try {
       if (isEdit) {
         if (!serviceId) {
@@ -175,19 +180,59 @@ export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormP
       router.push("/dashboard/admin/services");
       router.refresh();
     } catch (error) {
-      if (isApiNotImplementedError(error)) {
-        setIsPendingIntegration(true);
-        toast.info("API integration pending", {
-          description: isEdit
-            ? "The form is complete. Implement updateService() in src/lib/api/services.ts to save these changes."
-            : "The form is complete. Implement createService() in src/lib/api/services.ts to publish this service.",
-        });
-        return;
+      // Put backend validation messages directly under the matching fields.
+      if (isApiError(error)) {
+        for (const detail of error.details) {
+          if (
+            detail.field === "serviceName" ||
+            detail.field === "category" ||
+            detail.field === "description" ||
+            detail.field === "price" ||
+            detail.field === "duration" ||
+            detail.field === "image" ||
+            detail.field === "status"
+          ) {
+            setError(detail.field, { message: detail.message });
+          }
+        }
       }
 
-      toast.error(isEdit ? "Could not update the service" : "Could not create the service", {
-        description: error instanceof Error ? error.message : "Please try again.",
+      toast.error(
+        isEdit ? "Could not update the service" : "Could not create the service",
+        { description: getApiErrorMessage(error) },
+      );
+    }
+  }
+
+  async function handleImageUpload(file: File | undefined) {
+    if (!file) {
+      return;
+    }
+
+    if (!/^image\/(jpeg|png|webp|gif)$/i.test(file.type)) {
+      toast.error("Choose a supported image", {
+        description: "Use a JPEG, PNG, WebP or GIF file.",
       });
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const uploaded = await uploadImage(file);
+      setValue("image", uploaded.url, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      toast.success("Image uploaded", {
+        description: "The service image URL has been filled in for you.",
+      });
+    } catch (error) {
+      toast.error("Image upload failed", {
+        description: getApiErrorMessage(error),
+      });
+    } finally {
+      setIsUploading(false);
     }
   }
 
@@ -336,26 +381,55 @@ export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormP
               </FormField>
 
               <FormField
-                label="Image URL"
+                label="Service image"
                 htmlFor="service-image"
                 error={errors.image?.message}
-                hint="https://…"
+                hint="Upload a file or paste a URL"
                 required
                 className="sm:col-span-2"
               >
-                <div className="relative">
-                  <ImageIcon
-                    className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-                    aria-hidden="true"
-                  />
-                  <Input
-                    id="service-image"
-                    type="url"
-                    placeholder="https://images.example.com/service.jpg"
-                    className="h-11 bg-background pl-9 text-sm"
-                    aria-invalid={Boolean(errors.image)}
-                    {...register("image")}
-                  />
+                <div className="space-y-2">
+                  <div className="relative">
+                    <ImageIcon
+                      className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                      aria-hidden="true"
+                    />
+                    <Input
+                      id="service-image"
+                      type="url"
+                      placeholder="https://images.example.com/service.jpg"
+                      className="h-11 bg-background pl-9 text-sm"
+                      aria-invalid={Boolean(errors.image)}
+                      {...register("image")}
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      className="sr-only"
+                      onChange={(event) => {
+                        void handleImageUpload(event.target.files?.[0]);
+                        event.target.value = "";
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full"
+                      disabled={isUploading}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Upload className="size-3.5" aria-hidden="true" />
+                      {isUploading ? "Uploading…" : "Upload image"}
+                    </Button>
+                    <span className="text-xs text-muted-foreground">
+                      JPEG, PNG, WebP or GIF
+                    </span>
+                  </div>
                 </div>
               </FormField>
             </div>
@@ -421,17 +495,6 @@ export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormP
             </div>
           )}
 
-          {isPendingIntegration && (
-            <p className="rounded-md border border-accent/30 bg-accent/10 p-4 text-xs leading-5 text-foreground">
-              Integration pending: implement{" "}
-              <code className="font-semibold">
-                {isEdit ? "updateService()" : "createService()"}
-              </code>{" "}
-              in <code className="font-semibold">src/lib/api/services.ts</code> to
-              save this service. See API_INTEGRATION.md for the request body.
-            </p>
-          )}
-
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
             <PrimaryButton
               href="/dashboard/admin/services"
@@ -440,7 +503,11 @@ export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormP
             >
               Cancel
             </PrimaryButton>
-            <PrimaryButton type="submit" isLoading={isSubmitting}>
+            <PrimaryButton
+              type="submit"
+              isLoading={isSubmitting}
+              disabled={isUploading}
+            >
               {isEdit ? "Save changes" : "Create service"}
             </PrimaryButton>
           </div>
@@ -471,8 +538,8 @@ export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormP
               </div>
             </div>
             <p className="mt-3 text-[0.68rem] leading-5 text-muted-foreground">
-              The preview uses the image URL exactly as entered. Broken URLs show a
-              neutral placeholder instead of an empty card.
+              Upload a JPEG, PNG, WebP or GIF, or paste a public image URL. Broken
+              URLs show a neutral placeholder instead of an empty card.
             </p>
           </div>
 

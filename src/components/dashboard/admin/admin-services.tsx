@@ -17,8 +17,8 @@ import type { SalonService, ServiceSort, ServiceStatus } from "@/types";
 import {
   deleteService,
   getAdminServices,
+  getApiErrorMessage,
   getServiceCategories,
-  isApiNotImplementedError,
   updateServiceStatus,
 } from "@/lib/api";
 import { useApiResource } from "@/hooks/use-api-resource";
@@ -32,7 +32,6 @@ import { StatusBadge } from "@/components/common/status-badge";
 import { PaginationControls } from "@/components/common/pagination-controls";
 import { EmptyState } from "@/components/common/empty-state";
 import { ErrorState } from "@/components/common/error-state";
-import { PendingIntegration } from "@/components/common/pending-integration";
 import { TableSkeleton, Skeleton } from "@/components/common/skeleton-loader";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { Button } from "@/components/ui/button";
@@ -48,8 +47,7 @@ type PendingAction = {
 /**
  * Admin service management.
  * Filters and pagination mirror GET /api/admin/services. Status changes and
- * deletion use their dedicated endpoints. Until those API functions are
- * written, the dialogs explain that the integration is pending.
+ * deletion use their dedicated endpoints.
  */
 export function AdminServices() {
   const [searchInput, setSearchInput] = useState("");
@@ -62,7 +60,7 @@ export function AdminServices() {
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(null);
   const [isActing, setIsActing] = useState(false);
 
-  const { data, error, isLoading, isPendingIntegration, reload } = useApiResource(
+  const { data, error, isLoading, reload } = useApiResource(
     () =>
       getAdminServices({
         search: search || undefined,
@@ -108,7 +106,7 @@ export function AdminServices() {
   }
 
   async function handleConfirmAction() {
-    if (!pendingAction) return;
+    if (!pendingAction || isActing) return;
 
     const { type, service } = pendingAction;
     setIsActing(true);
@@ -140,27 +138,14 @@ export function AdminServices() {
         reload();
       }
     } catch (actionError) {
-      if (isApiNotImplementedError(actionError)) {
-        toast.info("API integration pending", {
-          description:
-            type === "delete"
-              ? "Implement deleteService() in src/lib/api/services.ts to remove this service."
-              : "Implement updateServiceStatus() in src/lib/api/services.ts to change availability.",
-        });
-        setPendingAction(null);
-      } else {
-        toast.error(
-          type === "delete"
-            ? "Could not delete the service"
-            : "Could not update the service",
-          {
-            description:
-              actionError instanceof Error
-                ? actionError.message
-                : "Please check your connection and try again.",
-          },
-        );
-      }
+      toast.error(
+        type === "delete"
+          ? "Could not delete the service"
+          : "Could not update the service",
+        {
+          description: getApiErrorMessage(actionError),
+        },
+      );
     } finally {
       setIsActing(false);
     }
@@ -445,23 +430,15 @@ export function AdminServices() {
         </>
       )}
 
-      {!isLoading && isPendingIntegration && (
-        <PendingIntegration
-          apiName="getAdminServices()"
-          filePath="src/lib/api/services.ts"
-          compact
-        />
-      )}
-
       {!isLoading && Boolean(error) && (
         <ErrorState
           title="The service list could not load"
-          description="The filters and management actions are ready. Implement getAdminServices() and try again."
+          description="Check the backend connection and try again."
           onRetry={reload}
         />
       )}
 
-      {!isLoading && !isPendingIntegration && !error && data?.services.length === 0 && (
+      {!isLoading && !error && data?.services.length === 0 && (
         <EmptyState
           icon={Search}
           title={hasFilters ? "No services match these filters" : "No services yet"}
@@ -485,7 +462,7 @@ export function AdminServices() {
         />
       )}
 
-      {!isLoading && !isPendingIntegration && !error && data && data.services.length > 0 && (
+      {!isLoading && !error && data && data.services.length > 0 && (
         <>
           <div className="hidden md:block">
             <DataTable
