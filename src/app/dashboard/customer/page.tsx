@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CustomerOverview } from "@/components/dashboard/customer/customer-overview";
+import { CustomerOverview } from "@/features/dashboard/customer/customer-overview";
 
 export const metadata: Metadata = {
   title: "Customer dashboard",

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ServiceGridSkeleton } from "@/components/common/skeleton-loader";
-import { ServicesBrowse } from "@/components/services/services-browse";
+import { ServicesBrowse } from "@/features/services/components/services-browse";
 
 export const metadata: Metadata = {
   title: "Services",

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getServerSession } from "@/lib/server-session";
+import { getServerSession } from "@/lib/auth/server-session";
 
 /**
  * This entry point reads the session cookie and redirects by role, so it must

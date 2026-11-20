@@ -1,6 +1,6 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import { API_BASE_URL } from "@/lib/api/config";
 import { ApiError } from "@/lib/api/errors";
 import type { ApiErrorDetail } from "@/types";

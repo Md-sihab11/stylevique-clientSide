@@ -1,5 +1,5 @@
 import { apiRequest } from "@/lib/api-client";
-import type { UploadedImage } from "@/types";
+import type { UploadedImage } from "@/features/payments/types";
 
 /**
  * IMAGE UPLOAD

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
-import { getServerSession } from "@/lib/server-session";
-import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getServerSession } from "@/lib/auth/server-session";
+import { DashboardShell } from "@/features/dashboard/components/dashboard-shell";
 
 /**
  * The admin guard reads the Better Auth session from cookies on every request,

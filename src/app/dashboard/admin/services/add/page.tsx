@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AdminServiceForm } from "@/components/dashboard/admin/admin-service-form";
+import { AdminServiceForm } from "@/features/dashboard/admin/admin-service-form";
 
 export const metadata: Metadata = {
   title: "Add service",

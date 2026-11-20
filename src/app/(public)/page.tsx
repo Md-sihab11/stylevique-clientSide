@@ -13,7 +13,7 @@ import {
 import { FEATURED_CATEGORIES, SALON } from "@/constants/salon";
 import { SectionHeading } from "@/components/common/section-heading";
 import { PrimaryButton } from "@/components/common/primary-button";
-import { FeaturedServices } from "@/components/home/featured-services";
+import { FeaturedServices } from "@/features/home/components/featured-services";
 
 export const metadata: Metadata = {
   title: "Your Beauty, Your Moment",

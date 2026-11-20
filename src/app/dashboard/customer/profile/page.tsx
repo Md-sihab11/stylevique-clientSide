@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/common/page-header";
-import { ProfileForm } from "@/components/dashboard/profile/profile-form";
+import { ProfileForm } from "@/features/dashboard/components/profile/profile-form";
 
 export const metadata: Metadata = {
   title: "My profile",

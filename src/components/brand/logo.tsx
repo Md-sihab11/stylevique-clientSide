@@ -10,9 +10,10 @@ interface LogoProps {
 }
 
 /**
- * Stylevique wordmark. The source image is public/logo.png (600 x 108).
- * The PNG has no transparency, so `invert` places the wordmark on a small
- * ivory plate instead of filtering the whole rectangle to white.
+ * Stylevique wordmark. Two purpose-made assets live in public/logo/:
+ * the cream-backed navbar version and the dark-backed footer version.
+ * Neither has transparency, so each is served on the surface it was
+ * designed for — their backgrounds already match the page and footer.
  */
 export function Logo({
   className,
@@ -22,25 +23,16 @@ export function Logo({
 }: LogoProps) {
   const image = (
     <Image
-      src="/logo.png"
+      src={invert ? "/logo/footer-logo.png.jpg" : "/logo/navbar-logo.png"}
       alt="Stylevique"
-      width={600}
-      height={108}
+      width={1024}
+      height={invert ? 236 : 233}
       priority
-      className={cn(
-        "h-auto w-[158px] object-contain mix-blend-multiply",
-        imageClassName,
-      )}
+      className={cn("h-auto w-[158px] object-contain", imageClassName)}
     />
   );
 
-  const content = invert ? (
-    <span className="inline-flex w-fit rounded-md bg-white px-3 py-2">
-      {image}
-    </span>
-  ) : (
-    image
-  );
+  const content = image;
 
   if (!href) {
     return <div className={className}>{content}</div>;

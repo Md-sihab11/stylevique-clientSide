@@ -11,7 +11,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { toast } from "sonner";
-import { authClient, useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth/auth-client";
 import { MAIN_NAV_LINKS } from "@/constants/salon";
 import { Logo } from "@/components/brand/logo";
 import { PrimaryButton } from "@/components/common/primary-button";

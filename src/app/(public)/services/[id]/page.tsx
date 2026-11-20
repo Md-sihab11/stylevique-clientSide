@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/common/skeleton-loader";
-import { ServiceDetails } from "@/components/services/service-details";
+import { ServiceDetails } from "@/features/services/components/service-details";
 
 export const metadata: Metadata = {
   title: "Service details",

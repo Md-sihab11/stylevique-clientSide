@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { PaymentSuccess } from "@/components/payment/payment-success";
+import { PaymentSuccess } from "@/features/payments/components/payment-success";
 import { Skeleton } from "@/components/common/skeleton-loader";
 
 export const metadata: Metadata = {
