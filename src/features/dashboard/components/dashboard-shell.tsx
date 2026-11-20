@@ -88,7 +88,7 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
 
       <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
         <DashboardNavbar user={user} onOpenMenu={() => setMobileOpen(true)} />
-        <main className="flex-1 px-4 py-7 sm:px-6 lg:px-10 lg:py-10">{children}</main>
+        <main className="flex-1 bg-background px-4 py-7 sm:px-6 lg:px-10 lg:py-10">{children}</main>
       </div>
 
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
