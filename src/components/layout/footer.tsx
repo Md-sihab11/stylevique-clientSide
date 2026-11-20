@@ -37,7 +37,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-background/45">
+            <h3 className="font-section text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-background/45">
               Explore
             </h3>
             <nav aria-label="Footer navigation" className="mt-5 flex flex-col gap-3">
@@ -60,7 +60,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-background/45">
+            <h3 className="font-section text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-background/45">
               Visit us
             </h3>
             <div className="mt-5 space-y-4 text-sm text-background/70">
@@ -89,7 +89,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-background/45">
+            <h3 className="font-section text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-background/45">
               Opening hours
             </h3>
             <dl className="mt-5 space-y-3 text-sm">

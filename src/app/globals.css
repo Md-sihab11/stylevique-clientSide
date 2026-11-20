@@ -55,6 +55,8 @@
 
   --font-sans: var(--font-josefin-sans);
   --font-heading: var(--font-cormorant);
+  --font-display: var(--font-anton);
+  --font-section: var(--font-oswald);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -98,7 +100,8 @@
 
 @layer utilities {
   .page-width {
-    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+    /* Shared gutter: nav, hero and every section use the same width. */
+    @apply mx-auto w-full px-5 sm:px-8 lg:px-16 xl:px-20;
   }
 
   .section-space {

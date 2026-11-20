@@ -34,7 +34,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
 
         <div className="pt-5">
           <div className="flex items-start justify-between gap-4">
-            <h3 className="text-[1.45rem] leading-snug font-medium text-foreground transition-colors group-hover:text-primary">
+            <h3 className="font-section text-[1.45rem] leading-snug font-medium tracking-[0.02em] text-foreground uppercase transition-colors group-hover:text-primary">
               {service.serviceName}
             </h3>
             <p className="shrink-0 pt-1 font-sans text-sm font-semibold text-primary">

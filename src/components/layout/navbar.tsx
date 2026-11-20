@@ -54,6 +54,10 @@ export function Navbar() {
   const isActiveLink = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  /** Dark CTA that mirrors the hero buttons (uppercase, tracked, rounded-lg). */
+  const bookButtonClasses =
+    "inline-flex h-12 items-center justify-center rounded-lg bg-foreground px-7 text-[0.72rem] font-semibold tracking-[0.18em] text-background uppercase transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+
   async function handleSignOut() {
     setMobileOpen(false);
 
@@ -70,35 +74,33 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/90 backdrop-blur-md">
-      <div className="page-width flex h-20 items-center justify-between gap-6">
+    <header className="sticky top-0 z-40 bg-background">
+      <div className="page-width relative flex h-20 items-center justify-between gap-6 lg:h-24">
         <Logo />
 
-        {/* Desktop Main Navigation */}
-        <nav aria-label="Main navigation" className="hidden items-center gap-8 lg:flex">
+        {/* Desktop Main Navigation — optically centred in the bar */}
+        <nav
+          aria-label="Main navigation"
+          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 lg:flex xl:gap-10"
+        >
           {MAIN_NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "relative py-2 text-[0.7rem] font-semibold uppercase tracking-[0.18em] transition-colors hover:text-primary",
-                isActiveLink(link.href) ? "text-primary" : "text-foreground/75",
+                "text-sm font-medium transition-colors",
+                isActiveLink(link.href)
+                  ? "text-foreground"
+                  : "text-foreground/60 hover:text-foreground",
               )}
             >
               {link.label}
-              <span
-                className={cn(
-                  "absolute inset-x-0 -bottom-0.5 h-px bg-primary transition-transform duration-300",
-                  isActiveLink(link.href) ? "scale-x-100" : "scale-x-0",
-                )}
-                aria-hidden="true"
-              />
             </Link>
           ))}
         </nav>
 
         {/* Desktop Actions & Account Menu */}
-        <div className="hidden items-center gap-4 lg:flex">
+        <div className="hidden items-center gap-5 lg:flex">
           {isPending ? (
             <div
               className="size-9 animate-pulse rounded-full bg-secondary"
@@ -106,9 +108,9 @@ export function Navbar() {
             />
           ) : user ? (
             <>
-              <PrimaryButton href="/services" size="sm">
-                Book now
-              </PrimaryButton>
+              <Link href="/services" className={bookButtonClasses}>
+                Book Appointment
+              </Link>
 
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 rounded-full p-1 pr-2 outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring">
@@ -173,13 +175,13 @@ export function Navbar() {
             <>
               <Link
                 href="/sign-in"
-                className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-foreground/75 transition-colors hover:text-primary"
+                className="text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
               >
-                Sign in
+                Sign In
               </Link>
-              <PrimaryButton href="/services" size="sm">
-                Book now
-              </PrimaryButton>
+              <Link href="/services" className={bookButtonClasses}>
+                Book Appointment
+              </Link>
             </>
           )}
         </div>

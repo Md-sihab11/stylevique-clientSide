@@ -18,7 +18,7 @@ export function PageHeader({
     <div className="flex flex-col gap-5 border-b border-border pb-7 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <p className="eyebrow">{eyebrow}</p>
-        <h1 className="mt-3 text-4xl font-medium leading-none text-foreground sm:text-5xl">
+        <h1 className="mt-3 font-display text-4xl font-medium leading-none tracking-[0.01em] text-foreground uppercase sm:text-5xl">
           {title}
         </h1>
         {description && (

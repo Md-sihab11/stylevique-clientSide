@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Cormorant_Garamond, Josefin_Sans } from "next/font/google";
+import { Anton, Cormorant_Garamond, Josefin_Sans, Oswald } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -11,6 +11,20 @@ const josefinSans = Josefin_Sans({
 
 const cormorantGaramond = Cormorant_Garamond({
   variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+/** Heavy condensed display face for the hero and page headings. */
+const anton = Anton({
+  variable: "--font-anton",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+/** Condensed grotesque used by the section headings. */
+const oswald = Oswald({
+  variable: "--font-oswald",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
@@ -31,7 +45,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${josefinSans.variable} ${cormorantGaramond.variable} h-full antialiased`}
+      className={`${josefinSans.variable} ${cormorantGaramond.variable} ${anton.variable} ${oswald.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
         {children}

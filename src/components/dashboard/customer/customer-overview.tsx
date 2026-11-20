@@ -105,7 +105,7 @@ export function CustomerOverview() {
             <Sparkles className="size-4 text-primary" aria-hidden="true" />
             <p className="eyebrow">Your next step</p>
           </div>
-          <h2 className="mt-3 text-3xl font-medium text-foreground">
+          <h2 className="mt-3 font-section text-3xl font-medium tracking-[0.02em] text-foreground uppercase">
             One place for every appointment.
           </h2>
           <p className="mt-3 max-w-lg text-sm leading-6 text-muted-foreground">

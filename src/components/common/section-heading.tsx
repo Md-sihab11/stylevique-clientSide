@@ -42,7 +42,7 @@ export function SectionHeading({
           </div>
         )}
 
-        <h2 className="text-4xl leading-[1.05] font-medium text-foreground sm:text-5xl lg:text-[3.4rem]">
+        <h2 className="font-section text-4xl leading-[1.05] font-medium tracking-[0.02em] text-foreground uppercase sm:text-5xl lg:text-[3.4rem]">
           {title}
         </h2>
 

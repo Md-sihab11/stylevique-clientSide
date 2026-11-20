@@ -121,7 +121,7 @@ function PaymentVerificationPanel({ sessionId }: { sessionId: string }) {
           <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-secondary text-primary">
             <RefreshCw className="size-6 animate-spin" aria-hidden="true" />
           </div>
-          <h1 className="mt-6 text-4xl font-medium text-foreground">
+          <h1 className="mt-6 font-display text-4xl font-medium tracking-[0.01em] text-foreground uppercase">
             Confirming your payment
           </h1>
           <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">
@@ -168,7 +168,7 @@ function PaymentVerificationPanel({ sessionId }: { sessionId: string }) {
             <p className="mt-5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#456345]">
               Verified by the salon
             </p>
-            <h1 className="mt-3 text-4xl font-medium leading-tight text-foreground sm:text-5xl">
+            <h1 className="mt-3 font-display text-4xl font-medium leading-tight tracking-[0.01em] text-foreground uppercase sm:text-5xl">
               Payment confirmed.
             </h1>
             <p className="mx-auto mt-4 max-w-lg text-sm leading-7 text-muted-foreground">
@@ -309,7 +309,7 @@ function PaymentMessage({
           <Icon className="size-6" aria-hidden="true" />
         </div>
         <p className="eyebrow mt-6">{eyebrow}</p>
-        <h1 className="mt-3 text-4xl font-medium leading-tight text-foreground">
+        <h1 className="mt-3 font-display text-4xl font-medium leading-tight tracking-[0.01em] text-foreground uppercase">
           {title}
         </h1>
         <p className="mt-4 text-sm leading-7 text-muted-foreground">{description}</p>

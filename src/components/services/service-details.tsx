@@ -131,7 +131,7 @@ export function ServiceDetails() {
 
         <div className="lg:pt-4">
           <p className="eyebrow">{service.category}</p>
-          <h1 className="mt-3 text-5xl leading-[0.98] font-medium text-foreground sm:text-6xl">
+          <h1 className="mt-3 font-display text-5xl leading-[0.98] font-medium tracking-[0.01em] text-foreground uppercase sm:text-6xl">
             {service.serviceName}
           </h1>
           <p className="mt-6 text-sm leading-7 text-muted-foreground">
@@ -142,7 +142,7 @@ export function ServiceDetails() {
             <div className="flex gap-3">
               <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
               <div>
-                <h2 className="text-sm font-medium text-foreground">Personal attention</h2>
+                <h2 className="font-section text-sm font-medium tracking-[0.06em] text-foreground uppercase">Personal attention</h2>
                 <p className="mt-1 text-xs leading-5 text-muted-foreground">
                   Your appointment is reviewed by the salon before it is confirmed.
                 </p>
@@ -151,7 +151,7 @@ export function ServiceDetails() {
             <div className="flex gap-3">
               <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
               <div>
-                <h2 className="text-sm font-medium text-foreground">Clear status</h2>
+                <h2 className="font-section text-sm font-medium tracking-[0.06em] text-foreground uppercase">Clear status</h2>
                 <p className="mt-1 text-xs leading-5 text-muted-foreground">
                   Follow confirmation and payment updates from your dashboard.
                 </p>

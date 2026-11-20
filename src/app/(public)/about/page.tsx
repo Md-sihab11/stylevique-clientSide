@@ -41,7 +41,7 @@ export default function AboutPage() {
               <span className="editorial-rule" />
               <p className="eyebrow">Our story</p>
             </div>
-            <h1 className="mt-5 max-w-2xl text-5xl leading-[0.92] font-medium text-foreground sm:text-6xl lg:text-7xl">
+            <h1 className="mt-5 max-w-2xl font-display text-5xl leading-[0.92] font-medium tracking-[0.01em] text-foreground uppercase sm:text-6xl lg:text-7xl">
               A studio for the way you want to feel.
             </h1>
           </div>
@@ -67,7 +67,7 @@ export default function AboutPage() {
 
         <div>
           <p className="eyebrow">The approach</p>
-          <h2 className="mt-4 text-4xl leading-[1.05] font-medium text-foreground sm:text-5xl">
+          <h2 className="mt-4 font-section text-4xl leading-[1.05] font-medium tracking-[0.02em] text-foreground uppercase sm:text-5xl">
             Room to slow down, space to feel seen.
           </h2>
           <div className="mt-6 space-y-4 text-sm leading-7 text-muted-foreground">
@@ -103,7 +103,7 @@ export default function AboutPage() {
             {VALUES.map((value) => (
               <div key={value.title} className="border-t border-background/20 pt-6">
                 <value.icon className="size-5 text-accent" aria-hidden="true" />
-                <h3 className="mt-5 text-2xl font-medium text-background">{value.title}</h3>
+                <h3 className="mt-5 font-section text-2xl font-medium tracking-[0.02em] text-background uppercase">{value.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-background/55">
                   {value.description}
                 </p>
@@ -116,7 +116,7 @@ export default function AboutPage() {
       <section className="section-space">
         <div className="page-width text-center">
           <p className="eyebrow">Come say hello</p>
-          <h2 className="mx-auto mt-4 max-w-2xl text-4xl leading-[1.05] font-medium text-foreground sm:text-5xl">
+          <h2 className="mx-auto mt-4 max-w-2xl font-section text-4xl leading-[1.05] font-medium tracking-[0.02em] text-foreground uppercase sm:text-5xl">
             Your next moment is a few steps away.
           </h2>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">

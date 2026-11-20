@@ -217,7 +217,7 @@ export function ProfileForm({ role }: ProfileFormProps) {
           </div>
 
           <div>
-            <h2 className="text-3xl font-medium text-foreground">Personal details</h2>
+            <h2 className="font-section text-3xl font-medium tracking-[0.02em] text-foreground uppercase">Personal details</h2>
             <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
               Keep your contact details current so the salon can reach you about
               appointments and payments.

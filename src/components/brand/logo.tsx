@@ -27,7 +27,10 @@ export function Logo({
       width={600}
       height={108}
       priority
-      className={cn("h-auto w-[158px] object-contain", imageClassName)}
+      className={cn(
+        "h-auto w-[158px] object-contain mix-blend-multiply",
+        imageClassName,
+      )}
     />
   );
 

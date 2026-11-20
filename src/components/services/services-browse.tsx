@@ -113,7 +113,7 @@ export function ServicesBrowse() {
           </div>
           <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h1 className="max-w-2xl text-5xl leading-[0.95] font-medium text-foreground sm:text-6xl">
+              <h1 className="max-w-2xl font-display text-5xl leading-[0.95] font-medium tracking-[0.01em] text-foreground uppercase sm:text-6xl">
                 Find your next ritual.
               </h1>
               <p className="mt-5 max-w-xl text-sm leading-7 text-muted-foreground">

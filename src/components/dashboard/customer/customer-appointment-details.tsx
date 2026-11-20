@@ -97,7 +97,7 @@ export function CustomerAppointmentDetails() {
       <div className="flex flex-col gap-4 border-b border-border pb-7 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="eyebrow">Appointment details</p>
-          <h1 className="mt-3 text-4xl font-medium leading-none text-foreground sm:text-5xl">
+          <h1 className="mt-3 font-display text-4xl font-medium leading-none tracking-[0.01em] text-foreground uppercase sm:text-5xl">
             {service.name}
           </h1>
           <p className="mt-3 text-sm text-muted-foreground">
@@ -118,7 +118,7 @@ export function CustomerAppointmentDetails() {
 
           <div className="rounded-lg border border-border bg-card p-5">
             <p className="eyebrow">Service</p>
-            <h2 className="mt-2 text-2xl font-medium text-foreground">{service.name}</h2>
+            <h2 className="mt-2 font-section text-2xl font-medium tracking-[0.02em] text-foreground uppercase">{service.name}</h2>
             <p className="mt-1 text-xs uppercase tracking-[0.12em] text-muted-foreground">
               {service.category}
             </p>

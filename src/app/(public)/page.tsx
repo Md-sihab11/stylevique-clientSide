@@ -6,7 +6,7 @@ import {
   ArrowUpRight,
   CalendarDays,
   Check,
-  Heart,
+  ChevronDown,
   Search,
   Sparkles,
 } from "lucide-react";
@@ -69,75 +69,72 @@ export default function HomePage() {
       {/* ---------------------------------------------------------------
           HERO
       ---------------------------------------------------------------- */}
-      <section className="relative overflow-hidden">
-        <div className="page-width grid items-center gap-10 py-10 lg:min-h-[calc(100svh-5rem)] lg:grid-cols-[1.02fr_0.98fr] lg:gap-16 lg:py-14">
-          <div className="relative z-10 max-w-2xl">
-            <div className="mb-7 flex items-center gap-3">
-              <span className="editorial-rule" />
-              <p className="eyebrow">Salon & Beauty Studio</p>
-            </div>
+      <section>
+        <div className="relative overflow-hidden bg-foreground">
+          {/* Full-bleed backdrop with layered gradients so the copy stays
+              readable on every crop of the image. */}
+          <Image
+            src="/images/banners/hero-section.png"
+            alt="A warmly lit Stylevique salon with backlit mirrors and leather chairs"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-foreground/95 via-foreground/80 to-foreground/35"
+            aria-hidden="true"
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/10 to-foreground/45"
+            aria-hidden="true"
+          />
 
-            <h1 className="text-[clamp(3.6rem,8.5vw,7.1rem)] leading-[0.88] font-medium tracking-[-0.03em] text-foreground">
-              Your beauty,
-              <span className="mt-1 block italic text-primary">your moment.</span>
-            </h1>
+          <div className="page-width relative flex min-h-[calc(100svh-5.5rem)] flex-col justify-center py-16 lg:min-h-[calc(100svh-6.5rem)] lg:py-20">
+            <div className="max-w-2xl">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-secondary/85">
+                The art of modern beauty
+              </p>
 
-            <p className="mt-7 max-w-lg text-base leading-7 text-muted-foreground sm:text-[1.05rem]">
-              Discover exceptional salon experiences and make time for yourself.
-              Thoughtful hair, skin and beauty rituals in a space designed to slow
-              the world down.
-            </p>
+              <h1 className="mt-6 font-display text-[clamp(3.1rem,7vw,6rem)] leading-[0.95] font-medium tracking-[0.01em] text-background uppercase">
+                Your beauty,
+                <span className="block">Your moment.</span>
+              </h1>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <PrimaryButton href="/services" size="lg">
-                Explore services
-                <ArrowRight className="size-4" aria-hidden="true" />
-              </PrimaryButton>
-              <PrimaryButton href="/contact" variant="outline" size="lg">
-                Visit the studio
-              </PrimaryButton>
-            </div>
+              <p className="mt-7 max-w-xl text-base leading-7 text-background/75 sm:text-[1.05rem]">
+                Discover exceptional salon experiences, explore premium hair and
+                beauty services, and make time for the best version of yourself.
+              </p>
 
-            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-border pt-6 text-[0.68rem] font-medium uppercase tracking-[0.16em] text-muted-foreground">
-              <span>Hair</span>
-              <span className="size-1 rounded-full bg-accent" aria-hidden="true" />
-              <span>Skin</span>
-              <span className="size-1 rounded-full bg-accent" aria-hidden="true" />
-              <span>Makeup</span>
-              <span className="size-1 rounded-full bg-accent" aria-hidden="true" />
-              <span>Nails</span>
-              <span className="size-1 rounded-full bg-accent" aria-hidden="true" />
-              <span>Spa</span>
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-t-[10rem] bg-secondary sm:aspect-[5/5.4] lg:aspect-[4/5]">
-              <Image
-                src="/images/banners/hero-salon.jpg"
-                alt="A calm, light-filled Stylevique salon interior"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 48vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/25 via-transparent to-transparent" />
-            </div>
-
-            <div className="absolute -bottom-7 left-4 right-4 rounded-lg border border-background/30 bg-background/95 p-5 shadow-[0_20px_60px_-30px_rgba(48,43,43,0.45)] backdrop-blur-sm sm:left-8 sm:right-auto sm:max-w-xs">
-              <div className="flex items-center gap-3">
-                <span className="flex size-9 items-center justify-center rounded-full bg-secondary text-primary">
-                  <Heart className="size-4" aria-hidden="true" />
-                </span>
-                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  The Stylevique standard
-                </p>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/services"
+                  className="inline-flex h-12 items-center justify-center rounded-lg bg-background px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-foreground uppercase transition-colors hover:bg-background/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  Explore our services
+                </Link>
+                <Link
+                  href="/services"
+                  className="inline-flex h-12 items-center justify-center rounded-lg border border-background/40 px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-background uppercase transition-colors hover:border-background/70 hover:bg-background/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  Book an appointment
+                </Link>
               </div>
-              <p className="mt-3 font-heading text-xl leading-snug text-foreground">
-                Unhurried appointments. Genuine attention. A little room to breathe.
+
+              <p className="mt-12 flex flex-wrap items-center gap-x-3 text-[0.75rem] font-semibold tracking-[0.24em] text-background/70 uppercase">
+                <span>Style</span>
+                <span aria-hidden="true">·</span>
+                <span>Beauty</span>
+                <span aria-hidden="true">·</span>
+                <span>Confidence</span>
               </p>
             </div>
           </div>
+
+          <ChevronDown
+            className="absolute bottom-5 left-1/2 size-6 -translate-x-1/2 text-background/70"
+            aria-hidden="true"
+          />
         </div>
       </section>
 
@@ -175,7 +172,7 @@ export default function HomePage() {
                     {category.number}
                   </span>
                   <div>
-                    <h3 className="text-[1.55rem] leading-tight font-medium text-foreground transition-colors group-hover:text-primary">
+                    <h3 className="font-section text-[1.55rem] leading-tight font-medium tracking-[0.02em] text-foreground uppercase transition-colors group-hover:text-primary">
                       {category.name}
                     </h3>
                     <p className="mt-1.5 text-sm text-muted-foreground">{category.blurb}</p>
@@ -195,7 +192,7 @@ export default function HomePage() {
               <div className="flex gap-5">
                 <span className="pt-0.5 text-xs tabular-nums text-muted-foreground/70">08</span>
                 <div>
-                  <h3 className="text-[1.55rem] leading-tight font-medium text-foreground transition-colors group-hover:text-primary">
+                  <h3 className="font-section text-[1.55rem] leading-tight font-medium tracking-[0.02em] text-foreground uppercase transition-colors group-hover:text-primary">
                     See the full menu
                   </h3>
                   <p className="mt-1.5 text-sm text-muted-foreground">
@@ -234,7 +231,7 @@ export default function HomePage() {
                   <span className="font-heading text-5xl text-accent/45">{step.number}</span>
                   <step.icon className="size-5 text-primary" aria-hidden="true" />
                 </div>
-                <h3 className="mt-6 text-2xl font-medium text-foreground">{step.title}</h3>
+                <h3 className="mt-6 font-section text-2xl font-medium tracking-[0.02em] text-foreground uppercase">{step.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
                   {step.description}
                 </p>
@@ -274,7 +271,7 @@ export default function HomePage() {
 
           <div className="order-1 lg:order-2">
             <p className="eyebrow text-accent">Why Stylevique</p>
-            <h2 className="mt-4 text-4xl leading-[1.05] font-medium sm:text-5xl">
+            <h2 className="mt-4 font-section text-4xl leading-[1.05] font-medium tracking-[0.02em] uppercase sm:text-5xl">
               Beauty without the rush.
             </h2>
             <p className="mt-5 max-w-lg text-sm leading-7 text-background/65">
@@ -290,7 +287,7 @@ export default function HomePage() {
                     <Check className="size-3" aria-hidden="true" />
                   </span>
                   <div>
-                    <h3 className="text-lg font-medium text-background">{reason.title}</h3>
+                    <h3 className="font-section text-lg font-medium tracking-[0.03em] text-background uppercase">{reason.title}</h3>
                     <p className="mt-1.5 text-sm leading-6 text-background/55">
                       {reason.description}
                     </p>
@@ -321,7 +318,7 @@ export default function HomePage() {
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-primary-foreground/65">
                 Your chair is waiting
               </p>
-              <h2 className="mt-4 text-4xl leading-[1.02] font-medium sm:text-5xl lg:text-6xl">
+              <h2 className="mt-4 font-section text-4xl leading-[1.02] font-medium tracking-[0.02em] uppercase sm:text-5xl lg:text-6xl">
                 Make a little time for yourself.
               </h2>
               <p className="mt-5 max-w-xl text-sm leading-7 text-primary-foreground/75">

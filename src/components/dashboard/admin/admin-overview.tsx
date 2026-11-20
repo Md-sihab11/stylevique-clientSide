@@ -189,7 +189,7 @@ export function AdminOverview() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="eyebrow">Appointment mix</p>
-              <h2 className="mt-2 text-3xl font-medium text-foreground">
+              <h2 className="mt-2 font-section text-3xl font-medium tracking-[0.02em] text-foreground uppercase">
                 Where the bookings stand.
               </h2>
             </div>

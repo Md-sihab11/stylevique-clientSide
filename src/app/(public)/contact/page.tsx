@@ -50,7 +50,7 @@ export default function ContactPage() {
             <span className="editorial-rule" />
             <p className="eyebrow">Contact & visits</p>
           </div>
-          <h1 className="mt-5 max-w-3xl text-5xl leading-[0.94] font-medium text-foreground sm:text-6xl lg:text-7xl">
+          <h1 className="mt-5 max-w-3xl font-display text-5xl leading-[0.94] font-medium tracking-[0.01em] text-foreground uppercase sm:text-6xl lg:text-7xl">
             We would love to see you.
           </h1>
           <p className="mt-5 max-w-xl text-sm leading-7 text-muted-foreground">
@@ -178,7 +178,7 @@ export default function ContactPage() {
                 <span className="mx-auto flex size-11 items-center justify-center rounded-full bg-background text-primary">
                   <note.icon className="size-4" aria-hidden="true" />
                 </span>
-                <h3 className="mt-4 text-xl font-medium text-foreground">{note.title}</h3>
+                <h3 className="mt-4 font-section text-xl font-medium tracking-[0.03em] text-foreground uppercase">{note.title}</h3>
                 <p className="mx-auto mt-2 max-w-xs text-sm leading-6 text-muted-foreground">
                   {note.description}
                 </p>

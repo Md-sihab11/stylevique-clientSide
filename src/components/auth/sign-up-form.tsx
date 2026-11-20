@@ -136,7 +136,7 @@ export function SignUpForm() {
         <span className="editorial-rule" />
         <p className="eyebrow">Join the studio</p>
       </div>
-      <h1 className="mt-4 text-4xl leading-none font-medium text-foreground sm:text-5xl">
+      <h1 className="mt-4 font-display text-4xl leading-none font-medium tracking-[0.01em] text-foreground uppercase sm:text-5xl">
         Create your account.
       </h1>
       <p className="mt-4 text-sm leading-6 text-muted-foreground">

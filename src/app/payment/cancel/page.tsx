@@ -20,7 +20,7 @@ export default function PaymentCancelPage() {
             <ReceiptText className="size-6" aria-hidden="true" />
           </div>
           <p className="eyebrow mt-5">Checkout returned</p>
-          <h1 className="mt-3 text-4xl font-medium leading-tight text-foreground sm:text-5xl">
+          <h1 className="mt-3 font-display text-4xl font-medium leading-tight tracking-[0.01em] text-foreground uppercase sm:text-5xl">
             Checkout was not completed.
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-muted-foreground">
@@ -34,7 +34,7 @@ export default function PaymentCancelPage() {
           <div className="grid gap-5 sm:grid-cols-3">
             <div>
               <CalendarDays className="size-4 text-primary" aria-hidden="true" />
-              <h2 className="mt-3 text-lg font-medium text-foreground">
+              <h2 className="mt-3 font-section text-lg font-medium tracking-[0.03em] text-foreground uppercase">
                 Appointment unchanged
               </h2>
               <p className="mt-1.5 text-xs leading-5 text-muted-foreground">
@@ -43,7 +43,7 @@ export default function PaymentCancelPage() {
             </div>
             <div>
               <ReceiptText className="size-4 text-primary" aria-hidden="true" />
-              <h2 className="mt-3 text-lg font-medium text-foreground">
+              <h2 className="mt-3 font-section text-lg font-medium tracking-[0.03em] text-foreground uppercase">
                 No payment assumed
               </h2>
               <p className="mt-1.5 text-xs leading-5 text-muted-foreground">
@@ -53,7 +53,7 @@ export default function PaymentCancelPage() {
             </div>
             <div>
               <ShieldCheck className="size-4 text-primary" aria-hidden="true" />
-              <h2 className="mt-3 text-lg font-medium text-foreground">
+              <h2 className="mt-3 font-section text-lg font-medium tracking-[0.03em] text-foreground uppercase">
                 Verified by webhook
               </h2>
               <p className="mt-1.5 text-xs leading-5 text-muted-foreground">

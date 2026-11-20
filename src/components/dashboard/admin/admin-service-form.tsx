@@ -263,7 +263,7 @@ export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormP
           <section className="rounded-lg border border-border bg-card p-5 sm:p-7">
             <div className="flex items-center gap-2 border-b border-border pb-5">
               <Sparkles className="size-4 text-primary" aria-hidden="true" />
-              <h2 className="text-2xl font-medium text-foreground">Service details</h2>
+              <h2 className="font-section text-2xl font-medium tracking-[0.02em] text-foreground uppercase">Service details</h2>
             </div>
 
             <div className="mt-6 grid gap-5 sm:grid-cols-2">
@@ -439,7 +439,7 @@ export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormP
             <section className="rounded-lg border border-border bg-card p-5 sm:p-7">
               <div className="flex items-center gap-2 border-b border-border pb-5">
                 <Layers3 className="size-4 text-primary" aria-hidden="true" />
-                <h2 className="text-2xl font-medium text-foreground">Visibility</h2>
+                <h2 className="font-section text-2xl font-medium tracking-[0.02em] text-foreground uppercase">Visibility</h2>
               </div>
 
               <fieldset className="mt-5">
