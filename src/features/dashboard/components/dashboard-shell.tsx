@@ -24,6 +24,7 @@ import {
   type DashboardUser,
 } from "./dashboard-sidebar";
 import { DashboardNavbar } from "./dashboard-navbar";
+import { cn } from "@/lib/utils";
 
 export const ADMIN_NAV: DashboardNavItem[] = [
   { label: "Overview", href: "/dashboard/admin", icon: LayoutDashboard, exact: true },
@@ -55,6 +56,7 @@ interface DashboardShellProps {
 export function DashboardShell({ user, role, navItems, children }: DashboardShellProps) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   const items = navItems ?? (role === "admin" ? ADMIN_NAV : CUSTOMER_NAV);
@@ -77,17 +79,28 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
 
   return (
     <div className="flex min-h-svh bg-background">
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 border-r border-border bg-card lg:block">
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-20 border-r border-border bg-card transition-all duration-300",
+          sidebarOpen ? "w-64 lg:block" : "w-16 lg:hidden",
+        )}
+      >
         <DashboardSidebar
           user={user}
           items={items}
           onSignOut={handleSignOut}
           isSigningOut={isSigningOut}
+          isCollapsed={!sidebarOpen}
         />
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
-        <DashboardNavbar user={user} onOpenMenu={() => setMobileOpen(true)} />
+      <div
+        className={cn(
+          "flex min-w-0 flex-1 flex-col transition-all duration-300",
+          sidebarOpen ? "lg:pl-64" : "lg:pl-16",
+        )}
+      >
+        <DashboardNavbar user={user} onOpenMenu={() => setMobileOpen(true)} onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
         <main className="flex-1 bg-background px-4 py-7 sm:px-6 lg:px-10 lg:py-10">{children}</main>
       </div>
 
