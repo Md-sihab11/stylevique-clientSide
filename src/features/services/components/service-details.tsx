@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/common/skeleton-loader";
 import { ErrorState } from "@/components/common/error-state";
 import { EmptyState } from "@/components/common/empty-state";
 import { BookingForm } from "@/features/appointments/components/booking-form";
+import { ReviewCarousel } from "@/features/reviews/components/review-carousel";
 
 const OBJECT_ID_PATTERN = /^[a-fA-F0-9]{24}$/;
 
@@ -173,6 +174,8 @@ export function ServiceDetails() {
           </div>
         </div>
       </section>
+
+      <ReviewCarousel serviceId={service.id} compact />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import {
   CreditCard,
   ExternalLink,
   LayoutDashboard,
+  MessageSquareHeart,
   Scissors,
   UserRound,
   UsersRound,
@@ -37,6 +38,7 @@ export const ADMIN_NAV: DashboardNavItem[] = [
   { label: "Appointments", href: "/dashboard/admin/appointments", icon: CalendarDays },
   { label: "Customers", href: "/dashboard/admin/users", icon: UsersRound },
   { label: "Transactions", href: "/dashboard/admin/transactions", icon: CreditCard },
+  { label: "Reviews", href: "/dashboard/admin/reviews", icon: MessageSquareHeart },
   { label: "My profile", href: "/dashboard/admin/profile", icon: UserRound },
 ];
 
@@ -45,6 +47,7 @@ export const CUSTOMER_NAV: DashboardNavItem[] = [
   { label: "Appointments", href: "/dashboard/customer/appointments", icon: CalendarDays },
   { label: "Explore Services", href: "/services", icon: Compass },
   { label: "Payments", href: "/dashboard/customer/transactions", icon: CreditCard },
+  { label: "Reviews", href: "/dashboard/customer/reviews", icon: MessageSquareHeart },
   { label: "My Profile", href: "/dashboard/customer/profile", icon: UserRound },
 ];
 

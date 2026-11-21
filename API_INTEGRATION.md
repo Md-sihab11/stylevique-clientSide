@@ -378,6 +378,25 @@ Verification rules:
 not. Transaction `amount` is in major units and `currency` comes from the
 backend's `STRIPE_CURRENCY`.
 
+### Reviews — `src/features/reviews/api.ts`
+
+| Function | Endpoint | Auth | Query / body | Response `data` |
+| --- | --- | --- | --- | --- |
+| `getReviews` | `GET /api/reviews` | public | `serviceId`, `page`, `limit` | `{ reviews, pagination }` (approved only) |
+| `getReviewSummary` | `GET /api/reviews/summary` | public | `serviceId` | `{ totalReviews, averageRating }` (approved only) |
+| `getMyReviews` | `GET /api/reviews/my` | customer | `page`, `limit` | `{ reviews, pagination }` |
+| `createReview` | `POST /api/reviews` | customer | `{ appointmentId, rating, highlights, note }` | `{ review }` (status `pending`) |
+| `updateReview` | `PATCH /api/reviews/:id` | customer | `{ rating, highlights, note }` | `{ review }` (rejected only) |
+| `getAdminReviews` | `GET /api/admin/reviews` | admin | `status`, `page`, `limit` | `{ reviews, pagination }` |
+| `updateReviewStatus` | `PATCH /api/admin/reviews/:id/status` | admin | `{ status: "approved" \| "rejected" }` | `{ review }` |
+
+The server allows a review only for a customer's own **confirmed** appointment
+whose visit time has passed, and enforces one review per appointment (409 on a
+duplicate). `rating` is 1–5, `highlights` is a subset of the six salon labels,
+and `note` is at most 500 characters. New and resubmitted reviews start as
+`pending`; only `approved` reviews are returned by the public endpoints. A
+rejected review can be edited and resubmitted by its author.
+
 ### Uploads — `src/lib/api/uploads.ts`
 
 ```text
@@ -405,6 +424,7 @@ The backend registers this route and returns the ImgBB URL as `{ url }`.
 | Customer cancel action | `cancelAppointment` |
 | Customer pay action | `createCheckoutSession` |
 | Customer payment history | `getMyTransactions` |
+| Customer reviews | `getMyReviews`, `getMyAppointments`, `createReview`, `updateReview` |
 | Customer profile | `updateMyProfile` (session supplies initial values) |
 | Admin overview | `getAdminDashboard` |
 | Admin services list | `getAdminServices`, `getServiceCategories`, `updateServiceStatus`, `deleteService` |
@@ -413,6 +433,7 @@ The backend registers this route and returns the ImgBB URL as `{ url }`.
 | Admin appointments | `getAdminAppointments`, `updateAdminAppointmentStatus` |
 | Admin customers | `getCustomers`, `blockCustomer`, `unblockCustomer` |
 | Admin transactions | `getAdminTransactions` |
+| Admin reviews | `getAdminReviews`, `updateReviewStatus` |
 | Admin profile | `updateMyProfile` |
 | Payment success | `verifyPayment` |
 | Payment cancel | none (informational only) |

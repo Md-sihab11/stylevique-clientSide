@@ -10,8 +10,9 @@ A full-stack salon platform: customers can browse services, request appointments
 - Service browsing with search, category filter, sorting, and pagination
 - Protected service details page with an appointment booking form
 - Better Auth sign-in/sign-up with Google OAuth and email/password
-- Customer dashboard: appointment overview, my appointments, payment history, profile
-- Admin dashboard: service management, appointment management, customer management, transactions
+- Customer dashboard: appointment overview, my appointments, payment history, reviews, profile
+- Admin dashboard: service management, appointment management, customer management, transactions, review moderation
+- Customer reviews: submit after a completed visit, admin-approved, shown in a public carousel
 - Stripe Checkout for confirmed appointments, verified by a backend webhook
 - Role-based dashboard access on the client and server
 - Responsive design for phones, tablets, and desktops
