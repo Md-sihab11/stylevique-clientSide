@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { getServerSession } from "@/lib/auth/server-session";
 import { Skeleton } from "@/components/common/skeleton-loader";
 import { ServiceDetails } from "@/features/services/components/service-details";
 
@@ -9,7 +11,24 @@ export const metadata: Metadata = {
     "View a Stylevique service, its price, duration and appointment availability, then request your preferred time.",
 };
 
-export default function ServiceDetailsPage() {
+/**
+ * The salon details page is private. This segment reads the session cookie on
+ * every request, so it opts out of instant navigation like the dashboards do.
+ */
+export const instant = false;
+
+export default async function ServiceDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const session = await getServerSession();
+
+  if (!session) {
+    redirect(`/sign-in?callbackUrl=${encodeURIComponent(`/services/${id}`)}`);
+  }
+
   return (
     <Suspense
       fallback={
