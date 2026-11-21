@@ -10,10 +10,10 @@ interface LogoProps {
 }
 
 /**
- * Stylevique wordmark. Two purpose-made assets live in public/logo/:
- * the cream-backed navbar version and the dark-backed footer version.
- * Neither has transparency, so each is served on the surface it was
- * designed for — their backgrounds already match the page and footer.
+ * Stylevique wordmark. Two assets live in public/logo/: navbar.png for light
+ * surfaces (public navbar and dashboard sidebar) and the dark footer version.
+ * The light asset has a white backdrop, so mix-blend-multiply makes it sit
+ * cleanly on the cream surfaces without a visible box.
  */
 export function Logo({
   className,
@@ -23,12 +23,18 @@ export function Logo({
 }: LogoProps) {
   const image = (
     <Image
-      src={invert ? "/logo/footer-logo.png.jpg" : "/logo/navbar-logo.png"}
+      src={invert ? "/logo/footer-logo.png.jpg" : "/logo/navbar.png"}
       alt="Stylevique"
-      width={1024}
-      height={invert ? 236 : 233}
+      width={1019}
+      height={invert ? 236 : 274}
       priority
-      className={cn("h-auto w-[158px] object-contain", imageClassName)}
+      className={cn(
+        "h-auto w-[158px] object-contain",
+        // The light logo has a white backdrop; multiply blends it into the
+        // cream navbar and dashboard sidebar so it never shows a white box.
+        !invert && "mix-blend-multiply",
+        imageClassName,
+      )}
     />
   );
 

@@ -50,10 +50,8 @@ export function DashboardSidebar({
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-center px-4 py-6">
-        {/* multiply blends the logo's light backdrop into the cream sidebar */}
         <Logo
           href="/"
-          imageClassName="mix-blend-multiply"
           className={isCollapsed ? "w-10 overflow-hidden" : undefined}
         />
       </div>
