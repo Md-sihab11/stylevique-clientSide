@@ -1,142 +1,24 @@
 # Stylevique — Salon & Beauty Studio
 
-A complete, responsive frontend for a premium salon booking experience. Customers
-can explore treatments, request appointments, manage their bookings and pay for
-confirmed visits. Administrators get a full back office for services,
-appointments, customers and transactions.
-
-HTTP integration with the Express API is complete. Every call goes through the
-shared `fetch` client in `src/lib/api-client.ts` and the endpoint modules in
-`src/features/*/api.ts`. Nothing in this app invents data, fakes a login, or
-pretends a payment succeeded.
-
-- [`API_INTEGRATION.md`](./API_INTEGRATION.md) — endpoint-by-endpoint handoff guide
-- [`.env.example`](./.env.example) — every environment variable the frontend needs
+A full-stack salon platform: customers can browse services, request appointments, manage their bookings, and pay with Stripe Checkout. Administrators manage services, appointments, customers, and transactions.
 
 ---
 
-## Project links
+## Important features
 
-| | Link |
-| --- | --- |
-| Live site | _Deployment pending — add the deployed frontend URL here after deployment_ |
-| Client repository | https://github.com/Md-sihab11/stylevique-clientSide |
-| Server repository | https://github.com/Md-sihab11/stylevique-server |
-
----
-
-## Table of contents
-
-1. [Overview](#overview)
-2. [Features](#features)
-3. [Tech stack](#tech-stack)
-4. [Getting started](#getting-started)
-5. [Deployment guidelines](#deployment-guidelines)
-6. [Environment variables](#environment-variables)
-7. [Scripts](#scripts)
-8. [Project structure](#project-structure)
-9. [Routes](#routes)
-10. [API integration status](#api-integration-status)
-11. [Design system](#design-system)
-12. [Responsive behaviour](#responsive-behaviour)
-13. [Quality checks](#quality-checks)
-14. [Known limitations](#known-limitations)
+- Public homepage with featured services, categories, and a booking call to action
+- Service browsing with search, category filter, sorting, and pagination
+- Protected service details page with an appointment booking form
+- Better Auth sign-in/sign-up with Google OAuth and email/password
+- Customer dashboard: appointment overview, my appointments, payment history, profile
+- Admin dashboard: service management, appointment management, customer management, transactions
+- Stripe Checkout for confirmed appointments, verified by a backend webhook
+- Role-based dashboard access on the client and server
+- Responsive design for phones, tablets, and desktops
 
 ---
 
-## Overview
-
-Stylevique is a two-sided salon product:
-
-- **Customers** browse the service menu, open a treatment, pick a date and a
-  30-minute time slot, and send a booking request. After the salon confirms it,
-  the customer can pay through Stripe-hosted Checkout. They can track
-  appointments and update their profile from a personal dashboard.
-- **Administrators** manage the service catalogue (create, edit, activate,
-  deactivate, delete), confirm or cancel appointment requests, search customers,
-  block or unblock accounts, and review payment transactions.
-
-Authentication is handled by **Better Auth** inside this Next.js app. The Express
-API verifies the JWTs Better Auth issues. Express never handles a login form.
-
-The backend lives in its own repository:
-
-```text
-https://github.com/Md-sihab11/stylevique-server
-```
-
-This README treats its routes and rules as the source of truth.
-
----
-
-## Features
-
-### Public site
-
-- Editorial homepage with hero, featured services, philosophy and booking call
-  to action
-- Service menu with search, category filter, sorting, pagination and URL-backed
-  state (filters survive refresh and can be shared)
-- Service detail page with price, duration, description and a booking form
-- About and contact pages with salon contact details, opening hours and social links
-- Sticky responsive navigation with a mobile sheet, auth menu and sign-out
-- Accessible skip link, focus states and semantic landmarks
-
-### Authentication
-
-- Email/password sign-in and sign-up through Better Auth
-- Google OAuth sign-in
-- Inline validation with React Hook Form and Zod
-- Safe `callbackUrl` handling (no open redirects)
-- Role-aware navigation and server-side dashboard guards
-
-### Customer dashboard
-
-- Overview with real dashboard counts (appointments by status)
-- Appointment list with status filter, pagination and mobile cards
-- Appointment detail with service snapshot, schedule, payment state and actions
-- Cancel action only for appointments the backend allows cancelling
-- Pay action only for confirmed, unpaid appointments
-- Payment history with paid/failed filter, Stripe references and pagination
-- Profile editor backed by the live Better Auth session; email and role are
-  read-only
-
-### Admin dashboard
-
-- Overview with revenue, successful payments, customers, active services and
-  appointment mix
-- Service management with search, category/status filters, sorting, pagination
-  and mobile cards
-- Add/edit service form with backend-matching validation and a live preview
-- Activate/deactivate and delete confirmations with clear consequences
-- Appointment management with status/date filters and backend transition rules
-- Customer directory with search, details dialog, block/unblock confirmations
-- Transaction list with paid/failed filter, customer, appointment and Stripe
-  references
-
-### Payment return pages
-
-- Focused layout with no public navigation
-- Success page asks the backend to verify the Stripe session and renders success
-  **only** when the verified status is `paid`
-- Explicit unsigned-in, wrong-role, missing-session, failed and
-  still-processing states
-- Cancel page explains that returning from Checkout changes nothing and no
-  payment is assumed
-
-### Cross-cutting UX
-
-- Loading skeletons, empty states, error states with retry, and honest action
-  outcomes
-- Sonner toasts for every action outcome
-- Dialog and destructive-action confirmations
-- Responsive tables that become readable cards on small screens
-- Design tokens for colours, typography, radius and spacing
-- No fake data, no simulated success, no optimistic payment state
-
----
-
-## Tech stack
+## Technology stack
 
 | Layer | Choice |
 | --- | --- |
@@ -146,377 +28,115 @@ This README treats its routes and rules as the source of truth.
 | UI primitives | shadcn-style components built on Base UI |
 | Forms | React Hook Form + Zod |
 | Auth | Better Auth with JWT plugin and MongoDB adapter |
-| Database (auth) | MongoDB (shared with the Express API) |
+| Database | MongoDB (shared with the Express API) |
 | HTTP | `fetch` via `src/lib/api-client.ts` |
 | Payments | Stripe-hosted Checkout (redirect only) |
 | Notifications | Sonner |
 | Icons | Lucide React |
-| Fonts | Cormorant Garamond (headings), Josefin Sans (body) |
+| Fonts | Cormorant Garamond, Josefin Sans |
 
 ---
 
-## Getting started
-
-### Prerequisites
-
-- Node.js 20+ and npm
-- A MongoDB database both apps can reach
-- The Stylevique Express API running (default `http://localhost:5000`)
-- Optional: Google OAuth credentials, Stripe test keys on the backend
-
-### 1. Install dependencies
+## Installation instructions
 
 ```bash
 npm install
 ```
 
-### 2. Configure the frontend
+---
 
-```bash
-cp .env.example .env.local
-```
+## How to run the project locally
 
-Fill in the values described in [Environment variables](#environment-variables).
-The minimum to boot is `MONGODB_URI`, `BETTER_AUTH_SECRET`,
-`NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_API_URL`.
+1. Copy the frontend environment file:
 
-### 3. Configure the backend
+   ```bash
+   cp .env.example .env.local
+   ```
 
-The Express `.env` needs to know about this frontend:
+2. Start the Express API from the server repository.
+3. Start the Next.js frontend from this repository:
 
-```dotenv
-CLIENT_URL=http://localhost:3000
-BETTER_AUTH_JWKS_URL=http://localhost:3000/api/auth/jwks
-BETTER_AUTH_ISSUER=http://localhost:3000
-BETTER_AUTH_AUDIENCE=http://localhost:3000
-DB_NAME=stylevique
-```
+   ```bash
+   npm run dev
+   ```
 
-`DB_NAME` and the frontend's `MONGODB_DB_NAME` must point at the same database.
+4. Open [http://localhost:3000](http://localhost:3000).
 
-### 4. Run both apps
-
-```bash
-# Terminal 1 — Express API
-cd "../Server-side - Copy/stylevique-server"
-npm run dev
-
-# Terminal 2 — Next.js
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-### 5. Google OAuth (optional)
-
-In Google Cloud Console add this authorised redirect URI:
-
-```text
-http://localhost:3000/api/auth/callback/google
-```
-
-Then set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env.local`.
+See [Environment variables](#environment-variables) for required values.
 
 ---
 
-## Deployment guidelines
+## Required environment variables (names only)
 
-Use the same production environment variables from [Environment variables](#environment-variables) on both the client and server. Keep secrets out of GitHub.
+Copy [`.env.example`](./.env.example) to `.env.local` and set:
 
-1. Deploy the Express API first and make sure it responds on the client `CLIENT_URL`.
-2. Deploy the Next.js client.
-3. Configure the client’s `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_API_URL` to the live production origins.
-4. Run the live Stripe integration:
-   - Put the Stripe **webhook URL** in the Stripe dashboard to `https://<server-host>/api/payments/webhook`.
-   - Start Stripe Listen locally during development with the same webhook secret used by the server.
-5. Test on the live site: sign-in/sign-up, customer booking and cancellation, payment verify, admin transitions, and blocked-user access.
-6. Fill in the live site URL in the [Project links](#project-links) table and submit the admin email/password separately.
-7. Optional hardening: enable production HTTPS, set stronger CORS restrictions on the server if needed, and monitor the Stripe webhook delivery logs.
+- `NEXT_PUBLIC_APP_URL`
+- `NEXT_PUBLIC_API_URL`
+- `BETTER_AUTH_URL`
+- `BETTER_AUTH_SECRET`
+- `MONGODB_URI`
+- `MONGODB_DB_NAME`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
 
-A live link must be present after deployment. This section exists so the project is runnable and explainable before that link is published.
+Stripe secret keys and webhook secrets are required on the server only and must never be committed to GitHub.
+
+---
+
+## Live website link
+
+_TBD — add the deployed frontend URL here after deployment._
+
+---
+
+## Client and server repository links
+
+| Repo | Link |
+| --- | --- |
+| Client | https://github.com/Md-sihab11/stylevique-clientSide |
+| Server | https://github.com/Md-sihab11/stylevique-server |
+
+Both repositories must stay separate.
 
 ---
 
 ## Environment variables
 
-Copy [`.env.example`](./.env.example) to `.env.local`. Never commit real secrets.
+- `NEXT_PUBLIC_APP_URL` — browser origin
+- `NEXT_PUBLIC_API_URL` — Express API origin, no trailing slash
+- `BETTER_AUTH_URL` — server origin used by Better Auth
+- `BETTER_AUTH_SECRET` — long random signing secret
+- `MONGODB_URI` — MongoDB connection string
+- `MONGODB_DB_NAME` — defaults to `stylevique`; must match the server `DB_NAME`
+- `GOOGLE_CLIENT_ID` — Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET` — Google OAuth client secret
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` — Stripe publishable key (redirect only)
+- `NEXT_PUBLIC_HERO_IMAGE_URL` — optional public image URL for the homepage hero
 
-### Frontend
-
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_APP_URL` | Yes | Browser origin, e.g. `http://localhost:3000` |
-| `NEXT_PUBLIC_API_URL` | Yes | Express API origin, no trailing slash |
-| `BETTER_AUTH_URL` | Yes | Server origin used by Better Auth |
-| `BETTER_AUTH_SECRET` | Yes | Long random signing secret |
-| `MONGODB_URI` | Yes | MongoDB connection string |
-| `MONGODB_DB_NAME` | No | Defaults to `stylevique`; must match backend `DB_NAME` |
-| `GOOGLE_CLIENT_ID` | No | Google OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | No | Google OAuth client secret |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | No | Only needed if you add Stripe.js; checkout is a redirect today |
-| `NEXT_PUBLIC_HERO_IMAGE_URL` | No | Public image URL for the homepage hero; defaults to the bundled salon photo |
-
-Stripe **secret** keys and webhook secrets belong to the Express backend, never
-to this app.
+Never put real secrets or credential values in the README.
 
 ---
 
-## Scripts
+## Deployment guideline
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the Next.js development server |
-| `npm run build` | Production build |
-| `npm run start` | Serve the production build |
-| `npm run lint` | Run ESLint |
-
-Type-checking is done with `npx tsc --noEmit` because the scaffold has no
-dedicated `typecheck` script.
-
----
-
-## Project structure
-
-```text
-src/
-├── app/
-│   ├── (auth)/                 # Sign-in / sign-up split-screen routes
-│   ├── (public)/               # Home, services, about, contact
-│   │   └── services/[id]/      # Protected service details (server-side guard)
-│   ├── api/auth/[...all]/      # Better Auth route handler
-│   ├── dashboard/
-│   │   ├── admin/              # Admin pages and role-guarded layout
-│   │   └── customer/           # Customer pages and role-guarded layout
-│   ├── payment/                # Stripe return screens
-│   ├── globals.css             # Design tokens and utilities
-│   └── layout.tsx              # Fonts, metadata, Toaster
-├── components/
-│   ├── brand/                  # Logo
-│   ├── common/                 # Buttons, states, tables, dialogs, skeletons
-│   ├── layout/                 # Navbar and footer
-│   └── ui/                     # Base UI primitives
-├── features/                   # One folder per domain, each with api.ts
-│   ├── appointments/           # Booking form, rules, customer/admin actions
-│   ├── auth/                   # Sign-in / sign-up forms
-│   ├── dashboard/              # Admin and customer dashboard views
-│   ├── home/                   # Featured services, category section
-│   ├── payments/               # Payment verification UI
-│   ├── services/               # Service card, grid, details, browse
-│   ├── transactions/           # Transaction types and API
-│   └── users/                  # Customer directory types and API
-├── constants/                  # Salon details, nav, slots, sort options
-├── hooks/                      # useApiResource
-├── lib/
-│   ├── api-client.ts           # The one fetch wrapper (JWT, FormData, errors)
-│   ├── api/                    # Uploads, API config and error helpers
-│   ├── auth/                   # Better Auth server, client and session helper
-│   ├── format.ts               # Currency, date and text formatters
-│   ├── navigation.ts           # Safe callback URL helper
-│   └── utils.ts                # Class name helper
-└── types/                      # Backend response models
-```
+1. Deploy the Express API first.
+2. Deploy the Next.js client.
+3. Make sure the live API is reachable from the client origin.
+4. Verify the live site returns the same data with no CORS, 404, or 504 issues.
+5. Verify private routes still work after a browser refresh and logged-in users remain authenticated.
+6. Configure Stripe on the live site:
+   - Set the webhook URL to `https://<server-host>/api/payments/webhook`.
+   - Verify the Stripe Checkout and webhook flow update payment status.
+7. Verify admin credentials work on the live site.
+8. Add the deployed frontend URL to [Live website link](#live-website-link).
 
 ---
 
-## Routes
+## Live site should work perfectly
 
-### Public
-
-| Route | Description |
-| --- | --- |
-| `/` | Homepage |
-| `/services` | Service menu with filters, sorting and pagination |
-| `/about` | Salon story and values |
-| `/contact` | Contact details and salon information |
-
-### Auth
-
-| Route | Description |
-| --- | --- |
-| `/sign-in` | Email/password and Google sign-in |
-| `/sign-up` | Account registration |
-| `/blocked` | Account-blocked explanation for protected features |
-
-### Protected (requires sign-in)
-
-| Route | Description |
-| --- | --- |
-| `/services/[id]` | Service details and booking form; redirects to sign-in when logged out |
-| `/dashboard/admin/appointments/[id]` | Admin appointment details and status actions |
-| `/dashboard/customer/appointments/[id]` | Customer appointment details and actions |
-
-### Customer dashboard
-
-| Route | Description |
-| --- | --- |
-| `/dashboard` | Redirects to the dashboard for the signed-in role |
-| `/dashboard/customer` | Appointment summary |
-| `/dashboard/customer/appointments` | Appointment list and status filter |
-| `/dashboard/customer/appointments/[id]` | Appointment details and actions |
-| `/dashboard/customer/transactions` | Payment history |
-| `/dashboard/customer/profile` | Profile editor |
-
-### Admin dashboard
-
-| Route | Description |
-| --- | --- |
-| `/dashboard/admin` | Salon overview |
-| `/dashboard/admin/services` | Service management |
-| `/dashboard/admin/services/add` | Create a service |
-| `/dashboard/admin/services/[id]/edit` | Edit a service |
-| `/dashboard/admin/appointments` | Appointment management |
-| `/dashboard/admin/users` | Customer directory |
-| `/dashboard/admin/transactions` | Payment records |
-| `/dashboard/admin/profile` | Administrator profile |
-
-### Payment
-
-| Route | Description |
-| --- | --- |
-| `/payment/success?session_id=...` | Verifies a Stripe checkout session |
-| `/payment/cancel` | Customer returned without completing checkout |
-
-Server-side layouts redirect unauthenticated visitors to sign-in, and a customer
-cannot open the admin area (the API enforces this too).
-
----
-
-## API integration status
-
-Every function in `src/features/*/api.ts` (plus uploads in `src/lib/api/`)
-makes real requests to the Express API through the shared client in
-`src/lib/api-client.ts`:
-
-| Group | Functions | Endpoints |
-| --- | --- | --- |
-| Public services | `getServices`, `getServiceCategories`, `getServiceById` | `GET /api/services`, `/api/services/categories`, `/api/services/:id` |
-| Admin services | `getAdminServices`, `getAdminServiceById`, `createService`, `updateService`, `updateServiceStatus`, `deleteService` | `GET /api/admin/services`, `GET /api/admin/services/:id`, `POST /api/services`, `PATCH /api/services/:id`, `/api/services/:id/status`, `DELETE /api/services/:id` |
-| Customer appointments | `createAppointment`, `getMyAppointments`, `getAppointmentById`, `cancelAppointment` | `POST /api/appointments`, `GET /api/appointments/my`, `/api/appointments/:id`, `/api/appointments/:id/cancel` |
-| Admin appointments | `getAdminAppointments`, `updateAdminAppointmentStatus` | `GET /api/admin/appointments`, `PATCH /api/admin/appointments/:id/status` |
-| Users | `getMyProfile`, `updateMyProfile`, `getCustomers`, `getCustomerById`, `blockCustomer`, `unblockCustomer` | `GET/PATCH /api/users/me`, `GET /api/admin/users`, `/api/admin/users/:id`, `/api/admin/users/:id/block`, `/api/admin/users/:id/unblock` |
-| Dashboards | `getCustomerDashboard`, `getAdminDashboard` | `GET /api/dashboard/customer`, `GET /api/dashboard/admin` |
-| Payments | `createCheckoutSession`, `verifyPayment` | `POST /api/payments/checkout`, `GET /api/payments/verify?session_id=` |
-| Transactions | `getMyTransactions`, `getAdminTransactions` | `GET /api/transactions/my`, `GET /api/admin/transactions` |
-| Uploads | `uploadImage` | `POST /api/uploads/image` |
-
-All protected requests attach a fresh Better Auth JWT as
-`Authorization: Bearer <token>`. The API returns the inner `data` object of the
-backend's `{ success, message, data }` envelope, and pages handle loading,
-empty, error, retry, unauthorized and conflict states.
-
-See [`API_INTEGRATION.md`](./API_INTEGRATION.md) for the full contract,
-including the 409 slot-conflict handling, customer-only cancellation rules,
-admin transition rules, and the verified-payment-only success screen.
-
-Protected requests must send a fresh Better Auth JWT:
-
-```ts
-const { data } = await authClient.token();
-// Authorization: Bearer <data.token>
-```
-
-The Express API does not read Better Auth cookies. JWTs expire in roughly 15
-minutes, so request a token per call.
-
-Payment truth lives on the server: the Stripe webhook writes the transaction and
-the browser may only trust the `verifyPayment()` response. The success page shows
-"Payment confirmed" only when the backend returns `status: "paid"`.
-
-Image uploads: `uploadImage()` sends `POST /api/uploads/image` with the file in
-the `image` FormData field. The supplied backend source does not yet register
-that route, so upload calls return a 404 until the route is added. This is
-documented in `API_INTEGRATION.md` and should not block launch.
-
----
-
-## Design system
-
-The palette and typography are defined once in `src/app/globals.css`:
-
-| Token | Value | Use |
-| --- | --- | --- |
-| Background | `#f8f5f0` | Warm ivory page surface |
-| Foreground | `#302b2b` | Soft charcoal text |
-| Primary | `#8d5360` | Dusty rose actions and accents |
-| Secondary | `#e8dcd0` | Soft beige panels |
-| Accent | `#b68c70` | Muted bronze highlights |
-| Border | `#e3d8cc` | Warm hairline borders |
-
-- Headings use **Cormorant Garamond** for an editorial salon feel.
-- Body copy uses **Josefin Sans** for clean, geometric readability.
-- Buttons are pill-shaped; cards use restrained radii and warm borders.
-- The `.page-width` utility keeps content aligned across every page.
-- Utility classes such as `.eyebrow` keep small labels consistent.
-
-Reusable components live in `src/components/common/` and are shared by the
-public site and both dashboards.
-
----
-
-## Responsive behaviour
-
-The layout is designed mobile-first and checked at three widths:
-
-| Width | Behaviour |
-| --- | --- |
-| **375 px** | Single column, mobile nav sheet, stacked filters, tables become cards, full-width primary actions |
-| **768 px** | Two-column forms and cards, tablet-friendly spacing, filters begin to sit inline |
-| **1440 px** | Full page width, multi-column dashboards, complete data tables, sidebar navigation |
-
-Details that make small screens usable:
-
-- Admin data tables have dedicated card layouts below `md`
-- Filter grids stack and keep 40 px tap targets
-- Long values (emails, Stripe session IDs) wrap or truncate deliberately
-- Dialogs use near-full width on phones
-- The dashboard sidebar becomes a sheet with the same destinations
-
----
-
-## Quality checks
-
-Run before shipping:
-
-```bash
-npm run lint
-npx tsc --noEmit
-npm run build
-```
-
-Manual checks worth repeating:
-
-- Sign in, sign up and Google OAuth
-- Customer cannot reach admin routes
-- Booking form validates date, slot and message
-- Admin transitions respect `pending → confirmed/cancelled` and
-  `confirmed → cancelled`
-- Payment success never says "paid" without a verified backend response
-- Empty, loading and error states at 375 / 768 / 1440 px
-
----
-
-## Known limitations
-
-These come from the supplied backend, not the UI:
-
-| Limitation | Effect |
-| --- | --- |
-| No reschedule endpoint | Customers contact the salon to change a confirmed time |
-| No refund endpoint | Admin cancellation preserves payment and issues no refund |
-| Admin appointment filters cover status and date only | No customer-name search on that list |
-| Public services carry no currency | The UI formats using the salon's default currency constant |
-
-Each limitation is also described where a customer or admin would meet it. See
-[`API_INTEGRATION.md`](./API_INTEGRATION.md) for suggested backend fixes.
-
----
-
-## Notes for reviewers
-
-- The Better Auth setup writes to the same MongoDB database the Express API
-  reads, which is why both apps must share `DB_NAME` / `MONGODB_DB_NAME`.
-- Network requests to Express only happen through `src/lib/api-client.ts` and
-  the endpoint modules in `src/features/*/api.ts`. Components call those
-  functions and handle their results.
-- Do not convert error and empty states into optimistic success states. Honest
-  feedback is a feature of this app.
+- No CORS, 404, or 504 issues.
+- Private routes work after a browser refresh.
+- Logged-in users remain authenticated.
+- Stripe Checkout and the webhook update payment status on the live site.
+- Admin credentials work on the live site.
