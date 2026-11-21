@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { CalendarCheck, XCircle } from "lucide-react";
 import { toast } from "sonner";
-import type { AdminAppointment } from "@/features/appointments/types";
+import type { Appointment } from "@/features/appointments/types";
 import { getApiErrorMessage, isApiError } from "@/lib/api";
 import { updateAdminAppointmentStatus } from "@/features/appointments/api";
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { Button } from "@/components/ui/button";
 
 interface AdminAppointmentActionsProps {
-  appointment: AdminAppointment;
+  appointment: Appointment;
   onChanged: () => void;
 }
 

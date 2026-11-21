@@ -29,6 +29,13 @@ export default async function CustomerDashboardLayout({
     redirect("/dashboard/admin");
   }
 
+  // The backend blocks protected API calls for blocked users. The dashboard
+  // shell is not a protected feature, so block it here too and give the user
+  // a clear explanation instead of showing partial errors.
+  if (session.user.isBlocked) {
+    redirect("/blocked");
+  }
+
   return (
     <DashboardShell
       role="customer"

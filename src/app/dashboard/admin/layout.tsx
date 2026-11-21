@@ -28,6 +28,11 @@ export default async function AdminDashboardLayout({
     redirect("/dashboard/customer");
   }
 
+  // Blocked admins cannot manage the salon. Keep them out of the dashboard.
+  if (session.user.isBlocked) {
+    redirect("/blocked");
+  }
+
   return (
     <DashboardShell
       role="admin"

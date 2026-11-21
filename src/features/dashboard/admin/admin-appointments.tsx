@@ -30,7 +30,9 @@ import { TableSkeleton, Skeleton } from "@/components/common/skeleton-loader";
 import { AppointmentServiceInfo } from "@/features/appointments/components/appointment-service-info";
 import { AdminAppointmentActions } from "@/features/appointments/components/admin-appointment-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 const PAGE_SIZE = 10;
 
@@ -150,7 +152,17 @@ export function AdminAppointments() {
       header: "Actions",
       className: "w-[1%] whitespace-nowrap",
       cell: (appointment) => (
-        <AdminAppointmentActions appointment={appointment} onChanged={reload} />
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="rounded-full"
+            render={<Link href={`/dashboard/admin/appointments/${appointment.id}`} />}
+          >
+            View
+          </Button>
+          <AdminAppointmentActions appointment={appointment} onChanged={reload} />
+        </div>
       ),
     },
   ];
@@ -314,6 +326,16 @@ export function AdminAppointments() {
                 <div className="flex items-start justify-between gap-3">
                   <CustomerCell appointment={appointment} />
                   <StatusBadge status={appointment.status} />
+                </div>
+
+                <div className="mt-2">
+                  <PrimaryButton
+                    href={`/dashboard/admin/appointments/${appointment.id}`}
+                    variant="outline"
+                    size="sm"
+                  >
+                    View details
+                  </PrimaryButton>
                 </div>
 
                 <div className="mt-4 border-t border-border pt-4">

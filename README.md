@@ -19,7 +19,7 @@ pretends a payment succeeded.
 
 | | Link |
 | --- | --- |
-| Live site | _Deployment pending — add the deployed frontend URL here_ |
+| Live site | _Deployment pending — add the deployed frontend URL here after deployment_ |
 | Client repository | https://github.com/Md-sihab11/stylevique-clientSide |
 | Server repository | https://github.com/Md-sihab11/stylevique-server |
 
@@ -31,15 +31,16 @@ pretends a payment succeeded.
 2. [Features](#features)
 3. [Tech stack](#tech-stack)
 4. [Getting started](#getting-started)
-5. [Environment variables](#environment-variables)
-6. [Scripts](#scripts)
-7. [Project structure](#project-structure)
-8. [Routes](#routes)
-9. [API integration status](#api-integration-status)
-10. [Design system](#design-system)
-11. [Responsive behaviour](#responsive-behaviour)
-12. [Quality checks](#quality-checks)
-13. [Known limitations](#known-limitations)
+5. [Deployment guidelines](#deployment-guidelines)
+6. [Environment variables](#environment-variables)
+7. [Scripts](#scripts)
+8. [Project structure](#project-structure)
+9. [Routes](#routes)
+10. [API integration status](#api-integration-status)
+11. [Design system](#design-system)
+12. [Responsive behaviour](#responsive-behaviour)
+13. [Quality checks](#quality-checks)
+14. [Known limitations](#known-limitations)
 
 ---
 
@@ -218,6 +219,24 @@ Then set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env.local`.
 
 ---
 
+## Deployment guidelines
+
+Use the same production environment variables from [Environment variables](#environment-variables) on both the client and server. Keep secrets out of GitHub.
+
+1. Deploy the Express API first and make sure it responds on the client `CLIENT_URL`.
+2. Deploy the Next.js client.
+3. Configure the client’s `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_API_URL` to the live production origins.
+4. Run the live Stripe integration:
+   - Put the Stripe **webhook URL** in the Stripe dashboard to `https://<server-host>/api/payments/webhook`.
+   - Start Stripe Listen locally during development with the same webhook secret used by the server.
+5. Test on the live site: sign-in/sign-up, customer booking and cancellation, payment verify, admin transitions, and blocked-user access.
+6. Fill in the live site URL in the [Project links](#project-links) table and submit the admin email/password separately.
+7. Optional hardening: enable production HTTPS, set stronger CORS restrictions on the server if needed, and monitor the Stripe webhook delivery logs.
+
+A live link must be present after deployment. This section exists so the project is runnable and explainable before that link is published.
+
+---
+
 ## Environment variables
 
 Copy [`.env.example`](./.env.example) to `.env.local`. Never commit real secrets.
@@ -316,12 +335,15 @@ src/
 | --- | --- |
 | `/sign-in` | Email/password and Google sign-in |
 | `/sign-up` | Account registration |
+| `/blocked` | Account-blocked explanation for protected features |
 
 ### Protected (requires sign-in)
 
 | Route | Description |
 | --- | --- |
 | `/services/[id]` | Service details and booking form; redirects to sign-in when logged out |
+| `/dashboard/admin/appointments/[id]` | Admin appointment details and status actions |
+| `/dashboard/customer/appointments/[id]` | Customer appointment details and actions |
 
 ### Customer dashboard
 
