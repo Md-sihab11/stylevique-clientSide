@@ -3,17 +3,17 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  ArrowUpRight,
   CalendarDays,
   Check,
   ChevronDown,
   Search,
   Sparkles,
 } from "lucide-react";
-import { FEATURED_CATEGORIES, SALON } from "@/constants/salon";
+import { SALON } from "@/constants/salon";
 import { SectionHeading } from "@/components/common/section-heading";
 import { PrimaryButton } from "@/components/common/primary-button";
 import { FeaturedServices } from "@/features/home/components/featured-services";
+import { ServiceCategories } from "@/features/home/components/service-categories";
 
 export const metadata: Metadata = {
   title: "Your Beauty, Your Moment",
@@ -144,70 +144,9 @@ export default function HomePage() {
       <FeaturedServices />
 
       {/* ---------------------------------------------------------------
-          CATEGORIES
+          CATEGORIES (API-DRIVEN)
       ---------------------------------------------------------------- */}
-      <section className="section-space bg-secondary/45">
-        <div className="page-width">
-          <SectionHeading
-            eyebrow="Find your ritual"
-            title="A service for every version of you."
-            description="Start with the area you would like to focus on. Each category opens a filtered view of the salon menu."
-            action={
-              <PrimaryButton href="/services" variant="outline" size="sm">
-                Browse everything
-                <ArrowRight className="size-3.5" aria-hidden="true" />
-              </PrimaryButton>
-            }
-          />
-
-          <div className="mt-12 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURED_CATEGORIES.map((category) => (
-              <Link
-                key={category.name}
-                href={`/services?category=${encodeURIComponent(category.name)}`}
-                className="group flex items-start justify-between gap-6 border-t border-foreground/15 py-6 transition-colors hover:border-primary/60"
-              >
-                <div className="flex gap-5">
-                  <span className="pt-0.5 text-xs tabular-nums text-muted-foreground/70">
-                    {category.number}
-                  </span>
-                  <div>
-                    <h3 className="font-section text-[1.55rem] leading-tight font-medium tracking-[0.02em] text-foreground uppercase transition-colors group-hover:text-primary">
-                      {category.name}
-                    </h3>
-                    <p className="mt-1.5 text-sm text-muted-foreground">{category.blurb}</p>
-                  </div>
-                </div>
-                <ArrowUpRight
-                  className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary"
-                  aria-hidden="true"
-                />
-              </Link>
-            ))}
-
-            <Link
-              href="/services"
-              className="group flex items-start justify-between gap-6 border-t border-foreground/15 py-6 transition-colors hover:border-primary/60"
-            >
-              <div className="flex gap-5">
-                <span className="pt-0.5 text-xs tabular-nums text-muted-foreground/70">08</span>
-                <div>
-                  <h3 className="font-section text-[1.55rem] leading-tight font-medium tracking-[0.02em] text-foreground uppercase transition-colors group-hover:text-primary">
-                    See the full menu
-                  </h3>
-                  <p className="mt-1.5 text-sm text-muted-foreground">
-                    Search, filter and compare every service.
-                  </p>
-                </div>
-              </div>
-              <ArrowUpRight
-                className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary"
-                aria-hidden="true"
-              />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <ServiceCategories />
 
       {/* ---------------------------------------------------------------
           HOW IT WORKS
