@@ -276,24 +276,24 @@ export default function HomePage() {
       ---------------------------------------------------------------- */}
       <section className="section-space">
         <div className="page-width">
-          <div className="relative overflow-hidden rounded-sm bg-primary px-6 py-16 text-primary-foreground sm:px-12 lg:px-20 lg:py-20">
+          <div className="relative overflow-hidden rounded-sm bg-[#8d5360] px-6 py-16 text-white sm:px-12 lg:px-20 lg:py-20 dark:bg-[#c9a878] dark:text-[#1a1917]">
             <div
-              className="absolute -right-24 -top-24 size-72 rounded-full border border-primary-foreground/15"
+              className="absolute -right-24 -top-24 size-72 rounded-full border border-white/15 dark:border-[#1a1917]/15"
               aria-hidden="true"
             />
             <div
-              className="absolute -bottom-32 -left-16 size-80 rounded-full bg-primary-foreground/5"
+              className="absolute -bottom-32 -left-16 size-80 rounded-full bg-white/5 dark:bg-[#1a1917]/5"
               aria-hidden="true"
             />
 
             <div className="relative max-w-3xl">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-primary-foreground/65">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-white/70 dark:text-[#1a1917]/70">
                 Your chair is waiting
               </p>
               <h2 className="mt-4 font-section text-4xl leading-[1.02] font-medium tracking-[0.02em] uppercase sm:text-5xl lg:text-6xl">
                 Make a little time for yourself.
               </h2>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-primary-foreground/75">
+              <p className="mt-5 max-w-xl text-sm leading-7 text-white/75 dark:text-[#1a1917]/75">
                 Browse the full Stylevique menu, find the service that feels right
                 and request your preferred appointment time.
               </p>
@@ -306,7 +306,7 @@ export default function HomePage() {
                   href="/sign-up"
                   variant="outline"
                   size="lg"
-                  className="border-primary-foreground/35 text-primary-foreground hover:border-primary-foreground/60 hover:bg-primary-foreground/10"
+                  className="border-white/40 text-white hover:border-white/70 hover:bg-white/10 dark:border-[#1a1917]/35 dark:text-[#1a1917] dark:hover:border-[#1a1917]/60 dark:hover:bg-[#1a1917]/10"
                 >
                   Create an account
                 </PrimaryButton>
