@@ -48,8 +48,9 @@
   --brand-foreground: #ffffff;
   --accent-gold: #c2a678;
 
-  /* Fixed colours for panels that are always dark in both themes. */
-  --on-dark: #1c1a19;
+  /* Fixed colours for panels that are always dark in both themes.
+     Sampled from darkmode.png so the dark logo blends into these surfaces. */
+  --on-dark: #1a1917;
   --on-dark-text: #f6f1ea;
 
   /* Original rose link accent, kept unchanged in light mode. */
@@ -60,7 +61,8 @@
  * Dark theme
  * ------------------------------------------------------------------------ */
 .dark {
-  --background: #1c1a19;
+  /* Sampled from public/logo/darkmode.png so the logo has no visible box. */
+  --background: #1a1917;
   --foreground: #f2ece4;
   --card: #262220;
   --card-foreground: #f2ece4;
@@ -93,7 +95,7 @@
   --brand-foreground: #1c1a19;
   --accent-gold: #d0b184;
 
-  --on-dark: #1c1a19;
+  --on-dark: #1a1917;
   --on-dark-text: #f6f1ea;
   --link-accent: #d8bb90;
 }
@@ -130,7 +132,7 @@ body:has([data-dashboard]) {
 
 /* Dark dashboard keeps the warm bronze accent on a deep charcoal surface. */
 html.dark body:has([data-dashboard]) {
-  --background: #1c1a19;
+  --background: #1a1917;
   --foreground: #f2ece4;
   --card: #262220cc;
   --card-foreground: #f2ece4;

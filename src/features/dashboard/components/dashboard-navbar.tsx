@@ -28,7 +28,7 @@ export function DashboardNavbar({
   isSigningOut,
 }: DashboardNavbarProps) {
   return (
-    <div className="sticky top-0 z-30 flex h-[4.5rem] items-center justify-between gap-3 border-b border-border bg-background/90 px-4 backdrop-blur-md sm:px-6 lg:px-10">
+    <div className="sticky top-0 z-30 flex h-[4.5rem] items-center justify-between gap-3 border-b border-border bg-background px-4 backdrop-blur-md sm:px-6 lg:px-10">
       <div className="flex min-w-0 items-center gap-2">
         <button
           type="button"
