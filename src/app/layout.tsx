@@ -48,6 +48,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${josefinSans.variable} ${cormorantGaramond.variable} ${anton.variable} ${oswald.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('stylevique-theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark')}catch(e){}})();`,
+          }}
+        />
         {children}
         <Toaster
           position="top-center"

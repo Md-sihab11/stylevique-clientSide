@@ -290,7 +290,7 @@ export function AdminServices() {
               />
               <button
                 type="submit"
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full bg-primary px-3 py-1.5 text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-primary-foreground transition-colors hover:bg-primary/90"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full border border-primary-foreground/20 bg-primary px-3 py-1.5 text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 Apply
               </button>

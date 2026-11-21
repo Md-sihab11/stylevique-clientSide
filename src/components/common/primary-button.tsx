@@ -20,11 +20,11 @@ interface PrimaryButtonProps {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_8px_24px_-12px_rgba(141,83,96,0.55)]",
+    "border border-primary-foreground/20 bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_8px_24px_-12px_rgba(141,83,96,0.55)]",
   outline:
     "border border-foreground/20 bg-transparent text-foreground hover:border-foreground/40 hover:bg-foreground/5",
-  dark: "bg-foreground text-background hover:bg-foreground/90",
-  light: "bg-background text-foreground hover:bg-background/90",
+  dark: "border border-on-dark-text/25 bg-on-dark text-on-dark-text hover:bg-on-dark/90",
+  light: "border border-foreground/15 bg-background text-foreground hover:bg-background/90",
   ghost: "bg-transparent text-foreground hover:bg-foreground/5",
 };
 

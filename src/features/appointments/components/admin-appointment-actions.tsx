@@ -83,7 +83,7 @@ export function AdminAppointmentActions({
       {canConfirm && (
         <Button
           size="sm"
-          className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+          className="rounded-full border border-primary-foreground/20 bg-primary text-primary-foreground hover:bg-primary/90"
           onClick={() => setTargetStatus("confirmed")}
           disabled={isUpdating}
         >

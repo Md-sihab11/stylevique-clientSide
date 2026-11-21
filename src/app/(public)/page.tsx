@@ -75,7 +75,7 @@ export default function HomePage() {
           HERO
       ---------------------------------------------------------------- */}
       <section>
-        <div className="relative overflow-hidden bg-foreground">
+        <div className="relative overflow-hidden bg-on-dark">
           {/* Full-bleed backdrop with layered gradients so the copy stays
               readable on every crop of the image. */}
           <div className="absolute inset-0">
@@ -83,51 +83,51 @@ export default function HomePage() {
               src={HERO_IMAGE_SRC}
               alt="A warmly lit Stylevique salon with backlit mirrors and leather chairs"
               priority
-              className="object-center"
+              className="object-center dark:brightness-110"
             />
           </div>
           <div
-            className="absolute inset-0 bg-gradient-to-r from-foreground/95 via-foreground/80 to-foreground/35"
+            className="absolute inset-0 bg-gradient-to-r from-on-dark/95 via-on-dark/80 to-on-dark/35 dark:from-on-dark/70 dark:via-on-dark/45 dark:to-on-dark/15"
             aria-hidden="true"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/10 to-foreground/45"
+            className="absolute inset-0 bg-gradient-to-t from-on-dark/80 via-on-dark/10 to-on-dark/45 dark:from-on-dark/55 dark:via-on-dark/5 dark:to-on-dark/20"
             aria-hidden="true"
           />
 
           <div className="page-width relative flex min-h-[calc(100svh-5.5rem)] flex-col justify-center py-16 lg:min-h-[calc(100svh-6.5rem)] lg:py-20">
             <div className="max-w-2xl">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-secondary/85">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-on-dark-text/85">
                 The Art of Modern Style
               </p>
 
-              <h1 className="mt-6 font-display text-[clamp(3.1rem,7vw,6rem)] leading-[0.95] font-medium tracking-[0.01em] text-background uppercase">
+              <h1 className="mt-6 font-display text-[clamp(3.1rem,7vw,6rem)] leading-[0.95] font-medium tracking-[0.01em] text-on-dark-text uppercase">
 
 
                 Your Style.
                 <span className="block">Your moment.</span>
               </h1>
 
-              <p className="mt-7 max-w-xl text-base leading-7 text-background/75 sm:text-[1.05rem]">
+              <p className="mt-7 max-w-xl text-base leading-7 text-on-dark-text/75 sm:text-[1.05rem]">
                 Discover premium hair, beauty, and grooming services. Explore your favorite treatments and book an experience that brings out your best.
               </p>
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/services"
-                  className="inline-flex h-12 items-center justify-center rounded-lg bg-background px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-foreground uppercase transition-colors hover:bg-background/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="inline-flex h-12 items-center justify-center rounded-lg border border-on-dark/20 bg-background px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-foreground uppercase transition-colors hover:bg-on-dark-text/90 dark:hover:text-on-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                 Explore Services
                 </Link>
                 <Link
                   href="/services"
-                  className="inline-flex h-12 items-center justify-center rounded-lg border border-background/40 px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-background uppercase transition-colors hover:border-background/70 hover:bg-background/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="inline-flex h-12 items-center justify-center rounded-lg border border-on-dark/40 px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-on-dark-text uppercase transition-colors hover:border-on-dark/70 hover:bg-on-dark-text/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   Book Appointment
                 </Link>
               </div>
 
-              <p className="mt-12 flex flex-wrap items-center gap-x-3 text-[0.75rem] font-semibold tracking-[0.24em] text-background/70 uppercase">
+              <p className="mt-12 flex flex-wrap items-center gap-x-3 text-[0.75rem] font-semibold tracking-[0.24em] text-on-dark-text/70 uppercase">
                 <span>Style</span>
                 <span aria-hidden="true">·</span>
                 <span>Care</span>
@@ -138,7 +138,7 @@ export default function HomePage() {
           </div>
 
           <ChevronDown
-            className="absolute bottom-5 left-1/2 size-6 -translate-x-1/2 text-background/70"
+            className="absolute bottom-5 left-1/2 size-6 -translate-x-1/2 text-on-dark-text/70"
             aria-hidden="true"
           />
         </div>
@@ -196,7 +196,7 @@ export default function HomePage() {
       {/* ---------------------------------------------------------------
           WHY STYLEVIQUE
       ---------------------------------------------------------------- */}
-      <section className="section-space relative overflow-hidden bg-[#1f1c1a] text-background">
+      <section className="section-space relative overflow-hidden bg-on-dark text-on-dark-text">
         {/* A soft, blurred echo of the salon photo keeps the dark panel warm. */}
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 opacity-[0.12] lg:block" aria-hidden="true">
           <Image
@@ -216,10 +216,10 @@ export default function HomePage() {
                 alt="A quiet, light-filled Stylevique salon"
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"
-                className="object-cover grayscale"
+                className="object-cover grayscale dark:brightness-110"
               />
             </div>
-            <div className="absolute -bottom-6 -right-3 hidden size-32 flex-col items-center justify-center rounded-full bg-[#c2a678] text-center text-[#1f1c1a] shadow-xl sm:flex">
+            <div className="absolute -bottom-6 -right-3 hidden size-32 flex-col items-center justify-center rounded-full bg-accent-gold text-center text-on-dark shadow-xl sm:flex">
               <p className="font-heading text-4xl leading-none">Slow</p>
               <p className="mt-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em]">care</p>
             </div>
@@ -227,8 +227,8 @@ export default function HomePage() {
 
           <div className="order-1 lg:order-2">
             <div className="flex items-center gap-3">
-              <span className="editorial-rule bg-[#c2a678]" />
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#c2a678]">
+              <span className="editorial-rule bg-accent-gold" />
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-accent-gold">
                 Why Stylevique
               </p>
             </div>
@@ -240,7 +240,7 @@ export default function HomePage() {
               <span className="uppercase">The Rush.</span>
             </h2>
 
-            <p className="mt-5 max-w-lg text-sm leading-7 text-background/65">
+            <p className="mt-5 max-w-lg text-sm leading-7 text-on-dark-text/65">
               We believe a salon visit should feel like a pause, not another task.
               Stylevique brings the service menu, appointment details and your
               account into one considered experience.
@@ -250,19 +250,19 @@ export default function HomePage() {
               {REASONS.map((reason) => (
                 <div
                   key={reason.title}
-                  className="flex gap-4 border-t border-background/15 py-5"
+                  className="flex gap-4 border-t border-on-dark/15 py-5"
                 >
-                  <span className="pt-0.5 text-[0.68rem] tabular-nums text-[#c2a678]">
+                  <span className="pt-0.5 text-[0.68rem] tabular-nums text-accent-gold">
                     {reason.number}
                   </span>
-                  <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-[#c2a678]/60 text-[#c2a678]">
+                  <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-accent-gold/60 text-accent-gold">
                     <Check className="size-3" aria-hidden="true" />
                   </span>
                   <div>
-                    <h3 className="font-heading text-lg font-semibold tracking-[0.04em] text-background uppercase">
+                    <h3 className="font-heading text-lg font-semibold tracking-[0.04em] text-on-dark-text uppercase">
                       {reason.title}
                     </h3>
-                    <p className="mt-1.5 text-sm leading-6 text-background/60">
+                    <p className="mt-1.5 text-sm leading-6 text-on-dark-text/60">
                       {reason.description}
                     </p>
                   </div>

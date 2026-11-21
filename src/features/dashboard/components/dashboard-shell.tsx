@@ -92,7 +92,7 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
       {/* Desktop sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-20 flex flex-col border-r border-border bg-[#f3ede3] transition-all duration-300",
+          "fixed inset-y-0 left-0 z-20 flex flex-col border-r border-border bg-surface-soft transition-all duration-300",
           "hidden lg:flex",
           isCollapsed ? "w-16" : "w-56",
         )}
@@ -134,7 +134,7 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
 
       {/* Mobile overlay drawer */}
       <Sheet open={mobileDrawerOpen} onOpenChange={setMobileDrawerOpen}>
-        <SheetContent side="left" className="w-[86%] max-w-xs border-r border-border bg-[#f3ede3] p-0">
+        <SheetContent side="left" className="w-[86%] max-w-xs border-r border-border bg-surface-soft p-0">
           <SheetTitle className="sr-only">Dashboard navigation</SheetTitle>
           <SheetDescription className="sr-only">
             Navigate between the dashboard sections for your account.

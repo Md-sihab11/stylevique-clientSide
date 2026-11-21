@@ -15,6 +15,7 @@ import { authClient, useSession } from "@/lib/auth/auth-client";
 import { MAIN_NAV_LINKS } from "@/constants/salon";
 import { Logo } from "@/components/brand/logo";
 import { PrimaryButton } from "@/components/common/primary-button";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -56,7 +57,7 @@ export function Navbar() {
 
   /** Dark CTA that mirrors the hero buttons (uppercase, tracked, rounded-lg). */
   const bookButtonClasses =
-    "inline-flex h-12 items-center justify-center rounded-lg bg-foreground px-7 text-[0.72rem] font-semibold tracking-[0.18em] text-background uppercase transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+    "inline-flex h-12 items-center justify-center rounded-lg border border-on-dark-text/25 bg-on-dark px-7 text-[0.72rem] font-semibold tracking-[0.18em] text-on-dark-text uppercase transition-colors hover:bg-on-dark/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
   async function handleSignOut() {
     setMobileOpen(false);
@@ -101,6 +102,7 @@ export function Navbar() {
 
         {/* Desktop Actions & Account Menu */}
         <div className="hidden items-center gap-5 lg:flex">
+          <ThemeToggle />
           {isPending ? (
             <div
               className="size-9 animate-pulse rounded-full bg-secondary"
@@ -187,6 +189,7 @@ export function Navbar() {
         </div>
 
         {/* Mobile Menu Trigger */}
+        <ThemeToggle className="lg:hidden" />
         <button
           type="button"
           onClick={() => setMobileOpen(true)}

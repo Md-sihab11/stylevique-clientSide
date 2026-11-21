@@ -129,7 +129,7 @@ export function ReviewForm({ appointment, existing, onSubmitted }: ReviewFormPro
             <p className="truncate text-sm font-medium text-foreground">{serviceName}</p>
             <p className="text-xs text-muted-foreground">Completed visit</p>
           </div>
-          <span className="ml-auto flex size-6 shrink-0 items-center justify-center rounded-full bg-[#6b8a63]/15 text-[#4f6e4d]">
+          <span className="ml-auto flex size-6 shrink-0 items-center justify-center rounded-full bg-[#6b8a63]/15 text-ink-soft">
             <Check className="size-3.5" aria-hidden="true" />
           </span>
         </div>
@@ -151,8 +151,8 @@ export function ReviewForm({ appointment, existing, onSubmitted }: ReviewFormPro
                 className={cn(
                   "flex size-11 items-center justify-center rounded-full border text-sm font-semibold transition-all sm:size-12",
                   rating === value
-                    ? "border-[#c2a678] bg-[#b49162] text-white shadow-md"
-                    : "border-[#d8cbb9] bg-card text-muted-foreground hover:border-[#c2a678] hover:text-foreground",
+                    ? "border-accent-gold bg-brand text-brand-foreground shadow-md"
+                    : "border-line bg-card text-muted-foreground hover:border-accent-gold hover:text-foreground",
                 )}
               >
                 {value}
@@ -175,8 +175,8 @@ export function ReviewForm({ appointment, existing, onSubmitted }: ReviewFormPro
                   className={cn(
                     "rounded-full border px-3 py-1.5 text-xs transition-colors",
                     active
-                      ? "border-[#c2a678] bg-[#b49162] text-white"
-                      : "border-border bg-card text-muted-foreground hover:border-[#c2a678] hover:text-foreground",
+                      ? "border-accent-gold bg-brand text-brand-foreground"
+                      : "border-border bg-card text-muted-foreground hover:border-accent-gold hover:text-foreground",
                   )}
                 >
                   {highlight}
@@ -211,7 +211,7 @@ export function ReviewForm({ appointment, existing, onSubmitted }: ReviewFormPro
           type="button"
           onClick={handleSubmit}
           disabled={isSubmitting}
-          className="mt-6 h-11 w-full rounded-md bg-[#b49162] text-sm font-semibold text-white hover:bg-[#9d7a51]"
+          className="mt-6 h-11 w-full rounded-md border border-brand-foreground/25 bg-brand text-sm font-semibold text-brand-foreground hover:bg-brand/80"
         >
           {isSubmitting ? "Submitting…" : existing ? "Resubmit review" : "Submit review"}
         </Button>

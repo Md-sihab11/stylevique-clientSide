@@ -41,19 +41,19 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           sizes="50vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/75 via-foreground/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-on-dark/75 via-on-dark/10 to-transparent" />
 
-        <div className="absolute inset-x-0 bottom-0 p-12 text-background">
+        <div className="absolute inset-x-0 bottom-0 p-12 text-on-dark-text">
           <div className="flex items-center gap-3">
             <span className="h-px w-10 bg-background/60" />
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-background/70">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-on-dark-text/70">
               A quiet hour, entirely yours
             </p>
           </div>
           <p className="mt-5 max-w-lg font-heading text-4xl leading-[1.08]">
             “Beauty begins the moment you decide to be yourself.”
           </p>
-          <p className="mt-4 text-xs text-background/55">
+          <p className="mt-4 text-xs text-on-dark-text/55">
             — A Stylevique studio note
           </p>
         </div>

@@ -161,12 +161,12 @@ function PaymentVerificationPanel({ sessionId }: { sessionId: string }) {
   if (data?.status === "paid") {
     return (
       <div className="page-width max-w-3xl py-14 sm:py-20">
-        <div className="overflow-hidden rounded-lg border border-[#b7ccb9] bg-card">
-          <div className="bg-[#eef4ec] px-6 py-10 text-center sm:px-10">
-            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#dce9da] text-[#456345]">
+        <div className="overflow-hidden rounded-lg border border-[#b7ccb9] bg-card dark:border-[#4f6e4d]">
+          <div className="bg-[#eef4ec] px-6 py-10 text-center sm:px-10 dark:bg-[#1e3220]">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#dce9da] text-[#456345] dark:bg-[#2a4a2d] dark:text-[#a8d0a6]">
               <CheckCircle2 className="size-8" aria-hidden="true" />
             </div>
-            <p className="mt-5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#456345]">
+            <p className="mt-5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#456345] dark:text-[#a8d0a6]">
               Verified by the salon
             </p>
             <h1 className="mt-3 font-display text-4xl font-medium leading-tight tracking-[0.01em] text-foreground uppercase sm:text-5xl">
@@ -205,7 +205,7 @@ function PaymentVerificationPanel({ sessionId }: { sessionId: string }) {
             </dl>
 
             <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
-              <ShieldCheck className="size-4 shrink-0 text-[#456345]" aria-hidden="true" />
+              <ShieldCheck className="size-4 shrink-0 text-[#456345] dark:text-[#a8d0a6]" aria-hidden="true" />
               {data.transaction?.stripeEventId
                 ? "A paid transaction was recorded by the Stripe webhook."
                 : "The backend marked this session as paid."}
@@ -300,7 +300,7 @@ function PaymentMessage({
   const toneClasses = {
     neutral: "bg-secondary text-primary",
     danger: "bg-destructive/10 text-destructive",
-    pending: "bg-[#f6eddc] text-[#7c5c28]",
+    pending: "bg-[#f6eddc] text-[#7c5c28] dark:bg-[#3a2c12] dark:text-[#e6c98a]",
   }[tone];
 
   return (

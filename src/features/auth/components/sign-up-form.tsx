@@ -274,7 +274,9 @@ export function SignUpForm() {
                 key={check.label}
                 className={cn(
                   "flex items-center gap-1.5 text-[0.65rem]",
-                  isMet ? "text-[#456345]" : "text-muted-foreground",
+                  isMet
+                    ? "text-[#456345] dark:text-[#a8d0a6]"
+                    : "text-muted-foreground",
                 )}
               >
                 <span

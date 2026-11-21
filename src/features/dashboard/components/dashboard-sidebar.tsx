@@ -73,8 +73,8 @@ export function DashboardSidebar({
                 "flex items-center gap-3 rounded-md px-3 py-2.5 text-[0.82rem] transition-colors",
                 isCollapsed ? "justify-center" : "",
                 active
-                  ? "bg-[#b49162] font-medium text-white shadow-sm"
-                  : "text-[#6d625a] hover:bg-[#e9ddcd] hover:text-[#302b2b]",
+                  ? "border border-brand-foreground/20 bg-brand font-medium text-brand-foreground shadow-sm"
+                  : "text-ink-soft hover:bg-surface-soft hover:text-ink",
               )}
             >
               <item.icon className="size-[1.05rem] shrink-0" aria-hidden="true" />

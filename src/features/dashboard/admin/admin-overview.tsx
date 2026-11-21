@@ -126,17 +126,17 @@ export function AdminOverview() {
     <div className="space-y-7">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.26em] text-[#a19991]">
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.26em] text-ink-faint">
             Overview
           </p>
-          <h1 className="mt-2 font-heading text-4xl font-medium tracking-tight text-[#302b2b] sm:text-[2.6rem]">
+          <h1 className="mt-2 font-heading text-4xl font-medium tracking-tight text-ink sm:text-[2.6rem]">
             The Studio Overview.
           </h1>
-          <p className="mt-1 text-sm text-[#8c7f74]">{todayLabel}</p>
+          <p className="mt-1 text-sm text-ink-muted">{todayLabel}</p>
         </div>
         <Link
           href="/services"
-          className="inline-flex h-10 items-center gap-2 rounded-md bg-[#302b2b] px-5 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#4a403c]"
+          className="inline-flex h-10 items-center gap-2 rounded-md border border-white/20 bg-ink px-5 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#4a403c] dark:text-background dark:hover:bg-ink/80"
         >
           <Plus className="size-3.5" aria-hidden="true" />
           New appointment
@@ -155,18 +155,18 @@ export function AdminOverview() {
       {isLoading ? (
         <Skeleton className="h-24 w-full rounded-xl" />
       ) : (
-        <div className="grid grid-cols-2 overflow-hidden rounded-xl border border-[#e8dccb] bg-white/70 md:grid-cols-4">
+        <div className="grid grid-cols-2 overflow-hidden rounded-xl border border-line bg-card md:grid-cols-4">
           {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className={cn("px-5 py-5", index > 0 && "border-l border-[#e8dccb]")}
+              className={cn("px-5 py-5", index > 0 && "border-l border-line")}
             >
-              <p className="font-heading text-3xl text-[#302b2b] sm:text-[2.1rem]">{stat.value}</p>
+              <p className="font-heading text-3xl text-ink sm:text-[2.1rem]">{stat.value}</p>
               <div className="mt-1 flex flex-wrap items-center gap-2">
-                <span className="text-[0.62rem] font-medium uppercase tracking-[0.14em] text-[#8c7f74]">
+                <span className="text-[0.62rem] font-medium uppercase tracking-[0.14em] text-ink-muted">
                   {stat.label}
                 </span>
-                <span className="rounded-full bg-[#e7d9c6] px-2 py-0.5 text-[0.58rem] font-semibold text-[#8a6a42]">
+                <span className="rounded-full bg-surface-soft px-2 py-0.5 text-[0.58rem] font-semibold text-brand-deep">
                   {stat.badge}
                 </span>
               </div>
@@ -177,13 +177,13 @@ export function AdminOverview() {
 
       <div className="grid gap-6 lg:grid-cols-[1.6fr_0.8fr]">
         {/* Revenue analytics */}
-        <section className="rounded-xl border border-[#e8dccb] bg-white/70 p-5 sm:p-6">
+        <section className="rounded-xl border border-line bg-card p-5 sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 className="font-heading text-xl text-[#302b2b]">Revenue Analytics</h2>
-              <p className="mt-1 text-xs text-[#8c7f74]">Verified payments and booked visits.</p>
+              <h2 className="font-heading text-xl text-ink">Revenue Analytics</h2>
+              <p className="mt-1 text-xs text-ink-muted">Verified payments and booked visits.</p>
             </div>
-            <label className="flex items-center gap-2 rounded-md border border-[#e3d8cc] bg-white/70 px-2.5 py-1.5 text-xs text-[#6d625a]">
+            <label className="flex items-center gap-2 rounded-md border border-line bg-card px-2.5 py-1.5 text-xs text-ink-soft">
               <span className="sr-only">Chart range</span>
               <select
                 value={range}
@@ -202,8 +202,8 @@ export function AdminOverview() {
         </section>
 
         {/* Popular services */}
-        <section className="rounded-xl border border-[#e8dccb] bg-white/70 p-5 sm:p-6">
-          <h2 className="font-heading text-xl text-[#302b2b]">Popular Services</h2>
+        <section className="rounded-xl border border-line bg-card p-5 sm:p-6">
+          <h2 className="font-heading text-xl text-ink">Popular Services</h2>
           {popularServices.length > 0 ? (
             <div className="mt-4 space-y-4">
               {popularServices.map((service) => (
@@ -212,30 +212,30 @@ export function AdminOverview() {
                   href={`/dashboard/admin/services/${service.id}/edit`}
                   className="group flex items-center gap-3"
                 >
-                  <div className="relative size-11 shrink-0 overflow-hidden rounded-md bg-[#efe7dd]">
+                  <div className="relative size-11 shrink-0 overflow-hidden rounded-md bg-surface-hero">
                     <SafeImage src={service.image} alt={service.serviceName} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-[#302b2b] group-hover:text-[#8d5360]">
+                    <p className="truncate text-sm font-medium text-ink group-hover:text-link-accent">
                       {service.serviceName}
                     </p>
-                    <p className="truncate text-[0.68rem] text-[#8c7f74]">{service.category}</p>
+                    <p className="truncate text-[0.68rem] text-ink-muted">{service.category}</p>
                   </div>
                   <div className="shrink-0 text-right">
-                    <p className="text-sm font-medium text-[#302b2b]">
+                    <p className="text-sm font-medium text-ink">
                       {formatCurrency(service.price)}
                     </p>
-                    <p className="text-[0.65rem] text-[#a19991]">{service.duration} min</p>
+                    <p className="text-[0.65rem] text-ink-faint">{service.duration} min</p>
                   </div>
                 </Link>
               ))}
             </div>
           ) : (
-            <p className="mt-4 text-sm text-[#8c7f74]">No published services yet.</p>
+            <p className="mt-4 text-sm text-ink-muted">No published services yet.</p>
           )}
           <Link
             href="/dashboard/admin/services"
-            className="mt-5 inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#8d5360] hover:text-[#6f3f4b]"
+            className="mt-5 inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-link-accent hover:text-link-accent/80"
           >
             Manage services
             <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -245,13 +245,13 @@ export function AdminOverview() {
 
       <div className="grid gap-6 lg:grid-cols-[1.6fr_0.8fr]">
         {/* Recent appointments */}
-        <section className="rounded-xl border border-[#e8dccb] bg-white/70 p-5 sm:p-6">
-          <h2 className="font-heading text-xl text-[#302b2b]">Recent Appointments</h2>
+        <section className="rounded-xl border border-line bg-card p-5 sm:p-6">
+          <h2 className="font-heading text-xl text-ink">Recent Appointments</h2>
           {recentAppointments.length > 0 ? (
             <div className="mt-4 overflow-x-auto">
               <table className="w-full min-w-[560px] text-left text-sm">
                 <thead>
-                  <tr className="border-b border-[#e8dccb] text-[0.62rem] uppercase tracking-[0.14em] text-[#9a8d82]">
+                  <tr className="border-b border-line text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
                     <th className="pb-2 font-medium">Customer</th>
                     <th className="pb-2 font-medium">Service</th>
                     <th className="pb-2 font-medium">Date</th>
@@ -260,17 +260,17 @@ export function AdminOverview() {
                     <th className="pb-2 font-medium">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#efe8de]">
+                <tbody className="divide-y divide-line-soft">
                   {recentAppointments.map((appointment) => (
-                    <tr key={appointment.id} className="text-[#4a423d]">
+                    <tr key={appointment.id} className="text-ink-soft">
                       <td className="py-3 pr-3">{appointment.customer?.name ?? "Customer"}</td>
                       <td className="py-3 pr-3">
                         {appointment.serviceSnapshot?.serviceName ?? "Salon service"}
                       </td>
-                      <td className="py-3 pr-3 text-[#6d625a]">
+                      <td className="py-3 pr-3 text-ink-soft">
                         {formatDate(appointment.appointmentDate)}
                       </td>
-                      <td className="py-3 pr-3 text-[#6d625a]">
+                      <td className="py-3 pr-3 text-ink-soft">
                         {formatTimeSlot(appointment.timeSlot)}
                       </td>
                       <td className="py-3 pr-3">{formatCurrency(appointment.servicePrice)}</td>
@@ -283,11 +283,11 @@ export function AdminOverview() {
               </table>
             </div>
           ) : (
-            <p className="mt-4 text-sm text-[#8c7f74]">No appointments have been requested yet.</p>
+            <p className="mt-4 text-sm text-ink-muted">No appointments have been requested yet.</p>
           )}
           <Link
             href="/dashboard/admin/appointments"
-            className="mt-4 inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#8d5360] hover:text-[#6f3f4b]"
+            className="mt-4 inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-link-accent hover:text-link-accent/80"
           >
             View all appointments
             <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -295,26 +295,26 @@ export function AdminOverview() {
         </section>
 
         {/* Activity & transactions */}
-        <section className="rounded-xl border border-[#e8dccb] bg-white/70 p-5 sm:p-6">
-          <h2 className="font-heading text-xl text-[#302b2b]">Activity &amp; Transactions</h2>
+        <section className="rounded-xl border border-line bg-card p-5 sm:p-6">
+          <h2 className="font-heading text-xl text-ink">Activity &amp; Transactions</h2>
           {recentTransactions.length > 0 ? (
             <div className="mt-4 space-y-3">
               {recentTransactions.map((transaction) => (
                 <div
                   key={transaction.id}
-                  className="flex items-center justify-between gap-3 border-b border-[#efe8de] pb-3 last:border-0 last:pb-0"
+                  className="flex items-center justify-between gap-3 border-b border-line-soft pb-3 last:border-0 last:pb-0"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-sm text-[#4a423d]">
+                    <p className="truncate text-sm text-ink-soft">
                       {transaction.appointment?.serviceSnapshot?.serviceName ?? "Payment"}
                     </p>
-                    <p className="text-[0.65rem] text-[#a19991]">
+                    <p className="text-[0.65rem] text-ink-faint">
                       {transaction.status === "paid" ? "Card" : "Failed"} ·{" "}
                       {formatDate(transaction.createdAt)}
                     </p>
                   </div>
                   <div className="shrink-0 text-right">
-                    <p className="text-sm font-medium text-[#302b2b]">
+                    <p className="text-sm font-medium text-ink">
                       {formatCurrency(transaction.amount, transaction.currency)}
                     </p>
                     <StatusBadge status={transaction.status} />
@@ -323,11 +323,11 @@ export function AdminOverview() {
               ))}
             </div>
           ) : (
-            <p className="mt-4 text-sm text-[#8c7f74]">No payment activity recorded yet.</p>
+            <p className="mt-4 text-sm text-ink-muted">No payment activity recorded yet.</p>
           )}
           <Link
             href="/dashboard/admin/transactions"
-            className="mt-4 inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#8d5360] hover:text-[#6f3f4b]"
+            className="mt-4 inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-link-accent hover:text-link-accent/80"
           >
             All transactions
             <ArrowRight className="size-3.5" aria-hidden="true" />

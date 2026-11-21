@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ExternalLink, LogOut, PanelLeft, Search, UserRound } from "lucide-react";
 import type { DashboardUser } from "./dashboard-sidebar";
 import { NotificationCenter } from "./notification-center";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/format";
 
@@ -63,6 +64,7 @@ export function DashboardNavbar({
           </form>
         )}
 
+        <ThemeToggle />
         <NotificationCenter role={role} />
 
         <Link

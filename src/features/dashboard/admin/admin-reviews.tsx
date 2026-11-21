@@ -127,7 +127,7 @@ export function AdminReviews() {
                 </div>
 
                 <div className="mt-4 flex items-center gap-2">
-                  <span className="inline-flex items-center gap-0.5 text-[#c2a678]">
+                  <span className="inline-flex items-center gap-0.5 text-accent-gold">
                     {Array.from({ length: 5 }).map((_, index) => (
                       <Star
                         key={index}
@@ -173,7 +173,7 @@ export function AdminReviews() {
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Button
                       size="sm"
-                      className="rounded-full bg-[#b49162] text-white hover:bg-[#9d7a51]"
+                      className="rounded-full border border-brand-foreground/25 bg-brand text-brand-foreground hover:bg-brand/80"
                       onClick={() => handleDecision(review.id, "approved")}
                       disabled={actingId === review.id}
                     >

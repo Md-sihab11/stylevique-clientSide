@@ -32,7 +32,7 @@ function smoothPath(points: { x: number; y: number }[]) {
 export function RevenueChart({ points }: RevenueChartProps) {
   if (points.length === 0) {
     return (
-      <div className="flex h-44 items-center justify-center text-sm text-[#8c7f74]">
+      <div className="flex h-44 items-center justify-center text-sm text-ink-muted">
         No verified payments yet to chart.
       </div>
     );
@@ -71,8 +71,8 @@ export function RevenueChart({ points }: RevenueChartProps) {
       >
         <defs>
           <linearGradient id="revenue-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#c2a678" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#c2a678" stopOpacity="0.02" />
+            <stop offset="0%" stopColor="var(--accent-gold)" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="var(--accent-gold)" stopOpacity="0.02" />
           </linearGradient>
         </defs>
 
@@ -85,36 +85,36 @@ export function RevenueChart({ points }: RevenueChartProps) {
               x2={right}
               y1={y}
               y2={y}
-              stroke="#eee5d9"
+              stroke="var(--line-soft)"
               strokeWidth="1"
             />
           );
         })}
 
         <path d={areaPath} fill="url(#revenue-fill)" />
-        <path d={revenuePath} fill="none" stroke="#c2a678" strokeWidth="2.5" />
-        <path d={countPath} fill="none" stroke="#302b2b" strokeWidth="2" />
+        <path d={revenuePath} fill="none" stroke="var(--accent-gold)" strokeWidth="2.5" />
+        <path d={countPath} fill="none" stroke="var(--ink)" strokeWidth="2" />
 
         {revenuePoints.map((point, index) => (
-          <circle key={`r-${index}`} cx={point.x} cy={point.y} r="3" fill="#c2a678" />
+          <circle key={`r-${index}`} cx={point.x} cy={point.y} r="3" fill="var(--accent-gold)" />
         ))}
         {countPoints.map((point, index) => (
-          <circle key={`c-${index}`} cx={point.x} cy={point.y} r="2.5" fill="#302b2b" />
+          <circle key={`c-${index}`} cx={point.x} cy={point.y} r="2.5" fill="var(--ink)" />
         ))}
       </svg>
 
-      <div className="mt-1 flex justify-between px-2 text-[0.6rem] text-[#a19991]">
+      <div className="mt-1 flex justify-between px-2 text-[0.6rem] text-ink-faint">
         {points.map((point, index) => (
           <span key={`${point.label}-${index}`}>{point.label}</span>
         ))}
       </div>
 
-      <div className="mt-3 flex items-center gap-4 text-[0.62rem] text-[#8c7f74]">
+      <div className="mt-3 flex items-center gap-4 text-[0.62rem] text-ink-muted">
         <span className="inline-flex items-center gap-1.5">
-          <span className="size-2 rounded-full bg-[#302b2b]" /> Bookings
+          <span className="size-2 rounded-full bg-ink" /> Bookings
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="size-2 rounded-full bg-[#c2a678]" /> Revenue
+          <span className="size-2 rounded-full bg-accent-gold" /> Revenue
         </span>
       </div>
     </div>

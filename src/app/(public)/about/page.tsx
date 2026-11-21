@@ -91,7 +91,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section-space bg-foreground text-background">
+      <section className="section-space bg-on-dark text-on-dark-text">
         <div className="page-width">
           <SectionHeading
             eyebrow="What we value"
@@ -101,10 +101,10 @@ export default function AboutPage() {
 
           <div className="mt-12 grid gap-8 md:grid-cols-3">
             {VALUES.map((value) => (
-              <div key={value.title} className="border-t border-background/20 pt-6">
+              <div key={value.title} className="border-t border-on-dark/20 pt-6">
                 <value.icon className="size-5 text-accent" aria-hidden="true" />
-                <h3 className="mt-5 font-section text-2xl font-medium tracking-[0.02em] text-background uppercase">{value.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-background/55">
+                <h3 className="mt-5 font-section text-2xl font-medium tracking-[0.02em] text-on-dark-text uppercase">{value.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-on-dark-text/55">
                   {value.description}
                 </p>
               </div>

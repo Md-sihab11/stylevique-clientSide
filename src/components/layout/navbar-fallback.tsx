@@ -12,7 +12,7 @@ import { Logo } from "@/components/brand/logo";
  */
 export function NavbarFallback() {
   const bookButtonClasses =
-    "inline-flex h-12 items-center justify-center rounded-lg bg-foreground px-7 text-[0.72rem] font-semibold tracking-[0.18em] text-background uppercase transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+    "inline-flex h-12 items-center justify-center rounded-lg border border-on-dark-text/25 bg-on-dark px-7 text-[0.72rem] font-semibold tracking-[0.18em] text-on-dark-text uppercase transition-colors hover:bg-on-dark/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
   return (
     <header className="sticky top-0 z-40 bg-background">

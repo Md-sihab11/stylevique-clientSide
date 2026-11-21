@@ -13,13 +13,18 @@ type BadgeStatus =
   | string;
 
 const toneClasses: Record<string, string> = {
-  pending: "border-[#d9c39a] bg-[#f6eddc] text-[#7c5c28]",
-  confirmed: "border-[#b7ccb9] bg-[#eef4ec] text-[#456345]",
-  cancelled: "border-[#e2c1c6] bg-[#f8ecee] text-[#8d5360]",
-  paid: "border-[#b7ccb9] bg-[#eef4ec] text-[#456345]",
+  pending:
+    "border-[#d9c39a] bg-[#f6eddc] text-[#7c5c28] dark:border-[#7c5c28] dark:bg-[#3a2c12] dark:text-[#e6c98a]",
+  confirmed:
+    "border-[#b7ccb9] bg-[#eef4ec] text-[#456345] dark:border-[#4f6e4d] dark:bg-[#1e3220] dark:text-[#a8d0a6]",
+  cancelled:
+    "border-[#e2c1c6] bg-[#f8ecee] text-primary dark:border-[#8d5360] dark:bg-[#3a2226] dark:text-[#e5aeb8]",
+  paid: "border-[#b7ccb9] bg-[#eef4ec] text-[#456345] dark:border-[#4f6e4d] dark:bg-[#1e3220] dark:text-[#a8d0a6]",
   unpaid: "border-border bg-muted text-muted-foreground",
-  failed: "border-destructive/25 bg-destructive/10 text-destructive",
-  active: "border-[#b7ccb9] bg-[#eef4ec] text-[#456345]",
+  failed:
+    "border-destructive/25 bg-destructive/10 text-destructive dark:border-destructive/40 dark:text-[#ff9b93]",
+  active:
+    "border-[#b7ccb9] bg-[#eef4ec] text-[#456345] dark:border-[#4f6e4d] dark:bg-[#1e3220] dark:text-[#a8d0a6]",
   inactive: "border-border bg-muted text-muted-foreground",
   blocked: "border-destructive/25 bg-destructive/10 text-destructive",
 };

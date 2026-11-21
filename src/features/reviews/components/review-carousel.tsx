@@ -27,8 +27,8 @@ function Stars({ rating }: { rating: number }) {
           className={cn(
             "size-3.5",
             index < rating
-              ? "fill-[#c2a678] text-[#c2a678]"
-              : "fill-transparent text-[#d8cbb9]",
+              ? "fill-accent-gold text-accent-gold"
+              : "fill-transparent text-line",
           )}
           aria-hidden="true"
         />

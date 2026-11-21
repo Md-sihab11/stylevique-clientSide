@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Class-based dark mode; the .dark class is managed by the theme toggle. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /*
  * Stylevique design tokens
  * ------------------------
@@ -30,6 +33,69 @@
   --input: #dcd0c3;
   --ring: #8d5360;
   --radius: 0.75rem;
+
+  /* Editorial palette tokens (used where the core tokens are too broad). */
+  --ink: #302b2b;
+  --ink-soft: #6d625a;
+  --ink-muted: #8c7f74;
+  --ink-faint: #a19991;
+  --line: #e8dccb;
+  --line-soft: #efe8de;
+  --surface-soft: #f3ede3;
+  --surface-hero: #efe7dd;
+  --brand: #b49162;
+  --brand-deep: #8a6a42;
+  --brand-foreground: #ffffff;
+  --accent-gold: #c2a678;
+
+  /* Fixed colours for panels that are always dark in both themes. */
+  --on-dark: #1c1a19;
+  --on-dark-text: #f6f1ea;
+
+  /* Original rose link accent, kept unchanged in light mode. */
+  --link-accent: #8d5360;
+}
+
+/* ---------------------------------------------------------------------------
+ * Dark theme
+ * ------------------------------------------------------------------------ */
+.dark {
+  --background: #1c1a19;
+  --foreground: #f2ece4;
+  --card: #262220;
+  --card-foreground: #f2ece4;
+  --popover: #262220;
+  --popover-foreground: #f2ece4;
+  --primary: #c9a878;
+  --primary-foreground: #1c1a19;
+  --secondary: #2f2925;
+  --secondary-foreground: #f2ece4;
+  --muted: #2a2521;
+  --muted-foreground: #b3a79a;
+  --accent: #c9a878;
+  --accent-foreground: #1c1a19;
+  --destructive: #d4675f;
+  --destructive-foreground: #1c1a19;
+  --border: #3a332e;
+  --input: #3a332e;
+  --ring: #c9a878;
+
+  --ink: #f2ece4;
+  --ink-soft: #c9beb2;
+  --ink-muted: #a89c90;
+  --ink-faint: #8b8177;
+  --line: #3a332e;
+  --line-soft: #302a26;
+  --surface-soft: #2a2521;
+  --surface-hero: #332d28;
+  --brand: #c9a878;
+  --brand-deep: #d8bb90;
+  --brand-foreground: #1c1a19;
+  --accent-gold: #d0b184;
+
+  --on-dark: #1c1a19;
+  --on-dark-text: #f6f1ea;
+  --link-accent: #d8bb90;
 }
 
 /*
@@ -62,6 +128,29 @@ body:has([data-dashboard]) {
   --ring: #b49162;
 }
 
+/* Dark dashboard keeps the warm bronze accent on a deep charcoal surface. */
+html.dark body:has([data-dashboard]) {
+  --background: #1c1a19;
+  --foreground: #f2ece4;
+  --card: #262220cc;
+  --card-foreground: #f2ece4;
+  --popover: #262220;
+  --popover-foreground: #f2ece4;
+  --primary: #c9a878;
+  --primary-foreground: #1c1a19;
+  --secondary: #2f2925;
+  --secondary-foreground: #f2ece4;
+  --muted: #2a2521;
+  --muted-foreground: #b3a79a;
+  --accent: #d0b184;
+  --accent-foreground: #1c1a19;
+  --destructive: #d4675f;
+  --destructive-foreground: #1c1a19;
+  --border: #3a332e;
+  --input: #3a332e;
+  --ring: #c9a878;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -82,6 +171,22 @@ body:has([data-dashboard]) {
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-hero: var(--surface-hero);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-on-dark: var(--on-dark);
+  --color-on-dark-text: var(--on-dark-text);
+  --color-link-accent: var(--link-accent);
+  --color-accent-gold: var(--accent-gold);
 
   --font-sans: var(--font-josefin-sans);
   --font-heading: var(--font-cormorant);

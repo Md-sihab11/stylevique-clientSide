@@ -85,7 +85,7 @@ export function CustomerReviews() {
       {!isLoading && !error && items.length === 0 && (
         <div className="rounded-lg border border-border bg-card p-8 text-center">
           <MessageSquareHeart
-            className="mx-auto size-7 text-primary"
+            className="mx-auto size-7 text-link-accent"
             aria-hidden="true"
           />
           <p className="mt-4 text-sm font-medium text-foreground">
@@ -140,7 +140,7 @@ export function CustomerReviews() {
                       {review.rating}/5 · {review.highlights.length} highlights
                     </span>
                     {review.status === "rejected" && (
-                      <span className="text-xs text-[#8d5360]">
+                      <span className="text-xs text-link-accent">
                         You can edit and resubmit.
                       </span>
                     )}

@@ -10,10 +10,10 @@ interface LogoProps {
 }
 
 /**
- * Stylevique wordmark. Two assets live in public/logo/: navbar.png for light
- * surfaces (public navbar and dashboard sidebar) and the dark footer version.
- * The light asset has a white backdrop, so mix-blend-multiply makes it sit
- * cleanly on the cream surfaces without a visible box.
+ * Stylevique wordmark with a theme-aware asset:
+ * - light mode: navbar.png (white backdrop) blended with multiply
+ * - dark mode: the dark-backed footer asset blended with screen, so only the
+ *   tan/red artwork stays visible on charcoal surfaces
  */
 export function Logo({
   className,
@@ -21,24 +21,34 @@ export function Logo({
   href = "/",
   invert = false,
 }: LogoProps) {
-  const image = (
-    <Image
-      src={invert ? "/logo/footer-logo.png.jpg" : "/logo/navbar.png"}
-      alt="Stylevique"
-      width={1019}
-      height={invert ? 236 : 274}
-      priority
-      className={cn(
-        "h-auto w-[158px] object-contain",
-        // The light logo has a white backdrop; multiply blends it into the
-        // cream navbar and dashboard sidebar so it never shows a white box.
-        !invert && "mix-blend-multiply",
-        imageClassName,
-      )}
-    />
+  const content = (
+    <>
+      <Image
+        src="/logo/navbar.png"
+        alt="Stylevique"
+        width={1019}
+        height={274}
+        priority
+        className={cn(
+          "h-auto w-[158px] object-contain mix-blend-multiply",
+          invert ? "hidden" : "dark:hidden",
+          imageClassName,
+        )}
+      />
+      <Image
+        src="/logo/footer-logo.png.jpg"
+        alt="Stylevique"
+        width={1024}
+        height={236}
+        priority
+        className={cn(
+          "h-auto w-[158px] object-contain mix-blend-screen",
+          invert ? "block" : "hidden dark:block",
+          imageClassName,
+        )}
+      />
+    </>
   );
-
-  const content = image;
 
   if (!href) {
     return <div className={className}>{content}</div>;
