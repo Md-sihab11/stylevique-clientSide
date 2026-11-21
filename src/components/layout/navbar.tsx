@@ -57,7 +57,7 @@ export function Navbar() {
 
   /** Dark CTA that mirrors the hero buttons (uppercase, tracked, rounded-lg). */
   const bookButtonClasses =
-    "inline-flex h-12 items-center justify-center rounded-lg border border-on-dark-text/25 bg-on-dark px-7 text-[0.72rem] font-semibold tracking-[0.18em] text-on-dark-text uppercase transition-colors hover:bg-on-dark/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+    "inline-flex h-12 items-center justify-center rounded-lg border border-on-dark-text/25 bg-on-dark px-7 text-[0.72rem] font-semibold tracking-[0.18em] text-on-dark-text uppercase transition-all duration-300 hover:-translate-y-0.5 hover:border-[#F5F1EA] hover:bg-[#F5F1EA] hover:text-[#302B2B] hover:shadow-[0_10px_24px_-10px_rgba(0,0,0,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 
   async function handleSignOut() {
     setMobileOpen(false);

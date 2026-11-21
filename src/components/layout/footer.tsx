@@ -12,6 +12,9 @@ export function Footer() {
 
   return (
     <footer className="mt-auto bg-on-dark text-on-dark-text">
+      {/* Subtle top divider */}
+      <div className="h-px w-full bg-on-dark-text/20" aria-hidden="true" />
+      
       <div className="page-width py-16 lg:py-20">
         <div className="grid gap-12 border-b border-on-dark/15 pb-14 md:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_1fr_1fr]">
           <div className="max-w-sm">
@@ -26,7 +29,7 @@ export function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 text-[0.65rem] font-semibold uppercase tracking-[0.17em] text-on-dark-text/65 transition-colors hover:text-on-dark-text"
+                  className="inline-flex items-center gap-1 rounded-md px-1 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.17em] text-on-dark-text/65 transition-all duration-300 hover:-translate-y-0.5 hover:bg-on-dark-text/10 hover:text-on-dark-text"
                 >
                   {social.label}
                   <ArrowUpRight className="size-3" aria-hidden="true" />
@@ -44,7 +47,7 @@ export function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-on-dark-text/70 transition-colors hover:text-on-dark-text"
+                  className="inline-block text-sm text-on-dark-text/70 transition-all duration-300 hover:translate-x-1 hover:text-on-dark-text"
                 >
                   {link.label}
                 </Link>
@@ -73,13 +76,13 @@ export function Footer() {
                   ))}
                 </span>
               </p>
-              <a href={phoneHref} className="flex items-center gap-3 transition-colors hover:text-on-dark-text">
+              <a href={phoneHref} className="flex items-center gap-3 rounded-md p-1 transition-all duration-300 hover:translate-x-1 hover:bg-on-dark-text/10 hover:text-on-dark-text">
                 <Phone className="size-4 shrink-0 text-on-dark-text/40" aria-hidden="true" />
                 {SALON.phone}
               </a>
               <a
                 href={`mailto:${SALON.email}`}
-                className="flex items-center gap-3 break-all transition-colors hover:text-on-dark-text"
+                className="flex items-center gap-3 break-all rounded-md p-1 transition-all duration-300 hover:translate-x-1 hover:bg-on-dark-text/10 hover:text-on-dark-text"
               >
                 <Mail className="size-4 shrink-0 text-on-dark-text/40" aria-hidden="true" />
                 {SALON.email}
