@@ -13,12 +13,11 @@ import { useApiResource } from "@/hooks/use-api-resource";
 import { TRANSACTION_STATUS_OPTIONS } from "@/constants/salon";
 import {
   formatCurrency,
-  formatDate,
   formatDateTime,
-  formatTimeSlot,
   getCustomerName,
   getInitials,
 } from "@/lib/format";
+import { TransactionService } from "@/features/transactions/components/transaction-service";
 import { PageHeader } from "@/components/common/page-header";
 import { PrimaryButton } from "@/components/common/primary-button";
 import { DataTable, type DataTableColumn } from "@/components/common/data-table";
@@ -51,27 +50,6 @@ function TransactionCustomer({ transaction }: { transaction: Transaction }) {
           {customer?.email ?? "Customer record unavailable"}
         </p>
       </div>
-    </div>
-  );
-}
-
-function TransactionService({ transaction }: { transaction: Transaction }) {
-  const appointment = transaction.appointment;
-
-  if (!appointment) {
-    return (
-      <span className="text-xs text-muted-foreground">Appointment unavailable</span>
-    );
-  }
-
-  return (
-    <div className="min-w-0">
-      <p className="truncate text-sm text-foreground">
-        {appointment.serviceSnapshot?.serviceName ?? "Salon service"}
-      </p>
-      <p className="mt-0.5 text-[0.68rem] text-muted-foreground">
-        {formatDate(appointment.appointmentDate)} · {formatTimeSlot(appointment.timeSlot)}
-      </p>
     </div>
   );
 }

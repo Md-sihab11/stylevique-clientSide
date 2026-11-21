@@ -8,18 +8,18 @@ import { getInitials } from "@/lib/format";
 
 interface DashboardNavbarProps {
   user: DashboardUser;
-  onOpenMenu: () => void;
-  onToggleSidebar?: () => void;
+  onToggle: () => void;
 }
 
-/** Compact top bar for the dashboard, mainly used on mobile and tablet. */
-export function DashboardNavbar({ user, onOpenMenu, onToggleSidebar }: DashboardNavbarProps) {
+/** Compact top bar for the dashboard. Toggle collapses the sidebar on desktop
+ *  and opens the navigation drawer on mobile. */
+export function DashboardNavbar({ user, onToggle }: DashboardNavbarProps) {
   return (
     <div className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/90 px-4 backdrop-blur-md lg:px-8">
       <div className="flex items-center gap-3">
         <button
           type="button"
-          onClick={onToggleSidebar ?? onOpenMenu}
+          onClick={onToggle}
           className="inline-flex size-9 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-muted"
           aria-label="Toggle dashboard navigation"
         >
