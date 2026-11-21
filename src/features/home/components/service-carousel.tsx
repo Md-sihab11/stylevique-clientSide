@@ -11,9 +11,8 @@ interface ServiceCarouselProps {
 
 /**
  * Horizontal service carousel.
- * Buttons scroll by one card at a time; the ends clamp so the layout
- * stays predictable. Touch and trackpad track swipes are enabled by
- * the native scroll container.
+ * One card per view on phones, two on tablets and three on desktop — so the
+ * next button reveals the remaining services a page at a time.
  */
 export function ServiceCarousel({ services }: ServiceCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -35,12 +34,10 @@ export function ServiceCarousel({ services }: ServiceCarouselProps) {
     return () => el.removeEventListener("scroll", checkEdges);
   }, [checkEdges]);
 
-  const scrollBy = (direction: 1 | -1) => {
+  const scrollByPage = (direction: 1 | -1) => {
     const el = scrollRef.current;
     if (!el) return;
-    const card = el.querySelector<HTMLElement>("[data-carousel-card]");
-    const amount = (card?.offsetWidth ?? 320) + 24;
-    el.scrollBy({ left: direction * amount, behavior: "smooth" });
+    el.scrollBy({ left: direction * el.clientWidth, behavior: "smooth" });
     requestAnimationFrame(checkEdges);
   };
 
@@ -48,35 +45,38 @@ export function ServiceCarousel({ services }: ServiceCarouselProps) {
     <div className="relative">
       <div
         ref={scrollRef}
-        className="no-scrollbar flex gap-6 overflow-x-auto scroll-smooth px-6 md:px-4"
+        className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto scroll-smooth"
         role="region"
         aria-label="Featured services carousel"
       >
         {services.map((service) => (
-          <div key={service.id} data-carousel-card className="w-[260px] shrink-0 sm:w-[290px] lg:w-[320px]">
+          <div
+            key={service.id}
+            className="w-full shrink-0 snap-start px-2 sm:w-1/2 sm:px-3 lg:w-1/3"
+          >
             <ServiceCard service={service} />
           </div>
         ))}
       </div>
 
       {services.length > 0 && (
-        <div className="mt-4 flex items-center justify-between gap-3 md:absolute md:-translate-y-1/2 md:left-4 md:top-1/2 md:mt-0 md:w-3/4">
+        <div className="mt-5 flex items-center justify-center gap-3">
           <button
             type="button"
-            onClick={() => scrollBy(-1)}
+            onClick={() => scrollByPage(-1)}
             disabled={atStart}
-            aria-label="Previous service"
-            className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-all hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Previous services"
+            className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-all hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
           </button>
 
           <button
             type="button"
-            onClick={() => scrollBy(1)}
+            onClick={() => scrollByPage(1)}
             disabled={atEnd}
-            aria-label="Next service"
-            className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-all hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Next services"
+            className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-all hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ArrowRight className="size-4" aria-hidden="true" />
           </button>

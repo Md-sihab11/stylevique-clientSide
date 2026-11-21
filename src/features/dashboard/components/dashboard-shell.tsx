@@ -12,7 +12,6 @@ import {
   ExternalLink,
   LayoutDashboard,
   Scissors,
-  Settings,
   UserRound,
   UsersRound,
 } from "lucide-react";
@@ -38,7 +37,6 @@ export const ADMIN_NAV: DashboardNavItem[] = [
   { label: "Appointments", href: "/dashboard/admin/appointments", icon: CalendarDays },
   { label: "Customers", href: "/dashboard/admin/users", icon: UsersRound },
   { label: "Transactions", href: "/dashboard/admin/transactions", icon: CreditCard },
-  { label: "Settings", href: "/dashboard/admin/profile", icon: Settings },
 ];
 
 export const CUSTOMER_NAV: DashboardNavItem[] = [
@@ -47,7 +45,6 @@ export const CUSTOMER_NAV: DashboardNavItem[] = [
   { label: "Explore Services", href: "/services", icon: Compass },
   { label: "Payments", href: "/dashboard/customer/transactions", icon: CreditCard },
   { label: "My Profile", href: "/dashboard/customer/profile", icon: UserRound },
-  { label: "Settings", href: "/dashboard/customer/profile", icon: Settings },
 ];
 
 interface DashboardShellProps {

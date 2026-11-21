@@ -50,7 +50,12 @@ export function DashboardSidebar({
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-center px-4 py-6">
-        <Logo href="/" className={isCollapsed ? "w-10 overflow-hidden" : undefined} />
+        {/* multiply blends the logo's light backdrop into the cream sidebar */}
+        <Logo
+          href="/"
+          imageClassName="mix-blend-multiply"
+          className={isCollapsed ? "w-10 overflow-hidden" : undefined}
+        />
       </div>
 
       <nav
@@ -70,8 +75,8 @@ export function DashboardSidebar({
                 "flex items-center gap-3 rounded-md px-3 py-2.5 text-[0.82rem] transition-colors",
                 isCollapsed ? "justify-center" : "",
                 active
-                  ? "bg-primary font-medium text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  ? "bg-[#b49162] font-medium text-white shadow-sm"
+                  : "text-[#6d625a] hover:bg-[#e9ddcd] hover:text-[#302b2b]",
               )}
             >
               <item.icon className="size-[1.05rem] shrink-0" aria-hidden="true" />

@@ -41,12 +41,15 @@ export function FeaturedServices() {
 
         <div className="mt-12 lg:mt-16">
           {isLoading && (
-            <div className="flex gap-6 px-6 md:px-4">
-              <div className="flex gap-6 overflow-x-auto px-0 md:px-6 md:-mx-6">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <div key={index} className="h-72 w-[260px] shrink-0 rounded-lg bg-secondary sm:w-[290px] lg:w-[320px]" />
-                ))}
-              </div>
+            <div className="no-scrollbar flex overflow-x-auto">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="h-80 w-full shrink-0 px-2 sm:w-1/2 sm:px-3 lg:w-1/3"
+                >
+                  <div className="h-full w-full rounded-lg bg-secondary" />
+                </div>
+              ))}
             </div>
           )}
 
