@@ -36,10 +36,10 @@ export function Logo({
         )}
       />
       <Image
-        src="/logo/footer-logo.png.jpg"
+        src="/logo/darkmode.png"
         alt="Stylevique"
         width={1024}
-        height={236}
+        height={235}
         priority
         className={cn(
           "h-auto w-[158px] object-contain mix-blend-screen",

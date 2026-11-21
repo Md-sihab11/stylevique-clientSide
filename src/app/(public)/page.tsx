@@ -115,13 +115,13 @@ export default function HomePage() {
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/services"
-                  className="inline-flex h-12 items-center justify-center rounded-lg border border-on-dark/20 bg-background px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-foreground uppercase transition-colors hover:bg-on-dark-text/90 dark:hover:text-on-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="inline-flex h-12 items-center justify-center rounded-lg border border-foreground/25 bg-background px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-foreground uppercase transition-colors hover:bg-on-dark-text/90 dark:hover:text-on-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                 Explore Services
                 </Link>
                 <Link
                   href="/services"
-                  className="inline-flex h-12 items-center justify-center rounded-lg border border-on-dark/40 px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-on-dark-text uppercase transition-colors hover:border-on-dark/70 hover:bg-on-dark-text/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="inline-flex h-12 items-center justify-center rounded-lg border border-on-dark-text/50 px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-on-dark-text uppercase transition-colors hover:border-on-dark-text/80 hover:bg-on-dark-text/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   Book Appointment
                 </Link>
