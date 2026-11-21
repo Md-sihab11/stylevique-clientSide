@@ -94,17 +94,18 @@ export default function HomePage() {
           <div className="page-width relative flex min-h-[calc(100svh-5.5rem)] flex-col justify-center py-16 lg:min-h-[calc(100svh-6.5rem)] lg:py-20">
             <div className="max-w-2xl">
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-secondary/85">
-                The art of modern beauty
+                The Art of Modern Style
               </p>
 
               <h1 className="mt-6 font-display text-[clamp(3.1rem,7vw,6rem)] leading-[0.95] font-medium tracking-[0.01em] text-background uppercase">
-                Your beauty,
+
+
+                Your Style.
                 <span className="block">Your moment.</span>
               </h1>
 
               <p className="mt-7 max-w-xl text-base leading-7 text-background/75 sm:text-[1.05rem]">
-                Discover exceptional salon experiences, explore premium hair and
-                beauty services, and make time for the best version of yourself.
+                Discover premium hair, beauty, and grooming services. Explore your favorite treatments and book an experience that brings out your best.
               </p>
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -112,20 +113,20 @@ export default function HomePage() {
                   href="/services"
                   className="inline-flex h-12 items-center justify-center rounded-lg bg-background px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-foreground uppercase transition-colors hover:bg-background/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                  Explore our services
+                Explore Services
                 </Link>
                 <Link
                   href="/services"
                   className="inline-flex h-12 items-center justify-center rounded-lg border border-background/40 px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-background uppercase transition-colors hover:border-background/70 hover:bg-background/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                  Book an appointment
+                  Book Appointment
                 </Link>
               </div>
 
               <p className="mt-12 flex flex-wrap items-center gap-x-3 text-[0.75rem] font-semibold tracking-[0.24em] text-background/70 uppercase">
                 <span>Style</span>
                 <span aria-hidden="true">·</span>
-                <span>Beauty</span>
+                <span>Care</span>
                 <span aria-hidden="true">·</span>
                 <span>Confidence</span>
               </p>
@@ -205,7 +206,7 @@ export default function HomePage() {
             </div>
             <div className="absolute -bottom-6 -right-3 hidden rounded-full bg-primary px-6 py-6 text-center text-primary-foreground sm:block">
               <p className="font-heading text-3xl leading-none">Slow</p>
-              <p className="mt-1 text-[0.6rem] uppercase tracking-[0.2em]">beauty</p>
+              <p className="mt-1 text-[0.6rem] uppercase tracking-[0.2em]">care</p>
             </div>
           </div>
 
