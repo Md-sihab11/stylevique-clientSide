@@ -404,11 +404,12 @@ The backend registers this route and returns the ImgBB URL as `{ url }`.
 | Customer appointment detail | `getAppointmentById` |
 | Customer cancel action | `cancelAppointment` |
 | Customer pay action | `createCheckoutSession` |
+| Customer payment history | `getMyTransactions` |
 | Customer profile | `updateMyProfile` (session supplies initial values) |
 | Admin overview | `getAdminDashboard` |
 | Admin services list | `getAdminServices`, `getServiceCategories`, `updateServiceStatus`, `deleteService` |
 | Admin add service | `createService`, `getServiceCategories` |
-| Admin edit service | `getServiceById`, `updateService`, `getServiceCategories` |
+| Admin edit service | `getAdminServiceById`, `updateService`, `getServiceCategories` |
 | Admin appointments | `getAdminAppointments`, `updateAdminAppointmentStatus` |
 | Admin customers | `getCustomers`, `blockCustomer`, `unblockCustomer` |
 | Admin transactions | `getAdminTransactions` |
@@ -417,29 +418,30 @@ The backend registers this route and returns the ImgBB URL as `{ url }`.
 | Payment cancel | none (informational only) |
 | Navbar / dashboard guards | Better Auth session (already implemented) |
 
-`getMyProfile`, `getCustomerById`, `getMyTransactions` and `uploadImage` are
-ready for future screens; the current pages do not require them.
+`getMyProfile` and `getCustomerById` are available for future profile and
+customer-detail screens. `uploadImage` is used by both the profile editor and
+the admin service form.
 
 ---
 
-## 9. Implementation order that works well
+## 9. Verification order that works well
 
-1. Add the request helper from section 6.
-2. Implement `getMyProfile` and verify a Bearer token reaches Express.
-3. Implement public services and categories; confirm the homepage cards appear.
-4. Implement customer appointments, then the customer dashboard counts.
-5. Implement admin services and the service form.
-6. Implement admin appointments and the status actions.
-7. Implement admin customers and block/unblock.
-8. Implement dashboards and transactions.
-9. Implement checkout and verification last, with Stripe test keys and a
-   webhook forwarding command:
+1. Confirm the request helper from section 6 can reach Express.
+2. Sign in and verify a Bearer token is accepted by `/api/users/me`.
+3. Open the public services and categories; confirm the homepage cards appear.
+4. Send an appointment request, then check the customer dashboard counts.
+5. Create, edit and deactivate a service from the admin dashboard.
+6. Confirm and cancel appointments with the admin status actions.
+7. Search, block and unblock customers from the admin dashboard.
+8. Review customer payment history and admin transactions.
+9. Verify checkout and payment confirmation with Stripe test keys and a webhook
+   forwarding command:
 
    ```bash
    stripe listen --forward-to localhost:5000/api/payments/webhook
    ```
 
-10. Only then implement `uploadImage` if the backend route is added.
+10. Upload a profile image and a service image through `POST /api/uploads/image`.
 
 ---
 

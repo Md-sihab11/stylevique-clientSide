@@ -18,13 +18,13 @@ import {
   SheetDescription,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 import {
   DashboardSidebar,
   type DashboardNavItem,
   type DashboardUser,
 } from "./dashboard-sidebar";
 import { DashboardNavbar } from "./dashboard-navbar";
-import { cn } from "@/lib/utils";
 
 export const ADMIN_NAV: DashboardNavItem[] = [
   { label: "Overview", href: "/dashboard/admin", icon: LayoutDashboard, exact: true },
@@ -38,6 +38,7 @@ export const ADMIN_NAV: DashboardNavItem[] = [
 export const CUSTOMER_NAV: DashboardNavItem[] = [
   { label: "Overview", href: "/dashboard/customer", icon: LayoutDashboard, exact: true },
   { label: "My appointments", href: "/dashboard/customer/appointments", icon: CalendarDays },
+  { label: "Payment history", href: "/dashboard/customer/transactions", icon: CreditCard },
   { label: "My profile", href: "/dashboard/customer/profile", icon: UserRound },
   { label: "Browse services", href: "/services", icon: Scissors },
 ];
@@ -50,16 +51,21 @@ interface DashboardShellProps {
 }
 
 /**
- * Shared dashboard frame: fixed sidebar on desktop, drawer on mobile.
- * The role is decided on the server by the role layout and passed in here.
+ * Shared dashboard frame: collapsible sidebar on desktop, overlay drawer on mobile.
+ * One toggle button handles both — collapse on desktop, open/close drawer on mobile.
  */
 export function DashboardShell({ user, role, navItems, children }: DashboardShellProps) {
   const router = useRouter();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   const items = navItems ?? (role === "admin" ? ADMIN_NAV : CUSTOMER_NAV);
+
+  function handleToggle() {
+    setIsCollapsed((prev) => !prev);
+    setMobileDrawerOpen((prev) => !prev);
+  }
 
   async function handleSignOut() {
     setIsSigningOut(true);
@@ -79,10 +85,12 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
 
   return (
     <div className="flex min-h-svh bg-background">
+      {/* Desktop sidebar — collapsible, hidden on mobile (<lg) */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-20 border-r border-border bg-card transition-all duration-300",
-          sidebarOpen ? "w-64 lg:block" : "w-16 lg:hidden",
+          "fixed inset-y-0 left-0 z-20 border-r border-border bg-card transition-all duration-300 flex flex-col",
+          "hidden lg:flex",
+          isCollapsed ? "w-16" : "w-64",
         )}
       >
         <DashboardSidebar
@@ -90,21 +98,17 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
           items={items}
           onSignOut={handleSignOut}
           isSigningOut={isSigningOut}
-          isCollapsed={!sidebarOpen}
+          isCollapsed={isCollapsed}
         />
       </aside>
 
-      <div
-        className={cn(
-          "flex min-w-0 flex-1 flex-col transition-all duration-300",
-          sidebarOpen ? "lg:pl-64" : "lg:pl-16",
-        )}
-      >
-        <DashboardNavbar user={user} onOpenMenu={() => setMobileOpen(true)} onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <div className={cn("flex min-w-0 flex-1 flex-col", isCollapsed ? "lg:pl-16" : "lg:pl-64")}>
+        <DashboardNavbar user={user} onToggle={handleToggle} />
         <main className="flex-1 bg-background px-4 py-7 sm:px-6 lg:px-10 lg:py-10">{children}</main>
       </div>
 
-      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+      {/* Mobile overlay drawer — opens on toggle below lg */}
+      <Sheet open={mobileDrawerOpen} onOpenChange={setMobileDrawerOpen}>
         <SheetContent side="left" className="w-[86%] max-w-xs bg-card p-0">
           <SheetTitle className="sr-only">Dashboard navigation</SheetTitle>
           <SheetDescription className="sr-only">
@@ -114,8 +118,9 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
             user={user}
             items={items}
             onSignOut={handleSignOut}
-            onNavigate={() => setMobileOpen(false)}
+            onNavigate={() => setMobileDrawerOpen(false)}
             isSigningOut={isSigningOut}
+            isCollapsed={false}
           />
         </SheetContent>
       </Sheet>

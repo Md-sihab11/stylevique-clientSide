@@ -91,6 +91,19 @@ export function AdminAppointments() {
       cell: (appointment) => <AppointmentServiceInfo appointment={appointment} />,
     },
     {
+      key: "message",
+      header: "Note",
+      cell: (appointment) => (
+        <span
+          title={appointment.message || undefined}
+          className="max-w-[16rem] truncate text-sm text-muted-foreground"
+        >
+          {appointment.message || "No note"}
+        </span>
+      ),
+      className: "max-w-[22%]",
+    },
+    {
       key: "schedule",
       header: "Schedule",
       cell: (appointment) => (
@@ -333,6 +346,15 @@ export function AdminAppointments() {
                     </dd>
                   </div>
                   <div className="col-span-2">
+                    <dt className="text-muted-foreground">Note</dt>
+                    <dd
+                      className="mt-1 break-words text-sm text-foreground"
+                      title={appointment.message || undefined}
+                    >
+                      {appointment.message || "No note"}
+                    </dd>
+                  </div>
+                  <div>
                     <dt className="text-muted-foreground">Requested</dt>
                     <dd className="mt-1 text-foreground">
                       {formatDateTime(appointment.createdAt)}

@@ -77,7 +77,7 @@ This README treats its routes and rules as the source of truth.
 - Service menu with search, category filter, sorting, pagination and URL-backed
   state (filters survive refresh and can be shared)
 - Service detail page with price, duration, description and a booking form
-- About and contact pages with salon information and editable placeholders
+- About and contact pages with salon contact details, opening hours and social links
 - Sticky responsive navigation with a mobile sheet, auth menu and sign-out
 - Accessible skip link, focus states and semantic landmarks
 
@@ -96,6 +96,7 @@ This README treats its routes and rules as the source of truth.
 - Appointment detail with service snapshot, schedule, payment state and actions
 - Cancel action only for appointments the backend allows cancelling
 - Pay action only for confirmed, unpaid appointments
+- Payment history with paid/failed filter, Stripe references and pagination
 - Profile editor backed by the live Better Auth session; email and role are
   read-only
 
@@ -234,6 +235,7 @@ Copy [`.env.example`](./.env.example) to `.env.local`. Never commit real secrets
 | `GOOGLE_CLIENT_ID` | No | Google OAuth client ID |
 | `GOOGLE_CLIENT_SECRET` | No | Google OAuth client secret |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | No | Only needed if you add Stripe.js; checkout is a redirect today |
+| `NEXT_PUBLIC_HERO_IMAGE_URL` | No | Public image URL for the homepage hero; defaults to the bundled salon photo |
 
 Stripe **secret** keys and webhook secrets belong to the Express backend, never
 to this app.
@@ -329,6 +331,7 @@ src/
 | `/dashboard/customer` | Appointment summary |
 | `/dashboard/customer/appointments` | Appointment list and status filter |
 | `/dashboard/customer/appointments/[id]` | Appointment details and actions |
+| `/dashboard/customer/transactions` | Payment history |
 | `/dashboard/customer/profile` | Profile editor |
 
 ### Admin dashboard

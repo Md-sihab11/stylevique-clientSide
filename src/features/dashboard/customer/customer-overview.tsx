@@ -117,6 +117,9 @@ export function CustomerOverview() {
             <PrimaryButton href="/dashboard/customer/appointments" size="sm" variant="outline">
               View appointments
             </PrimaryButton>
+            <PrimaryButton href="/dashboard/customer/transactions" size="sm" variant="outline">
+              Payment history
+            </PrimaryButton>
             <PrimaryButton href="/dashboard/customer/profile" size="sm" variant="ghost">
               Edit profile
             </PrimaryButton>
