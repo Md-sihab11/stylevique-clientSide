@@ -205,7 +205,7 @@ export default function HomePage() {
           <div className="relative order-2 lg:order-1">
             <div className="relative aspect-[5/6] overflow-hidden rounded-t-[9rem]">
               <Image
-                src="/images/banners/image3.png"
+                src="/images/banners/image9.png"
                 alt="A quiet, light-filled Stylevique salon"
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"
