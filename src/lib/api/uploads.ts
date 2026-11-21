@@ -4,9 +4,8 @@ import type { UploadedImage } from "@/features/payments/types";
 /**
  * IMAGE UPLOAD
  * ------------
- * The frontend is ready for POST /api/uploads/image, but the supplied backend
- * index.js does not register that route yet. Until it is added, this call will
- * return a 404 and the UI will show the backend's error message.
+ * POST /api/uploads/image stores the file on ImgBB and returns its URL.
+ * The backend requires a valid JWT, so the caller must be signed in.
  *
  * The multipart field name must be "image". We never set Content-Type
  * manually, because the browser must add the multipart boundary.
