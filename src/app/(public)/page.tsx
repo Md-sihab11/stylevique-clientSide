@@ -9,10 +9,10 @@ import {
   Search,
   Sparkles,
 } from "lucide-react";
-import { HERO_IMAGE_SRC, SALON } from "@/constants/salon";
+import { SALON } from "@/constants/salon";
 import { SectionHeading } from "@/components/common/section-heading";
 import { PrimaryButton } from "@/components/common/primary-button";
-import { SafeImage } from "@/components/common/safe-image";
+import { HeroCarousel } from "@/features/home/components/hero-carousel";
 import { FeaturedServices } from "@/features/home/components/featured-services";
 import { ServiceCategories } from "@/features/home/components/service-categories";
 import { ReviewCarousel } from "@/features/reviews/components/review-carousel";
@@ -76,16 +76,9 @@ export default function HomePage() {
       ---------------------------------------------------------------- */}
       <section>
         <div className="relative overflow-hidden bg-on-dark">
-          {/* Full-bleed backdrop with layered gradients so the copy stays
-              readable on every crop of the image. */}
-          <div className="absolute inset-0">
-            <SafeImage
-              src={HERO_IMAGE_SRC}
-              alt="A warmly lit Stylevique salon with backlit mirrors and leather chairs"
-              priority
-              className="object-center dark:brightness-110"
-            />
-          </div>
+          {/* Auto-playing salon photo carousel with layered gradients so the
+              copy stays readable on every crop of every image. */}
+          <HeroCarousel />
           <div
             className="absolute inset-0 bg-gradient-to-r from-on-dark/95 via-on-dark/80 to-on-dark/35 dark:from-on-dark/70 dark:via-on-dark/45 dark:to-on-dark/15"
             aria-hidden="true"
@@ -200,7 +193,7 @@ export default function HomePage() {
         {/* A soft, blurred echo of the salon photo keeps the dark panel warm. */}
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 opacity-[0.12] lg:block" aria-hidden="true">
           <Image
-            src="/images/banners/hero-salon.jpg"
+            src="/images/banners/image6.png"
             alt=""
             fill
             sizes="50vw"
@@ -212,7 +205,7 @@ export default function HomePage() {
           <div className="relative order-2 lg:order-1">
             <div className="relative aspect-[5/6] overflow-hidden rounded-t-[9rem]">
               <Image
-                src="/images/banners/hero-salon.jpg"
+                src="/images/banners/image3.png"
                 alt="A quiet, light-filled Stylevique salon"
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"

@@ -14,7 +14,7 @@ import { StatusBadge } from "@/components/common/status-badge";
 import { ErrorState } from "@/components/common/error-state";
 import { Skeleton } from "@/components/common/skeleton-loader";
 import { PrimaryButton } from "@/components/common/primary-button";
-import { HERO_IMAGE_SRC } from "@/constants/salon";
+import { CUSTOMER_HERO_IMAGE } from "@/constants/salon";
 import { cn } from "@/lib/utils";
 
 /**
@@ -121,7 +121,7 @@ export function CustomerOverview() {
         </div>
         <div className="relative min-h-44 md:min-h-full">
           <SafeImage
-            src={HERO_IMAGE_SRC}
+            src={CUSTOMER_HERO_IMAGE}
             alt="A warmly lit Stylevique salon interior"
             className="h-full w-full object-cover"
           />

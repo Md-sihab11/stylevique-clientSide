@@ -57,7 +57,7 @@ export default function AboutPage() {
       <section className="page-width grid gap-10 py-16 lg:grid-cols-2 lg:items-center lg:gap-20 lg:py-24">
         <div className="relative aspect-[4/5] overflow-hidden rounded-t-[9rem]">
           <Image
-            src="/images/banners/hero-salon.jpg"
+            src="/images/banners/image1.png"
             alt="A warm, quiet treatment space at Stylevique"
             fill
             sizes="(max-width: 1024px) 100vw, 45vw"

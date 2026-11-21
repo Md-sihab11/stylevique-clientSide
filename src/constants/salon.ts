@@ -33,6 +33,9 @@ export const HERO_IMAGE_SRC =
   process.env.NEXT_PUBLIC_HERO_IMAGE_URL?.trim() ||
   "/images/banners/hero-section.png";
 
+/** Salon photography used in the customer dashboard banner. */
+export const CUSTOMER_HERO_IMAGE = "/images/banners/image10.png";
+
 /**
  * Main navigation links. They are shared by the desktop navbar and the
  * mobile menu so both stay in sync.
