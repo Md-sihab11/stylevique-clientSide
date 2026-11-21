@@ -22,7 +22,7 @@ the shared client, authentication, response handling and known backend gaps.
 | Customer appointment, dashboard, profile and payment APIs | Implemented |
 | Admin service, appointment, user and transaction APIs | Implemented |
 | Stripe checkout redirect and verified payment success | Implemented |
-| `POST /api/uploads/image` | Client/UI implemented; route **not registered** in supplied backend |
+| `POST /api/uploads/image` | Implemented on client and server (ImgBB) |
 
 Every API function returns the inner `data` object of the backend's
 `{ success, message, data }` envelope. Pages catch network/HTTP errors and show
@@ -44,7 +44,7 @@ Browser
            ├── verifies JWT with Better Auth JWKS
            ├── reads/writes the same MongoDB database
            ├── talks to Stripe Checkout + webhook
-           └── talks to ImgBB (upload route is not registered yet)
+           └── talks to ImgBB (POST /api/uploads/image)
 ```
 
 Key points:
@@ -225,7 +225,7 @@ For `verifyPayment`, put `session_id` in `query` instead of the path.
 
 All paths below are appended to `NEXT_PUBLIC_API_URL`.
 
-### Public services — `src/lib/api/services.ts`
+### Public services — `src/features/services/api.ts`
 
 | Function | Endpoint | Auth | Query / body | Response `data` |
 | --- | --- | --- | --- | --- |
@@ -241,11 +241,12 @@ Notes:
 - `GET /api/services/:id` returns **404 for inactive services**.
 - Prices are major currency units (e.g. `65.00`, not cents).
 
-### Admin services — `src/lib/api/services.ts`
+### Admin services — `src/features/services/api.ts`
 
 | Function | Endpoint | Auth | Query / body | Response `data` |
 | --- | --- | --- | --- | --- |
 | `getAdminServices` | `GET /api/admin/services` | admin | `search`, `category`, `status`, `sort`, `page`, `limit` | `{ services, pagination }` |
+| `getAdminServiceById` | `GET /api/admin/services/:id` | admin | — | `{ service }` (any status) |
 | `createService` | `POST /api/services` | admin | `CreateServiceInput` | `{ service }` (201) |
 | `updateService` | `PATCH /api/services/:id` | admin | name, category, description, price, duration, image | `{ service }` |
 | `updateServiceStatus` | `PATCH /api/services/:id/status` | admin | `{ status: "active" \| "inactive" }` | `{ service }` |
@@ -265,13 +266,10 @@ Service validation mirrors the backend:
 
 `PATCH /api/services/:id` rejects `status`; use the status endpoint.
 
-> **Admin edit limitation:** the supplied backend has no
-> `GET /api/admin/services/:id`. `getServiceById()` is the only detail route and
-> it only returns **active** services. The edit page therefore cannot load an
-> inactive service until it is activated from the list (or the backend adds an
-> admin detail endpoint). This is documented in the edit page UI too.
+> **Admin edit route:** `GET /api/admin/services/:id` returns the service with
+> any status, so the edit form loads active and inactive services directly.
 
-### Customer appointments — `src/lib/api/appointments.ts`
+### Customer appointments — `src/features/appointments/api.ts`
 
 | Function | Endpoint | Auth | Query / body | Response `data` |
 | --- | --- | --- | --- | --- |
@@ -289,7 +287,7 @@ Booking rules:
 - Customers may cancel **pending** appointments only.
 - `getAppointmentById` allows the owner or an admin; other customers get `403`.
 
-### Admin appointments — `src/lib/api/appointments.ts`
+### Admin appointments — `src/features/appointments/api.ts`
 
 | Function | Endpoint | Auth | Query / body | Response `data` |
 | --- | --- | --- | --- | --- |
@@ -307,7 +305,7 @@ cancelled -> (no admin action)
 Cancelling a paid appointment keeps the payment and transaction history and does
 **not** issue a refund.
 
-### Users — `src/lib/api/users.ts`
+### Users — `src/features/users/api.ts`
 
 | Function | Endpoint | Auth | Query / body | Response `data` |
 | --- | --- | --- | --- | --- |
@@ -336,14 +334,14 @@ Admin customer notes:
 - Blocking prevents the customer from using protected APIs, including booking
   and checkout. Existing records are preserved.
 
-### Dashboards — `src/lib/api/dashboard.ts`
+### Dashboards — `src/features/dashboard/api.ts`
 
 | Function | Endpoint | Auth | Response `data` |
 | --- | --- | --- | --- |
 | `getCustomerDashboard` | `GET /api/dashboard/customer` | customer | `totalAppointments`, `pendingAppointments`, `confirmedAppointments`, `cancelledAppointments` |
 | `getAdminDashboard` | `GET /api/dashboard/admin` | admin | `totalRegisteredCustomers`, `totalActiveServices`, `totalAppointments`, pending/confirmed/cancelled counts, `totalSuccessfulPayments`, `totalRevenue`, `currency` |
 
-### Payments — `src/lib/api/payments.ts`
+### Payments — `src/features/payments/api.ts`
 
 | Function | Endpoint | Auth | Query / body | Response `data` |
 | --- | --- | --- | --- | --- |
@@ -369,7 +367,7 @@ Verification rules:
 - `verifyPayment` requires a customer account. Administrator accounts get a
   clear message on the success page and should use the transactions screen.
 
-### Transactions — `src/lib/api/transactions.ts`
+### Transactions — `src/features/transactions/api.ts`
 
 | Function | Endpoint | Auth | Query | Response `data` |
 | --- | --- | --- | --- | --- |
@@ -389,10 +387,8 @@ Authorization: Bearer <jwt>
 Field: image
 ```
 
-The backend **README** documents this route and an ImgBB response of
-`{ url }`, but the supplied `index.js` does not register it. Until that route
-exists, `uploadImage()` must remain a TODO and the UI uses image URL fields
-instead. Do not point the form at a route that returns 404.
+The backend registers this route and returns the ImgBB URL as `{ url }`.
+`uploadImage()` requires a signed-in user because the route verifies the JWT.
 
 ---
 
@@ -462,7 +458,7 @@ ready for future screens; the current pages do not require them.
 - [ ] Payment success page shows success only when `status === "paid"`.
 - [ ] `payment/cancel` never claims a payment failed or succeeded.
 - [ ] Blocked customer sees a clear error.
-- [ ] Empty, loading, error and pending-integration views each work.
+- [ ] Empty, loading and error views each work.
 - [ ] Responsive checks at 375 px, 768 px and 1440 px.
 
 ---
@@ -471,8 +467,6 @@ ready for future screens; the current pages do not require them.
 
 | Gap | Impact | Suggested fix |
 | --- | --- | --- |
-| No admin service-detail endpoint | Inactive services cannot be edited through a direct route | The frontend works around this with `getAdminServiceById()`, which pages through `GET /api/admin/services`. A backend endpoint would still be cleaner. |
-| Upload route documented but not registered | Image upload cannot be wired end-to-end yet | Register `POST /api/uploads/image` with ImgBB or another host. Until then, `uploadImage()` returns a 404 and the UI shows image URL fields instead. |
 | No reschedule endpoint | Confirmed appointments need salon contact | Add a reschedule endpoint or keep the contact flow. |
 | No refund endpoint | Admin cancellation keeps the payment | Handle refunds in Stripe separately and link the record. |
 | No customer search over appointments | Admin filters only status/date | Add a customer query if needed. |

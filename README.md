@@ -7,11 +7,21 @@ appointments, customers and transactions.
 
 HTTP integration with the Express API is complete. Every call goes through the
 shared `fetch` client in `src/lib/api-client.ts` and the endpoint modules in
-`src/lib/api/`. Nothing in this app invents data, fakes a login, or pretends a
-payment succeeded.
+`src/features/*/api.ts`. Nothing in this app invents data, fakes a login, or
+pretends a payment succeeded.
 
 - [`API_INTEGRATION.md`](./API_INTEGRATION.md) — endpoint-by-endpoint handoff guide
 - [`.env.example`](./.env.example) — every environment variable the frontend needs
+
+---
+
+## Project links
+
+| | Link |
+| --- | --- |
+| Live site | _Deployment pending — add the deployed frontend URL here_ |
+| Client repository | https://github.com/Md-sihab11/stylevique-clientSide |
+| Server repository | https://github.com/Md-sihab11/stylevique-server |
 
 ---
 
@@ -48,14 +58,13 @@ Stylevique is a two-sided salon product:
 Authentication is handled by **Better Auth** inside this Next.js app. The Express
 API verifies the JWTs Better Auth issues. Express never handles a login form.
 
-The supplied backend lives outside this repository:
+The backend lives in its own repository:
 
 ```text
-../Server-side - Copy/stylevique-server/index.js
+https://github.com/Md-sihab11/stylevique-server
 ```
 
-Do not modify it from here. This README treats its routes and rules as the
-source of truth.
+This README treats its routes and rules as the source of truth.
 
 ---
 
@@ -108,8 +117,8 @@ source of truth.
 - Focused layout with no public navigation
 - Success page asks the backend to verify the Stripe session and renders success
   **only** when the verified status is `paid`
-- Explicit pending-integration, unsigned-in, wrong-role, missing-session, failed
-  and still-processing states
+- Explicit unsigned-in, wrong-role, missing-session, failed and
+  still-processing states
 - Cancel page explains that returning from Checkout changes nothing and no
   payment is assumed
 
@@ -252,6 +261,7 @@ src/
 ├── app/
 │   ├── (auth)/                 # Sign-in / sign-up split-screen routes
 │   ├── (public)/               # Home, services, about, contact
+│   │   └── services/[id]/      # Protected service details (server-side guard)
 │   ├── api/auth/[...all]/      # Better Auth route handler
 │   ├── dashboard/
 │   │   ├── admin/              # Admin pages and role-guarded layout
@@ -260,25 +270,27 @@ src/
 │   ├── globals.css             # Design tokens and utilities
 │   └── layout.tsx              # Fonts, metadata, Toaster
 ├── components/
-│   ├── appointments/           # Booking form, shared appointment pieces
-│   ├── auth/                   # Sign-in / sign-up forms
 │   ├── brand/                  # Logo
 │   ├── common/                 # Buttons, states, tables, dialogs, skeletons
-│   ├── dashboard/              # Admin, customer and profile views
-│   ├── home/                   # Homepage sections
 │   ├── layout/                 # Navbar and footer
-│   ├── payment/                # Payment verification UI
-│   ├── services/               # Service card, grid, details
 │   └── ui/                     # Base UI primitives
+├── features/                   # One folder per domain, each with api.ts
+│   ├── appointments/           # Booking form, rules, customer/admin actions
+│   ├── auth/                   # Sign-in / sign-up forms
+│   ├── dashboard/              # Admin and customer dashboard views
+│   ├── home/                   # Featured services, category section
+│   ├── payments/               # Payment verification UI
+│   ├── services/               # Service card, grid, details, browse
+│   ├── transactions/           # Transaction types and API
+│   └── users/                  # Customer directory types and API
 ├── constants/                  # Salon details, nav, slots, sort options
 ├── hooks/                      # useApiResource
 ├── lib/
-│   ├── api/                    # Typed API TODOs — the integration layer
-│   ├── auth.ts                 # Better Auth server config
-│   ├── auth-client.ts          # Better Auth browser client
-│   ├── server-session.ts       # Server-side session helper
-│   ├── appointment-rules.ts    # Slot/date rules shared by UI
+│   ├── api-client.ts           # The one fetch wrapper (JWT, FormData, errors)
+│   ├── api/                    # Uploads, API config and error helpers
+│   ├── auth/                   # Better Auth server, client and session helper
 │   ├── format.ts               # Currency, date and text formatters
+│   ├── navigation.ts           # Safe callback URL helper
 │   └── utils.ts                # Class name helper
 └── types/                      # Backend response models
 ```
@@ -293,7 +305,6 @@ src/
 | --- | --- |
 | `/` | Homepage |
 | `/services` | Service menu with filters, sorting and pagination |
-| `/services/[id]` | Service details and booking form |
 | `/about` | Salon story and values |
 | `/contact` | Contact details and salon information |
 
@@ -303,6 +314,12 @@ src/
 | --- | --- |
 | `/sign-in` | Email/password and Google sign-in |
 | `/sign-up` | Account registration |
+
+### Protected (requires sign-in)
+
+| Route | Description |
+| --- | --- |
+| `/services/[id]` | Service details and booking form; redirects to sign-in when logged out |
 
 ### Customer dashboard
 
@@ -341,13 +358,14 @@ cannot open the admin area (the API enforces this too).
 
 ## API integration status
 
-Every function in `src/lib/api/` makes real requests to the Express API through
-the shared client in `src/lib/api-client.ts`:
+Every function in `src/features/*/api.ts` (plus uploads in `src/lib/api/`)
+makes real requests to the Express API through the shared client in
+`src/lib/api-client.ts`:
 
 | Group | Functions | Endpoints |
 | --- | --- | --- |
 | Public services | `getServices`, `getServiceCategories`, `getServiceById` | `GET /api/services`, `/api/services/categories`, `/api/services/:id` |
-| Admin services | `getAdminServices`, `getAdminServiceById`, `createService`, `updateService`, `updateServiceStatus`, `deleteService` | `GET /api/admin/services`, `POST /api/services`, `PATCH /api/services/:id`, `/api/services/:id/status`, `DELETE /api/services/:id` |
+| Admin services | `getAdminServices`, `getAdminServiceById`, `createService`, `updateService`, `updateServiceStatus`, `deleteService` | `GET /api/admin/services`, `GET /api/admin/services/:id`, `POST /api/services`, `PATCH /api/services/:id`, `/api/services/:id/status`, `DELETE /api/services/:id` |
 | Customer appointments | `createAppointment`, `getMyAppointments`, `getAppointmentById`, `cancelAppointment` | `POST /api/appointments`, `GET /api/appointments/my`, `/api/appointments/:id`, `/api/appointments/:id/cancel` |
 | Admin appointments | `getAdminAppointments`, `updateAdminAppointmentStatus` | `GET /api/admin/appointments`, `PATCH /api/admin/appointments/:id/status` |
 | Users | `getMyProfile`, `updateMyProfile`, `getCustomers`, `getCustomerById`, `blockCustomer`, `unblockCustomer` | `GET/PATCH /api/users/me`, `GET /api/admin/users`, `/api/admin/users/:id`, `/api/admin/users/:id/block`, `/api/admin/users/:id/unblock` |
@@ -448,7 +466,7 @@ Manual checks worth repeating:
 - Admin transitions respect `pending → confirmed/cancelled` and
   `confirmed → cancelled`
 - Payment success never says "paid" without a verified backend response
-- Empty, loading, error and pending-integration states at 375 / 768 / 1440 px
+- Empty, loading and error states at 375 / 768 / 1440 px
 
 ---
 
@@ -458,8 +476,6 @@ These come from the supplied backend, not the UI:
 
 | Limitation | Effect |
 | --- | --- |
-| No `GET /api/admin/services/:id` | Inactive services cannot be loaded in the edit form until activated from the list |
-| `POST /api/uploads/image` is documented but not registered | The UI uses image URL fields; upload must wait for the route |
 | No reschedule endpoint | Customers contact the salon to change a confirmed time |
 | No refund endpoint | Admin cancellation preserves payment and issues no refund |
 | Admin appointment filters cover status and date only | No customer-name search on that list |
@@ -474,7 +490,8 @@ Each limitation is also described where a customer or admin would meet it. See
 
 - The Better Auth setup writes to the same MongoDB database the Express API
   reads, which is why both apps must share `DB_NAME` / `MONGODB_DB_NAME`.
-- `src/lib/api/` is the only place that should ever perform network requests to
-  Express. Components call those functions and handle their results.
-- Do not convert pending-integration panels into optimistic success states.
-  Honest placeholders are a feature of this handoff.
+- Network requests to Express only happen through `src/lib/api-client.ts` and
+  the endpoint modules in `src/features/*/api.ts`. Components call those
+  functions and handle their results.
+- Do not convert error and empty states into optimistic success states. Honest
+  feedback is a feature of this app.
