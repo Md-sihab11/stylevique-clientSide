@@ -108,13 +108,13 @@ export default function HomePage() {
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/services"
-                  className="inline-flex h-12 items-center justify-center rounded-lg border border-[#F5F1EA] bg-[#F5F1EA] px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-[#302B2B] uppercase transition-all duration-300 hover:-translate-y-0.5 hover:border-black hover:bg-black hover:text-white hover:shadow-[0_10px_24px_-10px_rgba(0,0,0,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="inline-flex h-12 items-center justify-center rounded-lg border border-[#F5F1EA] bg-[#F5F1EA] px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-[#302B2B] uppercase transition-all duration-300 hover:-translate-y-0.5 hover:border-[#8d5360] hover:bg-[#8d5360] hover:text-white hover:shadow-[0_10px_24px_-10px_rgba(141,83,96,0.55)] dark:hover:border-[#c9a878] dark:hover:bg-[#c9a878] dark:hover:text-[#1a1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                 Explore Services
                 </Link>
                 <Link
                   href="/services"
-                  className="inline-flex h-12 items-center justify-center rounded-lg border border-on-dark-text/50 px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-on-dark-text uppercase transition-all duration-300 hover:-translate-y-0.5 hover:border-[#F5F1EA] hover:bg-[#F5F1EA] hover:text-[#302B2B] hover:shadow-[0_10px_24px_-10px_rgba(0,0,0,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="inline-flex h-12 items-center justify-center rounded-lg border border-on-dark-text/50 px-8 text-[0.72rem] font-semibold tracking-[0.18em] text-on-dark-text uppercase transition-all duration-300 hover:-translate-y-0.5 hover:border-[#8d5360] hover:bg-[#8d5360] hover:text-white hover:shadow-[0_10px_24px_-10px_rgba(141,83,96,0.55)] dark:hover:border-[#c9a878] dark:hover:bg-[#c9a878] dark:hover:text-[#1a1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   Book Appointment
                 </Link>
