@@ -48,16 +48,19 @@ const STEPS = [
 
 const REASONS = [
   {
+    number: "01",
     title: "A menu with intention",
     description:
       "Every service is presented with a clear duration, price and description, so there are no surprises.",
   },
   {
+    number: "02",
     title: "A calmer way to book",
     description:
       "Request a time in a few considered steps and follow your appointment status from your dashboard.",
   },
   {
+    number: "03",
     title: "Your details, together",
     description:
       "Appointments, payment status and profile details live in one uncluttered space.",
@@ -192,44 +195,73 @@ export default function HomePage() {
       {/* ---------------------------------------------------------------
           WHY STYLEVIQUE
       ---------------------------------------------------------------- */}
-      <section className="section-space bg-foreground text-background">
-        <div className="page-width grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+      <section className="section-space relative overflow-hidden bg-[#1f1c1a] text-background">
+        {/* A soft, blurred echo of the salon photo keeps the dark panel warm. */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 opacity-[0.12] lg:block" aria-hidden="true">
+          <Image
+            src="/images/banners/hero-salon.jpg"
+            alt=""
+            fill
+            sizes="50vw"
+            className="object-cover blur-3xl grayscale"
+          />
+        </div>
+
+        <div className="page-width relative grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <div className="relative order-2 lg:order-1">
-            <div className="relative aspect-[5/6] overflow-hidden rounded-t-[8rem]">
+            <div className="relative aspect-[5/6] overflow-hidden rounded-t-[9rem]">
               <Image
                 src="/images/banners/hero-salon.jpg"
-                alt="A quiet facial treatment room at Stylevique"
+                alt="A quiet, light-filled Stylevique salon"
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"
-                className="object-cover"
+                className="object-cover grayscale"
               />
             </div>
-            <div className="absolute -bottom-6 -right-3 hidden rounded-full bg-primary px-6 py-6 text-center text-primary-foreground sm:block">
-              <p className="font-heading text-3xl leading-none">Slow</p>
-              <p className="mt-1 text-[0.6rem] uppercase tracking-[0.2em]">care</p>
+            <div className="absolute -bottom-6 -right-3 hidden size-32 flex-col items-center justify-center rounded-full bg-[#c2a678] text-center text-[#1f1c1a] shadow-xl sm:flex">
+              <p className="font-heading text-4xl leading-none">Slow</p>
+              <p className="mt-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em]">care</p>
             </div>
           </div>
 
           <div className="order-1 lg:order-2">
-            <p className="eyebrow text-accent">Why Stylevique</p>
-            <h2 className="mt-4 font-section text-4xl leading-[1.05] font-medium tracking-[0.02em] uppercase sm:text-5xl">
-              Beauty without the rush.
+            <div className="flex items-center gap-3">
+              <span className="editorial-rule bg-[#c2a678]" />
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#c2a678]">
+                Why Stylevique
+              </p>
+            </div>
+
+            <h2 className="mt-5 font-heading text-4xl leading-[1.05] sm:text-5xl lg:text-[3.6rem]">
+              <span className="uppercase">Beauty</span>{" "}
+              <em className="font-normal italic">Without</em>
+              <br />
+              <span className="uppercase">The Rush.</span>
             </h2>
+
             <p className="mt-5 max-w-lg text-sm leading-7 text-background/65">
               We believe a salon visit should feel like a pause, not another task.
               Stylevique brings the service menu, appointment details and your
               account into one considered experience.
             </p>
 
-            <div className="mt-9 space-y-6">
+            <div className="mt-9">
               {REASONS.map((reason) => (
-                <div key={reason.title} className="flex gap-4 border-t border-background/15 pt-5">
-                  <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border border-background/25 text-background/70">
+                <div
+                  key={reason.title}
+                  className="flex gap-4 border-t border-background/15 py-5"
+                >
+                  <span className="pt-0.5 text-[0.68rem] tabular-nums text-[#c2a678]">
+                    {reason.number}
+                  </span>
+                  <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-[#c2a678]/60 text-[#c2a678]">
                     <Check className="size-3" aria-hidden="true" />
                   </span>
                   <div>
-                    <h3 className="font-section text-lg font-medium tracking-[0.03em] text-background uppercase">{reason.title}</h3>
-                    <p className="mt-1.5 text-sm leading-6 text-background/55">
+                    <h3 className="font-heading text-lg font-semibold tracking-[0.04em] text-background uppercase">
+                      {reason.title}
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-6 text-background/60">
                       {reason.description}
                     </p>
                   </div>
