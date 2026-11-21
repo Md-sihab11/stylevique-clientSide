@@ -37,6 +37,7 @@ export const ADMIN_NAV: DashboardNavItem[] = [
   { label: "Appointments", href: "/dashboard/admin/appointments", icon: CalendarDays },
   { label: "Customers", href: "/dashboard/admin/users", icon: UsersRound },
   { label: "Transactions", href: "/dashboard/admin/transactions", icon: CreditCard },
+  { label: "My profile", href: "/dashboard/admin/profile", icon: UserRound },
 ];
 
 export const CUSTOMER_NAV: DashboardNavItem[] = [
