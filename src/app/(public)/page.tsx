@@ -16,6 +16,7 @@ import { HeroCarousel } from "@/features/home/components/hero-carousel";
 import { FeaturedServices } from "@/features/home/components/featured-services";
 import { ServiceCategories } from "@/features/home/components/service-categories";
 import { ReviewCarousel } from "@/features/reviews/components/review-carousel";
+import { FAQ } from "@/features/home/components/faq";
 
 export const metadata: Metadata = {
   title: "Your Beauty, Your Moment",
@@ -270,6 +271,11 @@ export default function HomePage() {
           REVIEWS (APPROVED ONLY, API-DRIVEN)
       ---------------------------------------------------------------- */}
       <ReviewCarousel />
+
+      {/* ---------------------------------------------------------------
+          FAQ
+      ---------------------------------------------------------------- */}
+      <FAQ />
 
       {/* ---------------------------------------------------------------
           FINAL CTA
