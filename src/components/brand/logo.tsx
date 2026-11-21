@@ -11,9 +11,9 @@ interface LogoProps {
 
 /**
  * Stylevique wordmark with a theme-aware asset:
- * - light mode: navbar.png (white backdrop) blended with multiply
- * - dark mode: the dark-backed footer asset blended with screen, so only the
- *   tan/red artwork stays visible on charcoal surfaces
+ * - light mode: navbar.png blended into cream surfaces
+ * - dark mode / footer: image.png (dark, gold artwork) blended with screen.
+ *   The source has wide empty padding, so a clipped wrapper frames the mark.
  */
 export function Logo({
   className,
@@ -35,18 +35,24 @@ export function Logo({
           imageClassName,
         )}
       />
-      <Image
-        src="/logo/darkmode.png"
-        alt="Stylevique"
-        width={1024}
-        height={235}
-        priority
+      <span
         className={cn(
-          "h-auto w-[158px] object-contain mix-blend-screen",
+          "relative block h-10 w-[158px] overflow-hidden",
           invert ? "block" : "hidden dark:block",
-          imageClassName,
         )}
-      />
+      >
+        <Image
+          src="/logo/image.png"
+          alt="Stylevique"
+          width={2172}
+          height={724}
+          priority
+          className={cn(
+            "absolute left-1/2 top-1/2 w-[280px] max-w-none -translate-x-1/2 -translate-y-1/2 mix-blend-screen",
+            imageClassName,
+          )}
+        />
+      </span>
     </>
   );
 
