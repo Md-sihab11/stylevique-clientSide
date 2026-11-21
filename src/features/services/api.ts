@@ -1,6 +1,5 @@
 import { apiRequest } from "@/lib/api-client";
 import type { CreateServiceInput, ServiceCategoriesResponse, ServiceListParams, ServiceListResponse, ServiceResponse, ServiceStatus, UpdateServiceInput } from "@/features/services/types";
-import { ApiError } from "@/lib/api/errors";
 
 /**
  * PUBLIC SERVICES
@@ -54,28 +53,13 @@ export async function getAdminServices(
 }
 
 /**
- * The backend has no GET /api/admin/services/:id endpoint. To let admins edit
- * inactive services too, this helper pages through the admin list and finds the
- * matching service. It only uses a real backend endpoint.
+ * Loads a single service for the admin edit form. The backend route returns
+ * services with any status, so inactive services can be edited directly.
  */
 export async function getAdminServiceById(id: string): Promise<ServiceResponse> {
-  const limit = 100;
-  let page = 1;
-  let totalPages = 1;
-
-  while (page <= totalPages && page <= 50) {
-    const result = await getAdminServices({ page, limit });
-    const service = result.services.find((item) => item.id === id);
-
-    if (service) {
-      return { service };
-    }
-
-    totalPages = result.pagination.totalPages;
-    page += 1;
-  }
-
-  throw new ApiError("Service not found.", 404);
+  return apiRequest<ServiceResponse>(`/api/admin/services/${id}`, {
+    auth: true,
+  });
 }
 
 export async function createService(

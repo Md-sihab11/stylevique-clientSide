@@ -15,9 +15,8 @@ const OBJECT_ID_PATTERN = /^[a-fA-F0-9]{24}$/;
 /**
  * Loads the service before showing the edit form.
  *
- * The backend has no GET /api/admin/services/:id route. getAdminServiceById()
- * therefore pages through GET /api/admin/services and finds the matching id.
- * That works for active and inactive services without changing the backend.
+ * GET /api/admin/services/:id returns the service with any status, so active
+ * and inactive services both load here.
  */
 export function AdminEditService() {
   const params = useParams<{ id: string }>();
@@ -75,7 +74,7 @@ export function AdminEditService() {
         {backLink}
         <ErrorState
           title="This service could not be loaded for editing"
-          description="Check the backend connection and try again. Inactive services are supported through the admin service list."
+          description="Check the backend connection and try again. If this service was deleted, return to the list."
           onRetry={reload}
         />
         <div className="text-center">
