@@ -44,7 +44,7 @@ export function FeaturedServices() {
             <div className="flex gap-6 px-6 md:px-4">
               <div className="flex gap-6 overflow-x-auto px-0 md:px-6 md:-mx-6">
                 {Array.from({ length: 6 }).map((_, index) => (
-                  <div key={index} className="h-72 w-[290px] shrink-0 rounded-lg bg-secondary sm:w-[320px]" />
+                  <div key={index} className="h-72 w-[260px] shrink-0 rounded-lg bg-secondary sm:w-[290px] lg:w-[320px]" />
                 ))}
               </div>
             </div>

@@ -2,10 +2,14 @@
 
 import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   CalendarDays,
+  ChevronLeft,
+  ChevronRight,
   Compass,
   CreditCard,
+  ExternalLink,
   LayoutDashboard,
   Scissors,
   Settings,
@@ -55,7 +59,8 @@ interface DashboardShellProps {
 
 /**
  * Shared dashboard frame: warm cream sidebar, ivory content area.
- * The sidebar collapses on desktop and becomes an overlay drawer on mobile.
+ * The sidebar collapses from its own edge button on desktop and becomes an
+ * overlay drawer on mobile. Both roles keep a clear route back to the site.
  */
 export function DashboardShell({ user, role, navItems, children }: DashboardShellProps) {
   const router = useRouter();
@@ -64,11 +69,6 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   const items = navItems ?? (role === "admin" ? ADMIN_NAV : CUSTOMER_NAV);
-
-  function handleToggle() {
-    setIsCollapsed((prev) => !prev);
-    setMobileDrawerOpen((prev) => !prev);
-  }
 
   async function handleSignOut() {
     setIsSigningOut(true);
@@ -87,11 +87,11 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
   }
 
   return (
-    <div className="flex min-h-svh bg-[#fbf8f3]">
+    <div data-dashboard className="flex min-h-svh bg-background">
       {/* Desktop sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-20 flex flex-col border-r border-[#e8dccb] bg-[#f3ede3] transition-all duration-300",
+          "fixed inset-y-0 left-0 z-20 flex flex-col border-r border-border bg-[#f3ede3] transition-all duration-300",
           "hidden lg:flex",
           isCollapsed ? "w-16" : "w-56",
         )}
@@ -103,22 +103,37 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
           isSigningOut={isSigningOut}
           isCollapsed={isCollapsed}
         />
+
+        {/* Side-mounted collapse toggle (desktop) */}
+        <button
+          type="button"
+          onClick={() => setIsCollapsed((prev) => !prev)}
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className="absolute -right-3 top-6 z-30 inline-flex size-6 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:border-primary hover:text-primary"
+        >
+          {isCollapsed ? (
+            <ChevronRight className="size-3.5" aria-hidden="true" />
+          ) : (
+            <ChevronLeft className="size-3.5" aria-hidden="true" />
+          )}
+        </button>
       </aside>
 
       <div className={cn("flex min-w-0 flex-1 flex-col", isCollapsed ? "lg:pl-16" : "lg:pl-56")}>
         <DashboardNavbar
           user={user}
           role={role}
-          onToggle={handleToggle}
+          onToggle={() => setMobileDrawerOpen((prev) => !prev)}
           onSignOut={handleSignOut}
           isSigningOut={isSigningOut}
         />
-        <main className="flex-1 px-4 py-7 sm:px-6 lg:px-10 lg:py-9">{children}</main>
+        <main className="min-w-0 flex-1 px-4 py-7 sm:px-6 lg:px-10 lg:py-9">{children}</main>
       </div>
 
       {/* Mobile overlay drawer */}
       <Sheet open={mobileDrawerOpen} onOpenChange={setMobileDrawerOpen}>
-        <SheetContent side="left" className="w-[86%] max-w-xs border-r border-[#e8dccb] bg-[#f3ede3] p-0">
+        <SheetContent side="left" className="w-[86%] max-w-xs border-r border-border bg-[#f3ede3] p-0">
           <SheetTitle className="sr-only">Dashboard navigation</SheetTitle>
           <SheetDescription className="sr-only">
             Navigate between the dashboard sections for your account.
@@ -133,6 +148,16 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
           />
         </SheetContent>
       </Sheet>
+
+      {/* Floating route back to the public site, always reachable */}
+      <Link
+        href="/"
+        aria-label="Back to Stylevique website"
+        title="Back to website"
+        className="fixed bottom-5 right-5 z-40 inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-md transition-colors hover:border-primary hover:text-primary lg:hidden"
+      >
+        <ExternalLink className="size-4" aria-hidden="true" />
+      </Link>
     </div>
   );
 }

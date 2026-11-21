@@ -35,10 +35,12 @@ export function ServiceCarousel({ services }: ServiceCarouselProps) {
     return () => el.removeEventListener("scroll", checkEdges);
   }, [checkEdges]);
 
-  const scrollBy = (amount: number) => {
+  const scrollBy = (direction: 1 | -1) => {
     const el = scrollRef.current;
     if (!el) return;
-    el.scrollBy({ left: amount, behavior: "smooth" });
+    const card = el.querySelector<HTMLElement>("[data-carousel-card]");
+    const amount = (card?.offsetWidth ?? 320) + 24;
+    el.scrollBy({ left: direction * amount, behavior: "smooth" });
     requestAnimationFrame(checkEdges);
   };
 
@@ -46,12 +48,12 @@ export function ServiceCarousel({ services }: ServiceCarouselProps) {
     <div className="relative">
       <div
         ref={scrollRef}
-        className="flex gap-6 overflow-x-auto scroll-smooth px-6 md:px-4 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
+        className="no-scrollbar flex gap-6 overflow-x-auto scroll-smooth px-6 md:px-4"
         role="region"
         aria-label="Featured services carousel"
       >
         {services.map((service) => (
-          <div key={service.id} className="w-[290px] shrink-0 lg:w-[320px]">
+          <div key={service.id} data-carousel-card className="w-[260px] shrink-0 sm:w-[290px] lg:w-[320px]">
             <ServiceCard service={service} />
           </div>
         ))}

@@ -32,6 +32,36 @@
   --radius: 0.75rem;
 }
 
+/*
+ * Dashboard palette
+ * -----------------
+ * The salon dashboard uses a warmer cream/tan surface than the public site.
+ * Scoping the same semantic variables here means every existing component
+ * (cards, tables, buttons, badges) picks up the matching colours without
+ * duplicating Tailwind classes across pages.
+ */
+body:has([data-dashboard]) {
+  --background: #fbf8f3;
+  --foreground: #302b2b;
+  --card: #ffffffb3;
+  --card-foreground: #302b2b;
+  --popover: #ffffff;
+  --popover-foreground: #302b2b;
+  --primary: #b49162;
+  --primary-foreground: #ffffff;
+  --secondary: #f3ede3;
+  --secondary-foreground: #302b2b;
+  --muted: #f3ede3;
+  --muted-foreground: #8c7f74;
+  --accent: #c2a678;
+  --accent-foreground: #302b2b;
+  --destructive: #a33a36;
+  --destructive-foreground: #ffffff;
+  --border: #e8dccb;
+  --input: #e3d8cc;
+  --ring: #b49162;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -122,5 +152,14 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, LogOut, Menu, Search, UserRound } from "lucide-react";
+import { Bell, ExternalLink, LogOut, PanelLeft, Search, UserRound } from "lucide-react";
 import type { DashboardUser } from "./dashboard-sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/format";
@@ -15,9 +15,8 @@ interface DashboardNavbarProps {
 }
 
 /**
- * Dashboard top bar: mobile menu toggle, an admin search field, a notification
- * bell and the signed-in user's avatar. Sign out stays here so the sidebar can
- * keep the clean, minimal look of the reference design.
+ * Dashboard top bar: side-panel toggle (mobile), an admin search field,
+ * a notification bell, a route back to the website and the user's avatar.
  */
 export function DashboardNavbar({
   user,
@@ -27,33 +26,37 @@ export function DashboardNavbar({
   isSigningOut,
 }: DashboardNavbarProps) {
   return (
-    <div className="sticky top-0 z-30 flex h-[4.5rem] items-center justify-between gap-4 border-b border-[#eee5d9] bg-[#fbf8f3]/90 px-4 backdrop-blur-md sm:px-6 lg:px-10">
-      <div className="flex items-center gap-3">
+    <div className="sticky top-0 z-30 flex h-[4.5rem] items-center justify-between gap-3 border-b border-border bg-background/90 px-4 backdrop-blur-md sm:px-6 lg:px-10">
+      <div className="flex min-w-0 items-center gap-2">
         <button
           type="button"
           onClick={onToggle}
-          className="inline-flex size-9 items-center justify-center rounded-full text-[#6d625a] transition-colors hover:bg-[#f0e8dd]"
-          aria-label="Toggle dashboard navigation"
+          className="inline-flex size-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted lg:hidden"
+          aria-label="Open dashboard navigation"
         >
-          <Menu className="size-[1.15rem]" aria-hidden="true" />
+          <PanelLeft className="size-[1.15rem]" aria-hidden="true" />
         </button>
+
+        <Link
+          href="/"
+          className="hidden items-center gap-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-primary sm:inline-flex"
+        >
+          <ExternalLink className="size-3.5" aria-hidden="true" />
+          Back to website
+        </Link>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex shrink-0 items-center gap-1 sm:gap-2">
         {role === "admin" && (
-          <form
-            action="/dashboard/admin/appointments"
-            className="hidden md:block"
-            role="search"
-          >
-            <div className="flex h-9 w-56 items-center gap-2 rounded-md border border-[#e3d8cc] bg-white/70 px-3 lg:w-72">
-              <Search className="size-4 text-[#9a8d82]" aria-hidden="true" />
+          <form action="/dashboard/admin/appointments" className="hidden md:block" role="search">
+            <div className="flex h-9 w-48 items-center gap-2 rounded-md border border-input bg-card/70 px-3 lg:w-64">
+              <Search className="size-4 text-muted-foreground" aria-hidden="true" />
               <input
                 type="search"
                 name="search"
                 placeholder="Search appointments, clients..."
                 aria-label="Search appointments and clients"
-                className="w-full bg-transparent text-xs text-[#302b2b] outline-none placeholder:text-[#a89a8e]"
+                className="min-w-0 w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70"
               />
             </div>
           </form>
@@ -62,10 +65,10 @@ export function DashboardNavbar({
         <button
           type="button"
           aria-label="Notifications"
-          className="relative inline-flex size-9 items-center justify-center rounded-full text-[#6d625a] transition-colors hover:bg-[#f0e8dd]"
+          className="relative inline-flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted"
         >
           <Bell className="size-[1.1rem]" aria-hidden="true" />
-          <span className="absolute right-2 top-1.5 size-1.5 rounded-full bg-[#b49162] ring-2 ring-[#fbf8f3]" />
+          <span className="absolute right-2 top-1.5 size-1.5 rounded-full bg-primary ring-2 ring-background" />
         </button>
 
         <Link
@@ -73,9 +76,9 @@ export function DashboardNavbar({
           className="flex items-center gap-2 rounded-full p-0.5 transition-opacity hover:opacity-80"
           aria-label="Open profile"
         >
-          <Avatar className="size-8 border border-[#e3d8cc]">
+          <Avatar className="size-8 border border-border">
             <AvatarImage src={user.image ?? undefined} alt={user.name} />
-            <AvatarFallback className="bg-[#eadfd1] text-[0.65rem] text-[#8a6a42]">
+            <AvatarFallback className="bg-secondary text-[0.65rem] text-primary">
               {getInitials(user.name) || <UserRound className="size-3" />}
             </AvatarFallback>
           </Avatar>
@@ -87,7 +90,7 @@ export function DashboardNavbar({
           disabled={isSigningOut}
           aria-label="Sign out"
           title="Sign out"
-          className="inline-flex size-9 items-center justify-center rounded-full text-[#6d625a] transition-colors hover:bg-[#f0e8dd] hover:text-[#a33a36] disabled:opacity-50"
+          className="inline-flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-destructive disabled:opacity-50"
         >
           <LogOut className="size-[1.05rem]" aria-hidden="true" />
         </button>

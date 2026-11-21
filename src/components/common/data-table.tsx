@@ -44,7 +44,7 @@ export function DataTable<T>({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-lg border border-border bg-card",
+        "no-scrollbar overflow-x-auto rounded-lg border border-border bg-card",
         className,
       )}
     >
