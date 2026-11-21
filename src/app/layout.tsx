@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   description:
     "Stylevique is a premium salon and beauty studio for hair, skin, makeup and mindful self-care. Explore services and book your moment.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.svg",
   },
 };
 
