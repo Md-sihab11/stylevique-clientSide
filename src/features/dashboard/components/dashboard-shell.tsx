@@ -4,9 +4,11 @@ import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import {
   CalendarDays,
+  Compass,
   CreditCard,
   LayoutDashboard,
   Scissors,
+  Settings,
   UserRound,
   UsersRound,
 } from "lucide-react";
@@ -32,15 +34,16 @@ export const ADMIN_NAV: DashboardNavItem[] = [
   { label: "Appointments", href: "/dashboard/admin/appointments", icon: CalendarDays },
   { label: "Customers", href: "/dashboard/admin/users", icon: UsersRound },
   { label: "Transactions", href: "/dashboard/admin/transactions", icon: CreditCard },
-  { label: "My profile", href: "/dashboard/admin/profile", icon: UserRound },
+  { label: "Settings", href: "/dashboard/admin/profile", icon: Settings },
 ];
 
 export const CUSTOMER_NAV: DashboardNavItem[] = [
   { label: "Overview", href: "/dashboard/customer", icon: LayoutDashboard, exact: true },
-  { label: "My appointments", href: "/dashboard/customer/appointments", icon: CalendarDays },
-  { label: "Payment history", href: "/dashboard/customer/transactions", icon: CreditCard },
-  { label: "My profile", href: "/dashboard/customer/profile", icon: UserRound },
-  { label: "Browse services", href: "/services", icon: Scissors },
+  { label: "Appointments", href: "/dashboard/customer/appointments", icon: CalendarDays },
+  { label: "Explore Services", href: "/services", icon: Compass },
+  { label: "Payments", href: "/dashboard/customer/transactions", icon: CreditCard },
+  { label: "My Profile", href: "/dashboard/customer/profile", icon: UserRound },
+  { label: "Settings", href: "/dashboard/customer/profile", icon: Settings },
 ];
 
 interface DashboardShellProps {
@@ -51,8 +54,8 @@ interface DashboardShellProps {
 }
 
 /**
- * Shared dashboard frame: collapsible sidebar on desktop, overlay drawer on mobile.
- * One toggle button handles both — collapse on desktop, open/close drawer on mobile.
+ * Shared dashboard frame: warm cream sidebar, ivory content area.
+ * The sidebar collapses on desktop and becomes an overlay drawer on mobile.
  */
 export function DashboardShell({ user, role, navItems, children }: DashboardShellProps) {
   const router = useRouter();
@@ -84,13 +87,13 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
   }
 
   return (
-    <div className="flex min-h-svh bg-background">
-      {/* Desktop sidebar — collapsible, hidden on mobile (<lg) */}
+    <div className="flex min-h-svh bg-[#fbf8f3]">
+      {/* Desktop sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-20 border-r border-border bg-card transition-all duration-300 flex flex-col",
+          "fixed inset-y-0 left-0 z-20 flex flex-col border-r border-[#e8dccb] bg-[#f3ede3] transition-all duration-300",
           "hidden lg:flex",
-          isCollapsed ? "w-16" : "w-64",
+          isCollapsed ? "w-16" : "w-56",
         )}
       >
         <DashboardSidebar
@@ -102,14 +105,20 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
         />
       </aside>
 
-      <div className={cn("flex min-w-0 flex-1 flex-col", isCollapsed ? "lg:pl-16" : "lg:pl-64")}>
-        <DashboardNavbar user={user} onToggle={handleToggle} />
-        <main className="flex-1 bg-background px-4 py-7 sm:px-6 lg:px-10 lg:py-10">{children}</main>
+      <div className={cn("flex min-w-0 flex-1 flex-col", isCollapsed ? "lg:pl-16" : "lg:pl-56")}>
+        <DashboardNavbar
+          user={user}
+          role={role}
+          onToggle={handleToggle}
+          onSignOut={handleSignOut}
+          isSigningOut={isSigningOut}
+        />
+        <main className="flex-1 px-4 py-7 sm:px-6 lg:px-10 lg:py-9">{children}</main>
       </div>
 
-      {/* Mobile overlay drawer — opens on toggle below lg */}
+      {/* Mobile overlay drawer */}
       <Sheet open={mobileDrawerOpen} onOpenChange={setMobileDrawerOpen}>
-        <SheetContent side="left" className="w-[86%] max-w-xs bg-card p-0">
+        <SheetContent side="left" className="w-[86%] max-w-xs border-r border-[#e8dccb] bg-[#f3ede3] p-0">
           <SheetTitle className="sr-only">Dashboard navigation</SheetTitle>
           <SheetDescription className="sr-only">
             Navigate between the dashboard sections for your account.

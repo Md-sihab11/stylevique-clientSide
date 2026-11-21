@@ -1,182 +1,149 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  Banknote,
-  CalendarCheck,
-  CalendarDays,
-  CalendarX,
-  CreditCard,
-  Hourglass,
-  Plus,
-  Scissors,
-  UsersRound,
-} from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
 import { getAdminDashboard } from "@/features/dashboard/api";
+import { getAdminAppointments } from "@/features/appointments/api";
+import { getAdminTransactions } from "@/features/transactions/api";
+import { getServices } from "@/features/services/api";
 import { useApiResource } from "@/hooks/use-api-resource";
-import { formatCurrency } from "@/lib/format";
-import { PageHeader } from "@/components/common/page-header";
-import { StatCard } from "@/components/common/stat-card";
-import { PrimaryButton } from "@/components/common/primary-button";
-import { Skeleton } from "@/components/common/skeleton-loader";
+import type { AdminAppointment } from "@/features/appointments/types";
+import type { Transaction } from "@/features/transactions/types";
+import { formatCurrency, formatDate, formatTimeSlot } from "@/lib/format";
+import { SafeImage } from "@/components/common/safe-image";
+import { StatusBadge } from "@/components/common/status-badge";
 import { ErrorState } from "@/components/common/error-state";
+import { Skeleton } from "@/components/common/skeleton-loader";
+import { RevenueChart } from "@/features/dashboard/components/revenue-chart";
+import { cn } from "@/lib/utils";
 
-const QUICK_ACTIONS = [
-  {
-    title: "Add a service",
-    description: "Publish a new treatment with price, duration and an image.",
-    href: "/dashboard/admin/services/add",
-    icon: Plus,
-  },
-  {
-    title: "Review appointments",
-    description: "Confirm requested times or cancel a booking when needed.",
-    href: "/dashboard/admin/appointments",
-    icon: CalendarDays,
-  },
-  {
-    title: "Manage customers",
-    description: "Search accounts, review details and control blocked status.",
-    href: "/dashboard/admin/users",
-    icon: UsersRound,
-  },
-  {
-    title: "Check transactions",
-    description: "Follow paid and failed Stripe payment records.",
-    href: "/dashboard/admin/transactions",
-    icon: CreditCard,
-  },
-];
+type Range = "weekly" | "monthly";
+
+/** Builds the chart data from verified transactions and real appointments. */
+function buildChartPoints(
+  range: Range,
+  transactions: Transaction[],
+  appointments: AdminAppointment[],
+) {
+  const paid = transactions.filter((t) => t.status === "paid");
+
+  if (range === "weekly") {
+    return Array.from({ length: 7 }, (_, index) => {
+      const day = new Date();
+      day.setDate(day.getDate() - (6 - index));
+      const key = day.toISOString().slice(0, 10);
+      return {
+        label: new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(day),
+        revenue: paid
+          .filter((t) => t.createdAt.slice(0, 10) === key)
+          .reduce((sum, t) => sum + t.amount, 0),
+        count: appointments.filter((a) => a.appointmentDate === key).length,
+      };
+    });
+  }
+
+  return Array.from({ length: 6 }, (_, index) => {
+    const month = new Date();
+    month.setDate(1);
+    month.setMonth(month.getMonth() - (5 - index));
+    const key = `${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, "0")}`;
+    return {
+      label: new Intl.DateTimeFormat("en-US", { month: "short" }).format(month),
+      revenue: paid
+        .filter((t) => t.createdAt.slice(0, 7) === key)
+        .reduce((sum, t) => sum + t.amount, 0),
+      count: appointments.filter((a) => a.appointmentDate.slice(0, 7) === key).length,
+    };
+  });
+}
 
 /**
  * Administrator overview.
- * Every number comes from GET /api/dashboard/admin.
+ * Every figure and table row comes from the existing admin APIs.
  */
 export function AdminOverview() {
+  const [range, setRange] = useState<Range>("weekly");
+
   const { data, error, isLoading, reload } = useApiResource(
     () => getAdminDashboard(),
     "admin-dashboard",
   );
+  const { data: appointmentsData } = useApiResource(
+    () => getAdminAppointments({ page: 1, limit: 100 }),
+    "admin-home-appointments",
+  );
+  const { data: transactionsData } = useApiResource(
+    () => getAdminTransactions({ page: 1, limit: 100 }),
+    "admin-home-transactions",
+  );
+  const { data: servicesData } = useApiResource(
+    () => getServices({ page: 1, limit: 6, sort: "newest" }),
+    "admin-home-services",
+  );
 
-  const primaryStats = [
+  const transactions = transactionsData?.transactions ?? [];
+  const appointments = appointmentsData?.appointments ?? [];
+  const popularServices = (servicesData?.services ?? []).slice(0, 3);
+  const chartPoints = buildChartPoints(range, transactions, appointments);
+
+  const recentAppointments = [...appointments]
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 5);
+  const recentTransactions = transactions.slice(0, 5);
+
+  const todayLabel = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date());
+
+  const stats = [
     {
-      label: "Total revenue",
+      label: "Revenue",
       value: data ? formatCurrency(data.totalRevenue, data.currency) : "—",
-      helper: "Successful payments only",
-      icon: Banknote,
+      badge: "PAID",
     },
     {
-      label: "Successful payments",
-      value: data ? data.totalSuccessfulPayments : "—",
-      helper: "Paid Stripe transactions",
-      icon: CreditCard,
+      label: "Total bookings",
+      value: data ? data.totalAppointments : "—",
+      badge: "ALL TIME",
     },
     {
-      label: "Registered customers",
+      label: "Clients",
       value: data ? data.totalRegisteredCustomers : "—",
-      helper: "Customer accounts",
-      icon: UsersRound,
+      badge: "REGISTERED",
     },
     {
       label: "Active services",
       value: data ? data.totalActiveServices : "—",
-      helper: "Visible on the public menu",
-      icon: Scissors,
+      badge: "LIVE",
     },
   ];
-
-  const appointmentStats = [
-    {
-      label: "Total appointments",
-      value: data ? data.totalAppointments : "—",
-      helper: "All time",
-      icon: CalendarDays,
-    },
-    {
-      label: "Pending",
-      value: data ? data.pendingAppointments : "—",
-      helper: "Awaiting confirmation",
-      icon: Hourglass,
-    },
-    {
-      label: "Confirmed",
-      value: data ? data.confirmedAppointments : "—",
-      helper: "Reserved slots",
-      icon: CalendarCheck,
-    },
-    {
-      label: "Cancelled",
-      value: data ? data.cancelledAppointments : "—",
-      helper: "Released slots",
-      icon: CalendarX,
-    },
-  ];
-
-  const totalAppointments = data?.totalAppointments ?? 0;
-  const hasAppointmentData = totalAppointments > 0;
-  const pendingPercent = hasAppointmentData
-    ? Math.round(((data?.pendingAppointments ?? 0) / totalAppointments) * 100)
-    : 0;
-  const confirmedPercent = hasAppointmentData
-    ? Math.round(((data?.confirmedAppointments ?? 0) / totalAppointments) * 100)
-    : 0;
-  const cancelledPercent = hasAppointmentData ? 100 - pendingPercent - confirmedPercent : 0;
 
   return (
-    <div className="space-y-8">
-      <PageHeader
-        eyebrow="Salon administration"
-        title="The salon at a glance."
-        description="A live summary of appointments, services and payments. Use the quick actions below to move between the day-to-day tools."
-        action={
-          <div className="flex flex-wrap gap-2">
-            <PrimaryButton href="/dashboard/admin/appointments" size="sm" variant="outline">
-              Manage appointments
-            </PrimaryButton>
-            <PrimaryButton href="/dashboard/admin/services/add" size="sm">
-              <Plus className="size-3.5" aria-hidden="true" />
-              Add service
-            </PrimaryButton>
-          </div>
-        }
-      />
-
-      {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, index) => (
-            <Skeleton key={index} className="h-36 rounded-lg" />
-          ))}
+    <div className="space-y-7">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.26em] text-[#a19991]">
+            Overview
+          </p>
+          <h1 className="mt-2 font-heading text-4xl font-medium tracking-tight text-[#302b2b] sm:text-[2.6rem]">
+            The Studio Overview.
+          </h1>
+          <p className="mt-1 text-sm text-[#8c7f74]">{todayLabel}</p>
         </div>
-      ) : (
-        <div className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {primaryStats.map((stat) => (
-              <StatCard
-                key={stat.label}
-                label={stat.label}
-                value={stat.value}
-                helper={stat.helper}
-                icon={stat.icon}
-              />
-            ))}
-          </div>
+        <Link
+          href="/services"
+          className="inline-flex h-10 items-center gap-2 rounded-md bg-[#302b2b] px-5 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#4a403c]"
+        >
+          <Plus className="size-3.5" aria-hidden="true" />
+          New appointment
+        </Link>
+      </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {appointmentStats.map((stat) => (
-              <StatCard
-                key={stat.label}
-                label={stat.label}
-                value={stat.value}
-                helper={stat.helper}
-                icon={stat.icon}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {!isLoading && Boolean(error) && (
+      {Boolean(error) && (
         <ErrorState
           title="The salon overview could not load"
           description="Check the admin dashboard API connection and try again."
@@ -184,126 +151,188 @@ export function AdminOverview() {
         />
       )}
 
-      <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="rounded-lg border border-border bg-card p-6">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="eyebrow">Appointment mix</p>
-              <h2 className="mt-2 font-section text-3xl font-medium tracking-[0.02em] text-foreground uppercase">
-                Where the bookings stand.
-              </h2>
-            </div>
-            <CalendarDays className="size-5 text-primary" aria-hidden="true" />
-          </div>
-
-          {hasAppointmentData ? (
-            <>
-              <div className="mt-6 flex h-3 overflow-hidden rounded-full bg-muted">
-                <span
-                  className="h-full bg-[#c9a86a]"
-                  style={{ width: `${pendingPercent}%` }}
-                  aria-hidden="true"
-                />
-                <span
-                  className="h-full bg-[#6b8a63]"
-                  style={{ width: `${confirmedPercent}%` }}
-                  aria-hidden="true"
-                />
-                <span
-                  className="h-full bg-primary"
-                  style={{ width: `${cancelledPercent}%` }}
-                  aria-hidden="true"
-                />
+      {/* Stats */}
+      {isLoading ? (
+        <Skeleton className="h-24 w-full rounded-xl" />
+      ) : (
+        <div className="grid grid-cols-2 overflow-hidden rounded-xl border border-[#e8dccb] bg-white/70 md:grid-cols-4">
+          {stats.map((stat, index) => (
+            <div
+              key={stat.label}
+              className={cn("px-5 py-5", index > 0 && "border-l border-[#e8dccb]")}
+            >
+              <p className="font-heading text-3xl text-[#302b2b] sm:text-[2.1rem]">{stat.value}</p>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
+                <span className="text-[0.62rem] font-medium uppercase tracking-[0.14em] text-[#8c7f74]">
+                  {stat.label}
+                </span>
+                <span className="rounded-full bg-[#e7d9c6] px-2 py-0.5 text-[0.58rem] font-semibold text-[#8a6a42]">
+                  {stat.badge}
+                </span>
               </div>
-              <dl className="mt-5 grid grid-cols-3 gap-4 text-xs">
-                <div>
-                  <dt className="flex items-center gap-1.5 text-muted-foreground">
-                    <span className="size-2 rounded-full bg-[#c9a86a]" aria-hidden="true" />
-                    Pending
-                  </dt>
-                  <dd className="mt-1 text-lg font-medium text-foreground">{pendingPercent}%</dd>
-                </div>
-                <div>
-                  <dt className="flex items-center gap-1.5 text-muted-foreground">
-                    <span className="size-2 rounded-full bg-[#6b8a63]" aria-hidden="true" />
-                    Confirmed
-                  </dt>
-                  <dd className="mt-1 text-lg font-medium text-foreground">
-                    {confirmedPercent}%
-                  </dd>
-                </div>
-                <div>
-                  <dt className="flex items-center gap-1.5 text-muted-foreground">
-                    <span className="size-2 rounded-full bg-primary" aria-hidden="true" />
-                    Cancelled
-                  </dt>
-                  <dd className="mt-1 text-lg font-medium text-foreground">
-                    {cancelledPercent}%
-                  </dd>
-                </div>
-              </dl>
-            </>
-          ) : (
-            <div className="mt-6 rounded-md border border-dashed border-border px-5 py-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                There are no appointments to summarise yet.
-              </p>
             </div>
-          )}
-
-          <Link
-            href="/dashboard/admin/appointments"
-            className="mt-6 inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-primary hover:text-primary/80"
-          >
-            Open appointment management
-            <ArrowUpRight className="size-3.5" aria-hidden="true" />
-          </Link>
+          ))}
         </div>
+      )}
 
-        <div className="rounded-lg bg-secondary/50 p-6">
-          <p className="eyebrow">Quick actions</p>
-          <div className="mt-4 grid gap-2">
-            {QUICK_ACTIONS.map((action) => (
-              <Link
-                key={action.href}
-                href={action.href}
-                className="group flex items-start gap-3 rounded-md border border-transparent bg-background/70 p-4 transition-colors hover:border-accent/40 hover:bg-background"
+      <div className="grid gap-6 lg:grid-cols-[1.6fr_0.8fr]">
+        {/* Revenue analytics */}
+        <section className="rounded-xl border border-[#e8dccb] bg-white/70 p-5 sm:p-6">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="font-heading text-xl text-[#302b2b]">Revenue Analytics</h2>
+              <p className="mt-1 text-xs text-[#8c7f74]">Verified payments and booked visits.</p>
+            </div>
+            <label className="flex items-center gap-2 rounded-md border border-[#e3d8cc] bg-white/70 px-2.5 py-1.5 text-xs text-[#6d625a]">
+              <span className="sr-only">Chart range</span>
+              <select
+                value={range}
+                onChange={(event) => setRange(event.target.value as Range)}
+                className="bg-transparent text-xs outline-none"
+                aria-label="Chart range"
               >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
-                  <action.icon className="size-4" aria-hidden="true" />
-                </span>
-                <span className="min-w-0">
-                  <span className="flex items-center gap-1 text-sm font-medium text-foreground">
-                    {action.title}
-                    <ArrowUpRight
-                      className="size-3.5 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                      aria-hidden="true"
-                    />
-                  </span>
-                  <span className="mt-1 block text-xs leading-5 text-muted-foreground">
-                    {action.description}
-                  </span>
-                </span>
-              </Link>
-            ))}
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </label>
           </div>
-        </div>
+          <div className="mt-5">
+            <RevenueChart points={chartPoints} />
+          </div>
+        </section>
+
+        {/* Popular services */}
+        <section className="rounded-xl border border-[#e8dccb] bg-white/70 p-5 sm:p-6">
+          <h2 className="font-heading text-xl text-[#302b2b]">Popular Services</h2>
+          {popularServices.length > 0 ? (
+            <div className="mt-4 space-y-4">
+              {popularServices.map((service) => (
+                <Link
+                  key={service.id}
+                  href={`/dashboard/admin/services/${service.id}/edit`}
+                  className="group flex items-center gap-3"
+                >
+                  <div className="relative size-11 shrink-0 overflow-hidden rounded-md bg-[#efe7dd]">
+                    <SafeImage src={service.image} alt={service.serviceName} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-[#302b2b] group-hover:text-[#8d5360]">
+                      {service.serviceName}
+                    </p>
+                    <p className="truncate text-[0.68rem] text-[#8c7f74]">{service.category}</p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p className="text-sm font-medium text-[#302b2b]">
+                      {formatCurrency(service.price)}
+                    </p>
+                    <p className="text-[0.65rem] text-[#a19991]">{service.duration} min</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-[#8c7f74]">No published services yet.</p>
+          )}
+          <Link
+            href="/dashboard/admin/services"
+            className="mt-5 inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#8d5360] hover:text-[#6f3f4b]"
+          >
+            Manage services
+            <ArrowRight className="size-3.5" aria-hidden="true" />
+          </Link>
+        </section>
       </div>
 
-      <div className="rounded-lg border border-border bg-card p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="eyebrow">Payment reference</p>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-              Revenue is calculated from paid transactions recorded by the Stripe
-              webhook. The browser never decides that a payment succeeded — only the
-              verified backend response does.
-            </p>
-          </div>
-          <PrimaryButton href="/dashboard/admin/transactions" variant="outline" size="sm">
-            View transactions
-          </PrimaryButton>
-        </div>
+      <div className="grid gap-6 lg:grid-cols-[1.6fr_0.8fr]">
+        {/* Recent appointments */}
+        <section className="rounded-xl border border-[#e8dccb] bg-white/70 p-5 sm:p-6">
+          <h2 className="font-heading text-xl text-[#302b2b]">Recent Appointments</h2>
+          {recentAppointments.length > 0 ? (
+            <div className="mt-4 overflow-x-auto">
+              <table className="w-full min-w-[560px] text-left text-sm">
+                <thead>
+                  <tr className="border-b border-[#e8dccb] text-[0.62rem] uppercase tracking-[0.14em] text-[#9a8d82]">
+                    <th className="pb-2 font-medium">Customer</th>
+                    <th className="pb-2 font-medium">Service</th>
+                    <th className="pb-2 font-medium">Date</th>
+                    <th className="pb-2 font-medium">Time</th>
+                    <th className="pb-2 font-medium">Amount</th>
+                    <th className="pb-2 font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#efe8de]">
+                  {recentAppointments.map((appointment) => (
+                    <tr key={appointment.id} className="text-[#4a423d]">
+                      <td className="py-3 pr-3">{appointment.customer?.name ?? "Customer"}</td>
+                      <td className="py-3 pr-3">
+                        {appointment.serviceSnapshot?.serviceName ?? "Salon service"}
+                      </td>
+                      <td className="py-3 pr-3 text-[#6d625a]">
+                        {formatDate(appointment.appointmentDate)}
+                      </td>
+                      <td className="py-3 pr-3 text-[#6d625a]">
+                        {formatTimeSlot(appointment.timeSlot)}
+                      </td>
+                      <td className="py-3 pr-3">{formatCurrency(appointment.servicePrice)}</td>
+                      <td className="py-3">
+                        <StatusBadge status={appointment.status} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-[#8c7f74]">No appointments have been requested yet.</p>
+          )}
+          <Link
+            href="/dashboard/admin/appointments"
+            className="mt-4 inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#8d5360] hover:text-[#6f3f4b]"
+          >
+            View all appointments
+            <ArrowRight className="size-3.5" aria-hidden="true" />
+          </Link>
+        </section>
+
+        {/* Activity & transactions */}
+        <section className="rounded-xl border border-[#e8dccb] bg-white/70 p-5 sm:p-6">
+          <h2 className="font-heading text-xl text-[#302b2b]">Activity &amp; Transactions</h2>
+          {recentTransactions.length > 0 ? (
+            <div className="mt-4 space-y-3">
+              {recentTransactions.map((transaction) => (
+                <div
+                  key={transaction.id}
+                  className="flex items-center justify-between gap-3 border-b border-[#efe8de] pb-3 last:border-0 last:pb-0"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm text-[#4a423d]">
+                      {transaction.appointment?.serviceSnapshot?.serviceName ?? "Payment"}
+                    </p>
+                    <p className="text-[0.65rem] text-[#a19991]">
+                      {transaction.status === "paid" ? "Card" : "Failed"} ·{" "}
+                      {formatDate(transaction.createdAt)}
+                    </p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p className="text-sm font-medium text-[#302b2b]">
+                      {formatCurrency(transaction.amount, transaction.currency)}
+                    </p>
+                    <StatusBadge status={transaction.status} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-[#8c7f74]">No payment activity recorded yet.</p>
+          )}
+          <Link
+            href="/dashboard/admin/transactions"
+            className="mt-4 inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#8d5360] hover:text-[#6f3f4b]"
+          >
+            All transactions
+            <ArrowRight className="size-3.5" aria-hidden="true" />
+          </Link>
+        </section>
       </div>
     </div>
   );
