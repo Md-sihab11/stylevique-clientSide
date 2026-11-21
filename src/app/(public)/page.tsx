@@ -9,9 +9,10 @@ import {
   Search,
   Sparkles,
 } from "lucide-react";
-import { SALON } from "@/constants/salon";
+import { HERO_IMAGE_SRC, SALON } from "@/constants/salon";
 import { SectionHeading } from "@/components/common/section-heading";
 import { PrimaryButton } from "@/components/common/primary-button";
+import { SafeImage } from "@/components/common/safe-image";
 import { FeaturedServices } from "@/features/home/components/featured-services";
 import { ServiceCategories } from "@/features/home/components/service-categories";
 
@@ -73,14 +74,14 @@ export default function HomePage() {
         <div className="relative overflow-hidden bg-foreground">
           {/* Full-bleed backdrop with layered gradients so the copy stays
               readable on every crop of the image. */}
-          <Image
-            src="/images/banners/hero-section.png"
-            alt="A warmly lit Stylevique salon with backlit mirrors and leather chairs"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
+          <div className="absolute inset-0">
+            <SafeImage
+              src={HERO_IMAGE_SRC}
+              alt="A warmly lit Stylevique salon with backlit mirrors and leather chairs"
+              priority
+              className="object-center"
+            />
+          </div>
           <div
             className="absolute inset-0 bg-gradient-to-r from-foreground/95 via-foreground/80 to-foreground/35"
             aria-hidden="true"
@@ -195,7 +196,7 @@ export default function HomePage() {
           <div className="relative order-2 lg:order-1">
             <div className="relative aspect-[5/6] overflow-hidden rounded-t-[8rem]">
               <Image
-                src="/images/banners/auth-salon.jpg"
+                src="/images/banners/hero-salon.jpg"
                 alt="A quiet facial treatment room at Stylevique"
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"

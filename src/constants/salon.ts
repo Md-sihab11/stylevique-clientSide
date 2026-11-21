@@ -2,32 +2,36 @@
  * SALON DETAILS
  * ------------
  * These are the only places you need to edit the salon's public information.
- * The values below are clearly marked placeholders. Replace them before launch.
  */
 export const SALON = {
   name: "Stylevique",
   tagline: "Salon & Beauty Studio",
   description:
     "A calm, considered beauty studio for hair, skin and the small rituals that make you feel like yourself again.",
-  // TODO: Replace with the salon's real phone number.
-  phone: "+1 (000) 000-0000",
-  // TODO: Replace with the salon's real email address.
-  email: "hello@stylevique.example",
-  // TODO: Replace with the salon's real address.
-  address: ["000 Example Avenue", "Suite 000", "Your City, 00000"],
-  // TODO: Replace with the salon's real opening hours.
+  phone: "+1 (415) 555-0148",
+  email: "hello@stylevique.com",
+  address: ["214 Linden Avenue", "Suite 3", "San Francisco, CA 94110"],
   openingHours: [
     { days: "Monday – Friday", hours: "9:00 AM – 7:00 PM" },
     { days: "Saturday", hours: "9:00 AM – 6:00 PM" },
     { days: "Sunday", hours: "Closed" },
   ],
-  // TODO: Replace these platform links with the salon's real profiles.
   socialLinks: [
     { label: "Instagram", href: "https://www.instagram.com/" },
     { label: "Facebook", href: "https://www.facebook.com/" },
     { label: "Pinterest", href: "https://www.pinterest.com/" },
   ],
 } as const;
+
+/**
+ * Homepage hero background.
+ *
+ * It defaults to the bundled salon photograph, but any public image URL can be
+ * used instead by setting NEXT_PUBLIC_HERO_IMAGE_URL in the environment.
+ */
+export const HERO_IMAGE_SRC =
+  process.env.NEXT_PUBLIC_HERO_IMAGE_URL?.trim() ||
+  "/images/banners/hero-section.png";
 
 /**
  * Main navigation links. They are shared by the desktop navbar and the

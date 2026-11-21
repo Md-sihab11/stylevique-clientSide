@@ -6,7 +6,6 @@ import { CopyrightYear } from "@/components/common/copyright-year";
 
 /**
  * Public footer. Edit salon details in src/constants/salon.ts.
- * The phone, address and social URLs there are placeholders, not real data.
  */
 export function Footer() {
   const phoneHref = `tel:${SALON.phone.replace(/[^+\d]/g, "")}`;
@@ -108,7 +107,7 @@ export function Footer() {
 
         <div className="flex flex-col gap-2 pt-6 text-[0.7rem] text-background/45 sm:flex-row sm:items-center sm:justify-between">
           <p>© <CopyrightYear /> Stylevique. All rights reserved.</p>
-          <p>Salon details are editable placeholders in src/constants/salon.ts.</p>
+          <p>Hair, skin and quiet moments, thoughtfully considered.</p>
         </div>
       </div>
     </footer>

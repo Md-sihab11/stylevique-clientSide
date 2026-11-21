@@ -16,7 +16,10 @@ interface SafeImageProps {
 }
 
 export function SafeImage({ src, alt, className, priority }: SafeImageProps) {
-  const [hasFailed, setHasFailed] = useState(false);
+  // Remember which URL failed, not just that a failure happened. If the admin
+  // pastes a new URL, the image should be allowed to load again.
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const hasFailed = Boolean(src) && failedSrc === src;
 
   if (!src || hasFailed) {
     return (
@@ -38,7 +41,7 @@ export function SafeImage({ src, alt, className, priority }: SafeImageProps) {
       src={src}
       alt={alt}
       loading={priority ? "eager" : "lazy"}
-      onError={() => setHasFailed(true)}
+      onError={() => setFailedSrc(src ?? null)}
       className={cn("h-full w-full object-cover", className)}
     />
   );

@@ -15,7 +15,7 @@ import { PrimaryButton } from "@/components/common/primary-button";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Find Stylevique's contact details, opening hours and appointment guidance. Contact details are editable placeholders until the salon supplies final information.",
+    "Find Stylevique's contact details, opening hours and appointment guidance.",
 };
 
 const VISIT_NOTES = [
@@ -55,8 +55,7 @@ export default function ContactPage() {
           </h1>
           <p className="mt-5 max-w-xl text-sm leading-7 text-muted-foreground">
             Questions about a service, a booking or a visit? Reach the studio
-            directly. The contact details below are editable placeholders — update
-            them in <code className="text-foreground">src/constants/salon.ts</code>.
+            directly and the team will help you find the right appointment.
           </p>
         </div>
       </section>
@@ -66,7 +65,7 @@ export default function ContactPage() {
           <SectionHeading
             eyebrow="Find us"
             title="The studio details."
-            description="Replace every value below with the salon's real information before launch."
+            description="Call, email or stop by. We are happy to help with service questions and appointment changes."
           />
 
           <div className="mt-8 space-y-6">
@@ -138,8 +137,8 @@ export default function ContactPage() {
 
           <div className="mt-6 rounded-md bg-secondary/60 p-4">
             <p className="text-xs leading-6 text-muted-foreground">
-              Opening hours are placeholders too. Update the same constants file
-              when the real schedule is available.
+              Appointments are reviewed during opening hours. If you need to change
+              a confirmed booking, contact the studio directly.
             </p>
           </div>
 

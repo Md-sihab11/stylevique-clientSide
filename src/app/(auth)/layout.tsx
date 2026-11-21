@@ -34,7 +34,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
       <div className="relative hidden overflow-hidden lg:block">
         <Image
-          src="/images/banners/auth-salon.jpg"
+          src="/images/banners/hero-salon.jpg"
           alt="A serene beauty treatment at Stylevique"
           fill
           priority
