@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, ExternalLink, LogOut, PanelLeft, Search, UserRound } from "lucide-react";
+import { ExternalLink, LogOut, PanelLeft, Search, UserRound } from "lucide-react";
 import type { DashboardUser } from "./dashboard-sidebar";
+import { NotificationCenter } from "./notification-center";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/format";
 
@@ -62,14 +63,7 @@ export function DashboardNavbar({
           </form>
         )}
 
-        <button
-          type="button"
-          aria-label="Notifications"
-          className="relative inline-flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted"
-        >
-          <Bell className="size-[1.1rem]" aria-hidden="true" />
-          <span className="absolute right-2 top-1.5 size-1.5 rounded-full bg-primary ring-2 ring-background" />
-        </button>
+        <NotificationCenter role={role} />
 
         <Link
           href={`/dashboard/${role}/profile`}
