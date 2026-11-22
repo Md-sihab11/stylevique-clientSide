@@ -99,8 +99,18 @@ export function ServiceDetails() {
               {service.category}
             </span>
           </div>
+        </div>
 
-          <div className="mt-8 grid gap-4 border-t border-border pt-6 sm:grid-cols-3">
+        <div className="lg:pt-4">
+          <p className="eyebrow">{service.category}</p>
+          <h1 className="mt-3 font-display text-5xl leading-[0.98] font-medium tracking-[0.01em] text-foreground uppercase sm:text-6xl">
+            {service.serviceName}
+          </h1>
+          <p className="mt-6 text-sm leading-7 text-muted-foreground">
+            {service.description}
+          </p>
+
+          <div className="mt-8 grid gap-4 border-y border-border py-6 sm:grid-cols-3">
             <div>
               <p className="text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                 Duration
@@ -128,18 +138,8 @@ export function ServiceDetails() {
               </p>
             </div>
           </div>
-        </div>
 
-        <div className="lg:pt-4">
-          <p className="eyebrow">{service.category}</p>
-          <h1 className="mt-3 font-display text-5xl leading-[0.98] font-medium tracking-[0.01em] text-foreground uppercase sm:text-6xl">
-            {service.serviceName}
-          </h1>
-          <p className="mt-6 text-sm leading-7 text-muted-foreground">
-            {service.description}
-          </p>
-
-          <div className="mt-8 grid gap-5 border-y border-border py-6 sm:grid-cols-2">
+          <div className="mt-8 grid gap-5 sm:grid-cols-2">
             <div className="flex gap-3">
               <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
               <div>
