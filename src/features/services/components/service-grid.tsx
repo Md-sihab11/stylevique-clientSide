@@ -10,7 +10,7 @@ interface ServiceGridProps {
 export function ServiceGrid({ services, className }: ServiceGridProps) {
   return (
     <div
-      className={`grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 ${className ?? ""}`}
+      className={`grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 ${className ?? ""}`}
     >
       {services.map((service) => (
         <ServiceCard key={service.id} service={service} />

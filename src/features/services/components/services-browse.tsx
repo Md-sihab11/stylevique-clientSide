@@ -15,7 +15,10 @@ import { ErrorState } from "@/components/common/error-state";
 import { PaginationControls } from "@/components/common/pagination-controls";
 import { Input } from "@/components/ui/input";
 
-const PAGE_SIZE = 6;
+// Browse shows the full active catalog (backend allows up to 100 per page).
+// The homepage keeps its own 6-card featured carousel.
+const PAGE_SIZE = 100;
+const SKELETON_COUNT = 6;
 
 /**
  * Browse services page.
@@ -263,7 +266,7 @@ export function ServicesBrowse() {
         </div>
 
         <div className="mt-6">
-          {isLoading && <ServiceGridSkeleton count={PAGE_SIZE} />}
+          {isLoading && <ServiceGridSkeleton count={SKELETON_COUNT} />}
 
           {!isLoading && Boolean(error) && (
             <ErrorState

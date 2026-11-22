@@ -38,16 +38,16 @@ export function ServiceCard({ service }: ServiceCardProps) {
         </div>
 
         {/* Service Information */}
-        <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <div className="flex flex-1 flex-col p-4 sm:p-5">
           {/* Category — shown on every card, above the service name */}
-          <p className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-primary">
+          <p className="mb-2.5 inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-2.5 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-primary">
             <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
             {service.category?.trim() || "Salon service"}
           </p>
 
           {/* Title and Price */}
           <div className="flex items-start justify-between gap-3">
-            <h3 className="max-w-[70%] font-section text-xl font-medium uppercase leading-snug tracking-[0.04em] text-card-foreground transition-colors duration-300 group-hover:text-primary sm:text-[1.4rem]">
+            <h3 className="max-w-[70%] font-section text-lg font-medium uppercase leading-snug tracking-[0.04em] text-card-foreground transition-colors duration-300 group-hover:text-primary sm:text-[1.25rem]">
               {service.serviceName}
             </h3>
 
@@ -62,13 +62,13 @@ export function ServiceCard({ service }: ServiceCardProps) {
           </div>
 
           {/* Description */}
-          <p className="mt-3 line-clamp-2 min-h-[3rem] text-sm leading-6 text-muted-foreground">
+          <p className="mt-2.5 line-clamp-2 min-h-[2.75rem] text-[0.82rem] leading-6 text-muted-foreground">
             {service.description}
           </p>
 
           {/* Bottom Details */}
-          <div className="mt-auto pt-6">
-            <div className="flex items-center justify-between gap-3 border-t border-border/80 pt-5">
+          <div className="mt-auto pt-4">
+            <div className="flex items-center justify-between gap-3 border-t border-border/80 pt-4">
               {/* Duration */}
               <span className="inline-flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground">
                 <Clock3
@@ -81,8 +81,8 @@ export function ServiceCard({ service }: ServiceCardProps) {
               {/* View Details */}
               <span className="inline-flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-card-foreground transition-colors duration-300 group-hover:text-primary">
                 View Details
-                <span className="flex size-8 items-center justify-center rounded-full border border-border transition-all duration-300 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
-                  <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:rotate-45" />
+                <span className="flex size-7 items-center justify-center rounded-full border border-border transition-all duration-300 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
+                  <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:rotate-45" />
                 </span>
               </span>
             </div>
