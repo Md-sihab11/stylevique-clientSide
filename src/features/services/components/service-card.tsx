@@ -33,17 +33,18 @@ export function ServiceCard({ service }: ServiceCardProps) {
           {/* Image overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-black/5 opacity-80 transition-opacity duration-500 group-hover:opacity-100" />
 
-          {/* Category */}
-          <span className="absolute left-5 top-5 rounded-full border border-white/20 bg-black/35 px-4 py-2 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white shadow-sm backdrop-blur-md">
-            {service.category}
-          </span>
-
           {/* Decorative corner accent */}
           <div className="absolute bottom-0 left-5 h-[2px] w-12 bg-primary transition-all duration-500 group-hover:w-20" />
         </div>
 
         {/* Service Information */}
         <div className="flex flex-1 flex-col p-5 sm:p-6">
+          {/* Category — shown on every card, above the service name */}
+          <p className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-primary">
+            <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
+            {service.category?.trim() || "Salon service"}
+          </p>
+
           {/* Title and Price */}
           <div className="flex items-start justify-between gap-3">
             <h3 className="max-w-[70%] font-section text-xl font-medium uppercase leading-snug tracking-[0.04em] text-card-foreground transition-colors duration-300 group-hover:text-primary sm:text-[1.4rem]">
