@@ -37,12 +37,25 @@ export const HERO_IMAGE_SRC =
 export const CUSTOMER_HERO_IMAGE = "/images/banners/image10.png";
 
 /**
- * Main navigation links. They are shared by the desktop navbar and the
- * mobile menu so both stay in sync.
+ * Main navigation links. Together with `AUTH_NAV_LINKS` they make up the four
+ * public navbar routes. Shared by the desktop navbar and the mobile menu so
+ * both stay in sync.
  */
 export const MAIN_NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "Services", href: "/services" },
+  { label: "Browse Services", href: "/services" },
+] as const;
+
+/** Auth links that complete the public navbar for signed-out visitors. */
+export const AUTH_NAV_LINKS = [
+  { label: "Sign In", href: "/sign-in" },
+  { label: "Sign Up", href: "/sign-up" },
+] as const;
+
+/** Full site map used by the footer (the navbar stays on the four public routes). */
+export const FOOTER_NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "Browse Services", href: "/services" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ] as const;

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight, Clock3, Mail, MapPin, Phone } from "lucide-react";
-import { SALON, MAIN_NAV_LINKS } from "@/constants/salon";
+import { AUTH_NAV_LINKS, FOOTER_NAV_LINKS, SALON } from "@/constants/salon";
 import { Logo } from "@/components/brand/logo";
 import { CopyrightYear } from "@/components/common/copyright-year";
 
@@ -43,7 +43,7 @@ export function Footer() {
               Explore
             </h3>
             <nav aria-label="Footer navigation" className="mt-5 flex flex-col gap-3">
-              {MAIN_NAV_LINKS.map((link) => (
+              {[...FOOTER_NAV_LINKS, ...AUTH_NAV_LINKS].map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -52,12 +52,6 @@ export function Footer() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href="/sign-in"
-                className="text-sm text-on-dark-text/70 transition-colors hover:text-on-dark-text"
-              >
-                Sign in
-              </Link>
             </nav>
           </div>
 

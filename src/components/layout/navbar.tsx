@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { authClient, useSession } from "@/lib/auth/auth-client";
-import { MAIN_NAV_LINKS } from "@/constants/salon";
+import { AUTH_NAV_LINKS, MAIN_NAV_LINKS } from "@/constants/salon";
 import { Logo } from "@/components/brand/logo";
 import { PrimaryButton } from "@/components/common/primary-button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
@@ -56,7 +56,7 @@ export function Navbar() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   /** Dark CTA that mirrors the hero buttons (uppercase, tracked, rounded-lg). */
-  const bookButtonClasses =
+  const ctaButtonClasses =
     "inline-flex h-12 items-center justify-center rounded-lg border border-on-dark-text/25 bg-on-dark px-7 text-[0.72rem] font-semibold tracking-[0.18em] text-on-dark-text uppercase transition-all duration-300 hover:-translate-y-0.5 hover:border-[#8d5360] hover:bg-[#8d5360] hover:text-white hover:shadow-[0_10px_24px_-10px_rgba(141,83,96,0.55)] dark:hover:border-[#c9a878] dark:hover:bg-[#c9a878] dark:hover:text-[#1a1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 
   async function handleSignOut() {
@@ -110,7 +110,7 @@ export function Navbar() {
             />
           ) : user ? (
             <>
-              <Link href="/services" className={bookButtonClasses}>
+              <Link href="/services" className={ctaButtonClasses}>
                 Book Appointment
               </Link>
 
@@ -175,15 +175,19 @@ export function Navbar() {
             </>
           ) : (
             <>
-              <Link
-                href="/sign-in"
-                className="text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
-              >
-                Sign In
-              </Link>
-              <Link href="/services" className={bookButtonClasses}>
-                Book Appointment
-              </Link>
+              {AUTH_NAV_LINKS.map((link, index) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={
+                    index === AUTH_NAV_LINKS.length - 1
+                      ? ctaButtonClasses
+                      : "text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
+                  }
+                >
+                  {link.label}
+                </Link>
+              ))}
             </>
           )}
         </div>
@@ -273,19 +277,18 @@ export function Navbar() {
               </div>
             ) : (
               <div className="flex flex-col gap-3">
-                <PrimaryButton href="/services" size="md" className="w-full">
-                  Book an appointment
-                </PrimaryButton>
-                <PrimaryButton href="/sign-in" variant="outline" size="md" className="w-full">
-                  Sign in
-                </PrimaryButton>
-                <Link
-                  href="/sign-up"
-                  onClick={() => setMobileOpen(false)}
-                  className="pt-1 text-center text-xs text-muted-foreground hover:text-foreground"
-                >
-                  New to Stylevique? Create an account
-                </Link>
+                {AUTH_NAV_LINKS.map((link, index) => (
+                  <PrimaryButton
+                    key={link.href}
+                    href={link.href}
+                    variant={index === AUTH_NAV_LINKS.length - 1 ? "primary" : "outline"}
+                    size="md"
+                    className="w-full"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {link.label}
+                  </PrimaryButton>
+                ))}
               </div>
             )}
           </div>

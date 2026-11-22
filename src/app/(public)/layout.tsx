@@ -5,7 +5,9 @@ import { Navbar } from "@/components/layout/navbar";
 import { NavbarFallback } from "@/components/layout/navbar-fallback";
 
 /**
- * Layout for all public pages (home, services, about, contact).
+ * Layout for all public pages (home, services, about, contact, ...).
+ * The navbar itself keeps four public links: Home, Browse Services,
+ * Sign In and Sign Up.
  * Keeping it in a route group lets the dashboard and auth screens use their
  * own layouts without duplicating the public navbar.
  */
