@@ -20,7 +20,8 @@ export const instant = false;
 /**
  * Service details are for signed-in guests only. Clicking a service (or typing
  * its URL) while signed out lands on the sign-in page, with a callbackUrl so
- * the guest returns to this exact service afterwards.
+ * the guest returns to this exact service afterwards. Blocked accounts are
+ * sent to the blocked page instead.
  */
 export default async function ServiceDetailsPage({
   params,
@@ -31,6 +32,12 @@ export default async function ServiceDetailsPage({
 
   if (!session) {
     redirect(`/sign-in?callbackUrl=${encodeURIComponent(`/services/${id}`)}`);
+  }
+
+  // Booking is a protected feature, so a blocked account must not even reach
+  // the details page. This mirrors the dashboard guards and the API checks.
+  if (session.user.isBlocked) {
+    redirect("/blocked");
   }
 
   return (

@@ -9,7 +9,6 @@ import {
   ArrowLeft,
   Clock3,
   DollarSign,
-  ImageIcon,
   Layers3,
   Sparkles,
   Upload,
@@ -58,11 +57,11 @@ const serviceSchema = z.object({
   image: z
     .string()
     .trim()
-    .min(1, "Add an image URL for this service.")
-    .max(2048, "Image URL is too long.")
+    .min(1, "Upload a service image before saving.")
+    .max(2048, "Uploaded image reference is too long.")
     .refine(
       (value) => /^https?:\/\/.+/i.test(value),
-      "Enter a valid image URL starting with http:// or https://.",
+      "Upload a supported image file to fill this field.",
     ),
   status: z.enum(["active", "inactive"]),
 });
@@ -79,7 +78,7 @@ interface AdminServiceFormProps {
  * Shared create/edit form for salon services.
  * Validation mirrors the Express endpoint exactly:
  * name 2–120, category 2–80, description 10–2000, price > 0 and ≤ 1,000,000,
- * duration a whole number from 1–1440, and a valid image URL.
+ * duration a whole number from 1–1440, and an uploaded image file.
  */
 export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormProps) {
   const router = useRouter();
@@ -219,7 +218,7 @@ export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormP
         shouldValidate: true,
       });
       toast.success("Image uploaded", {
-        description: "The service image URL has been filled in for you.",
+        description: "The new service image is ready to save.",
       });
     } catch (error) {
       toast.error("Image upload failed", {
@@ -378,52 +377,67 @@ export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormP
                 label="Service image"
                 htmlFor="service-image"
                 error={errors.image?.message}
-                hint="Upload a file or paste a URL"
+                hint={imageValue ? "Image ready" : "Upload a file"}
                 required
                 className="sm:col-span-2"
               >
                 <div className="space-y-2">
-                  <div className="relative">
-                    <ImageIcon
-                      className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-                      aria-hidden="true"
-                    />
-                    <Input
-                      id="service-image"
-                      type="url"
-                      placeholder="https://images.example.com/service.jpg"
-                      className="h-11 bg-background pl-9 text-sm"
-                      aria-invalid={Boolean(errors.image)}
-                      {...register("image")}
-                    />
-                  </div>
+                  <input
+                    id="service-image"
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="sr-only"
+                    aria-invalid={Boolean(errors.image)}
+                    onChange={(event) => {
+                      void handleImageUpload(event.target.files?.[0]);
+                      event.target.value = "";
+                    }}
+                  />
 
-                  <div className="flex items-center gap-2">
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp,image/gif"
-                      className="sr-only"
-                      onChange={(event) => {
-                        void handleImageUpload(event.target.files?.[0]);
-                        event.target.value = "";
-                      }}
-                    />
-                    <Button
+                  {imageValue ? (
+                    <div className="flex items-center gap-3 rounded-md border border-border bg-background p-3">
+                      <div className="relative size-14 shrink-0 overflow-hidden rounded-sm bg-secondary">
+                        <SafeImage src={imageValue} alt="Selected service image" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-foreground">
+                          Image ready
+                        </p>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {isEdit
+                            ? "Current image — upload a new file to replace it."
+                            : "Uploaded and ready to save."}
+                        </p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="rounded-full"
+                        disabled={isUploading}
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <Upload className="size-3.5" aria-hidden="true" />
+                        {isUploading ? "Uploading…" : "Replace"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <button
                       type="button"
-                      variant="outline"
-                      size="sm"
-                      className="rounded-full"
                       disabled={isUploading}
                       onClick={() => fileInputRef.current?.click()}
+                      className="flex w-full flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border bg-background px-4 py-8 text-center transition-colors hover:border-primary/60 hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      <Upload className="size-3.5" aria-hidden="true" />
-                      {isUploading ? "Uploading…" : "Upload image"}
-                    </Button>
-                    <span className="text-xs text-muted-foreground">
-                      JPEG, PNG, WebP or GIF
-                    </span>
-                  </div>
+                      <Upload className="size-5 text-primary" aria-hidden="true" />
+                      <span className="text-sm font-medium text-foreground">
+                        {isUploading ? "Uploading…" : "Choose a service image"}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        JPEG, PNG, WebP or GIF
+                      </span>
+                    </button>
+                  )}
                 </div>
               </FormField>
             </div>
@@ -532,8 +546,8 @@ export function AdminServiceForm({ mode, service, serviceId }: AdminServiceFormP
               </div>
             </div>
             <p className="mt-3 text-[0.68rem] leading-5 text-muted-foreground">
-              Upload a JPEG, PNG, WebP or GIF, or paste a public image URL. Broken
-              URLs show a neutral placeholder instead of an empty card.
+              Upload a JPEG, PNG, WebP or GIF image. The file is hosted with the
+              salon account and saved with the service.
             </p>
           </div>
 
