@@ -2,6 +2,8 @@
 
 A full-stack salon platform: customers can browse services, request appointments, manage their bookings, and pay with Stripe Checkout. Administrators manage services, appointments, customers, and transactions.
 
+> This repository implements the **SalonBook – Salon Appointment Booking Platform** assignment brief; the product is branded **Stylevique**.
+
 ---
 
 ## Important features

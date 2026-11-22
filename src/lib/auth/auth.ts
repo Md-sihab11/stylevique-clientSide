@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { jwt } from "better-auth/plugins";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { MongoClient } from "mongodb";
@@ -124,10 +125,37 @@ export const auth = betterAuth({
 
   plugins: [jwt()],
 
+  /**
+   * The sign-up form validates password strength too, but the rule must also
+   * exist here: a crafted request must never create a weak password. Google
+   * sign-ups and other paths have no password and are left untouched.
+   */
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== "/sign-up/email") {
+        return;
+      }
+
+      const password = (ctx.body as { password?: unknown } | undefined)?.password;
+
+      if (typeof password !== "string") {
+        return; // Better Auth reports a missing/invalid password itself.
+      }
+
+      if (!/[A-Z]/.test(password) || !/[a-z]/.test(password)) {
+        throw new APIError("BAD_REQUEST", {
+          message:
+            "Password must include at least one uppercase and one lowercase letter.",
+        });
+      }
+    }),
+  },
+
   session: {
     cookieCache: {
       enabled: true,
-      maxAge: 7 * 24 * 60 * 60,
+      // Keep role/blocked changes visible within a minute instead of a week.
+      maxAge: 60,
     },
   },
 });
