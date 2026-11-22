@@ -103,38 +103,6 @@ Both repositories must stay separate.
 
 ---
 
-## Environment variables
-
-- `NEXT_PUBLIC_APP_URL` — browser origin
-- `NEXT_PUBLIC_API_URL` — Express API origin, no trailing slash
-- `BETTER_AUTH_URL` — server origin used by Better Auth
-- `BETTER_AUTH_SECRET` — long random signing secret
-- `MONGODB_URI` — MongoDB connection string
-- `MONGODB_DB_NAME` — defaults to `stylevique`; must match the server `DB_NAME`
-- `GOOGLE_CLIENT_ID` — Google OAuth client ID
-- `GOOGLE_CLIENT_SECRET` — Google OAuth client secret
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` — Stripe publishable key (redirect only)
-- `NEXT_PUBLIC_HERO_IMAGE_URL` — optional public image URL for the homepage hero
-
-Never put real secrets or credential values in the README.
-
----
-
-## Deployment guideline
-
-1. Deploy the Express API first.
-2. Deploy the Next.js client.
-3. Make sure the live API is reachable from the client origin.
-4. Verify the live site returns the same data with no CORS, 404, or 504 issues.
-5. Verify private routes still work after a browser refresh and logged-in users remain authenticated.
-6. Configure Stripe on the live site:
-   - Set the webhook URL to `https://<server-host>/api/payments/webhook`.
-   - Verify the Stripe Checkout and webhook flow update payment status.
-7. Verify admin credentials work on the live site.
-8. Add the deployed frontend URL to [Live website link](#live-website-link).
-
----
-
 ## Live site should work perfectly
 
 - No CORS, 404, or 504 issues.
@@ -144,11 +112,3 @@ Never put real secrets or credential values in the README.
 - Admin credentials work on the live site.
 
 ---
-
-## Evaluation admin access
-
-Admin accounts are never created through public registration. The admin role is
-assigned on the backend by setting `ADMIN_EMAIL` and running
-`npm run promote-admin -- <email>` from the server repository. The credentials used
-for evaluation are supplied separately in the submission; no admin secret is
-stored in either repository.
