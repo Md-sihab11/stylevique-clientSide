@@ -10,8 +10,6 @@ import {
   ExternalLink,
   LayoutDashboard,
   MessageSquareHeart,
-  PanelLeftClose,
-  PanelLeftOpen,
   Scissors,
   UserRound,
   UsersRound,
@@ -103,27 +101,8 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
           onSignOut={handleSignOut}
           isSigningOut={isSigningOut}
           isCollapsed={isCollapsed}
+          onToggleCollapse={() => setIsCollapsed((prev) => !prev)}
         />
-
-        {/* Side-mounted collapse toggle (desktop) — solid, high-contrast so it is easy to spot */}
-        <button
-          type="button"
-          onClick={() => setIsCollapsed((prev) => !prev)}
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className={cn(
-            "absolute right-2 z-30 inline-flex size-9 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-md transition-all duration-200 hover:scale-105 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-            // Keep it fully inside the sidebar so no part is clipped at the edge.
-            // When collapsed the logo occupies the top row, so drop below it.
-            isCollapsed ? "top-20" : "top-6",
-          )}
-        >
-          {isCollapsed ? (
-            <PanelLeftOpen className="size-4" aria-hidden="true" />
-          ) : (
-            <PanelLeftClose className="size-4" aria-hidden="true" />
-          )}
-        </button>
       </aside>
 
       <div className={cn("flex min-w-0 flex-1 flex-col", isCollapsed ? "lg:pl-16" : "lg:pl-56")}>

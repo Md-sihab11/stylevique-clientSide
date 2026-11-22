@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +28,8 @@ interface DashboardSidebarProps {
   onNavigate?: () => void;
   isSigningOut?: boolean;
   isCollapsed?: boolean;
+  /** Desktop only: renders the collapse/expand control in the header row. */
+  onToggleCollapse?: () => void;
 }
 
 /**
@@ -38,6 +40,7 @@ export function DashboardSidebar({
   items,
   onNavigate,
   isCollapsed = false,
+  onToggleCollapse,
 }: DashboardSidebarProps) {
   const pathname = usePathname();
 
@@ -49,11 +52,42 @@ export function DashboardSidebar({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-center px-4 py-6">
-        <Logo
-          href="/"
-          className={isCollapsed ? "w-10 overflow-hidden" : undefined}
-        />
+      {/*
+        Header row matches the dashboard navbar height (4.5rem). The wordmark
+        is hidden when collapsed so it is never cropped, and the toggle button
+        always stays inside this row instead of floating over the logo.
+      */}
+      <div
+        className={cn(
+          "flex h-[4.5rem] shrink-0 items-center border-b border-border",
+          isCollapsed
+            ? "justify-center px-2"
+            : onToggleCollapse
+              ? "justify-between gap-2 px-4"
+              : "justify-center px-4",
+        )}
+      >
+        {!isCollapsed && (
+          <div className="min-w-0 [&_img]:h-9 [&_img]:w-[142px]">
+            <Logo href="/" />
+          </div>
+        )}
+
+        {onToggleCollapse && (
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            {isCollapsed ? (
+              <PanelLeftOpen className="size-4" aria-hidden="true" />
+            ) : (
+              <PanelLeftClose className="size-4" aria-hidden="true" />
+            )}
+          </button>
+        )}
       </div>
 
       <nav
