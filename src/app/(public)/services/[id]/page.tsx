@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
 import { Skeleton } from "@/components/common/skeleton-loader";
 import { ServiceDetails } from "@/features/services/components/service-details";
-import { getServerSession } from "@/lib/auth/server-session";
 
 export const metadata: Metadata = {
   title: "Service details",
@@ -12,33 +10,17 @@ export const metadata: Metadata = {
 };
 
 /**
- * Reading the session from cookies makes this route dynamic, so it must block
- * instead of producing a static shell (same approach as the dashboard guards).
- */
-export const instant = false;
-
-/**
- * Service details are for signed-in guests only. Clicking a service (or typing
- * its URL) while signed out lands on the sign-in page, with a callbackUrl so
- * the guest returns to this exact service afterwards. Blocked accounts are
- * sent to the blocked page instead.
+ * Service details are public: guests can read the service information and
+ * reviews without signing in. Booking is the protected step — the booking form
+ * sends unauthenticated visitors to sign-in with a callbackUrl back to this
+ * exact service, and it also handles admin and blocked accounts.
  */
 export default async function ServiceDetailsPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const [{ id }, session] = await Promise.all([params, getServerSession()]);
-
-  if (!session) {
-    redirect(`/sign-in?callbackUrl=${encodeURIComponent(`/services/${id}`)}`);
-  }
-
-  // Booking is a protected feature, so a blocked account must not even reach
-  // the details page. This mirrors the dashboard guards and the API checks.
-  if (session.user.isBlocked) {
-    redirect("/blocked");
-  }
+  await params;
 
   return (
     <Suspense

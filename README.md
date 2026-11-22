@@ -10,7 +10,7 @@ A full-stack salon platform: customers can browse services, request appointments
 
 - Public homepage with featured services, categories, and a booking call to action
 - Service browsing with search, category filter, sorting, and pagination
-- Protected service details page with an appointment booking form
+- Public service details page with a sign-in-gated appointment booking form
 - Better Auth sign-in/sign-up with Google OAuth and email/password
 - Customer dashboard: appointment overview, my appointments, payment history, reviews, profile
 - Admin dashboard: service management, appointment management, customer management, transactions, review moderation
