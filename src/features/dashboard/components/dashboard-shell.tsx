@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   CalendarDays,
-  ChevronLeft,
-  ChevronRight,
   Compass,
   CreditCard,
   ExternalLink,
   LayoutDashboard,
   MessageSquareHeart,
+  PanelLeftClose,
+  PanelLeftOpen,
   Scissors,
   UserRound,
   UsersRound,
@@ -105,18 +105,18 @@ export function DashboardShell({ user, role, navItems, children }: DashboardShel
           isCollapsed={isCollapsed}
         />
 
-        {/* Side-mounted collapse toggle (desktop) */}
+        {/* Side-mounted collapse toggle (desktop) — solid, high-contrast so it is easy to spot */}
         <button
           type="button"
           onClick={() => setIsCollapsed((prev) => !prev)}
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="absolute -right-3 top-6 z-30 inline-flex size-6 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:border-primary hover:text-primary"
+          className="absolute -right-4 top-6 z-30 inline-flex size-9 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-md transition-all duration-200 hover:scale-105 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           {isCollapsed ? (
-            <ChevronRight className="size-3.5" aria-hidden="true" />
+            <PanelLeftOpen className="size-4" aria-hidden="true" />
           ) : (
-            <ChevronLeft className="size-3.5" aria-hidden="true" />
+            <PanelLeftClose className="size-4" aria-hidden="true" />
           )}
         </button>
       </aside>
