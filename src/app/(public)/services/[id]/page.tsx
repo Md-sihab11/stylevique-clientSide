@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { Skeleton } from "@/components/common/skeleton-loader";
 import { ServiceDetails } from "@/features/services/components/service-details";
+import { getServerSession } from "@/lib/auth/server-session";
 
 export const metadata: Metadata = {
   title: "Service details",
@@ -10,11 +12,27 @@ export const metadata: Metadata = {
 };
 
 /**
- * Public service details. Anyone can browse the service and read approved
- * reviews; booking itself still asks guests to sign in (handled inside the
- * booking form).
+ * Reading the session from cookies makes this route dynamic, so it must block
+ * instead of producing a static shell (same approach as the dashboard guards).
  */
-export default function ServiceDetailsPage() {
+export const instant = false;
+
+/**
+ * Service details are for signed-in guests only. Clicking a service (or typing
+ * its URL) while signed out lands on the sign-in page, with a callbackUrl so
+ * the guest returns to this exact service afterwards.
+ */
+export default async function ServiceDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const [{ id }, session] = await Promise.all([params, getServerSession()]);
+
+  if (!session) {
+    redirect(`/sign-in?callbackUrl=${encodeURIComponent(`/services/${id}`)}`);
+  }
+
   return (
     <Suspense
       fallback={
