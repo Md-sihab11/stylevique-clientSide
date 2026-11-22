@@ -1,8 +1,8 @@
 # Stylevique Frontend — Project Structure
 
-> **Status: structure only.** This scaffold contains folders, placeholder `.gitkeep` files, and documentation. It does **not** contain feature implementation, authentication logic, API requests, database code, or working forms.
+> **Status: implemented.** This document maps the current application structure: public pages, authentication, role-based dashboards, API layer, reusable components and feature folders are all in place. Route and folder names below reflect the running app.
 
-Last updated: 2026-11-18
+Last updated: 2026-11-22
 
 ## 1. Project at a glance
 

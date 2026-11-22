@@ -193,7 +193,6 @@ export function Navbar() {
         </div>
 
         {/* Mobile Menu Trigger */}
-        <ThemeToggle className="lg:hidden" />
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
@@ -291,6 +290,15 @@ export function Navbar() {
                 ))}
               </div>
             )}
+
+            {/* Theme switch moved here from the mobile header to keep the bar clean. */}
+            <div className="flex items-center justify-between border-t border-border pt-6">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-sm font-medium text-foreground">Appearance</span>
+                <span className="text-xs text-muted-foreground">Toggle light and dark mode</span>
+              </div>
+              <ThemeToggle className="size-10 border border-border" />
+            </div>
           </div>
         </SheetContent>
       </Sheet>

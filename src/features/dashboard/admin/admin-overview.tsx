@@ -120,6 +120,26 @@ export function AdminOverview() {
       value: data ? data.totalActiveServices : "—",
       badge: "LIVE",
     },
+    {
+      label: "Pending",
+      value: data ? data.pendingAppointments : "—",
+      badge: "AWAITING",
+    },
+    {
+      label: "Confirmed",
+      value: data ? data.confirmedAppointments : "—",
+      badge: "BOOKED",
+    },
+    {
+      label: "Cancelled",
+      value: data ? data.cancelledAppointments : "—",
+      badge: "CLOSED",
+    },
+    {
+      label: "Successful payments",
+      value: data ? data.totalSuccessfulPayments : "—",
+      badge: "PAID",
+    },
   ];
 
   return (
@@ -159,7 +179,13 @@ export function AdminOverview() {
           {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className={cn("px-5 py-5", index > 0 && "border-l border-line")}
+              className={cn(
+                "px-5 py-5",
+                index > 0 && index % 2 === 1 && "border-l border-line",
+                index > 0 && index % 4 !== 0 && "md:border-l md:border-line",
+                index >= 2 && index < 4 && "border-t border-line md:border-t-0",
+                index >= 4 && "border-t border-line",
+              )}
             >
               <p className="font-heading text-3xl text-ink sm:text-[2.1rem]">{stat.value}</p>
               <div className="mt-1 flex flex-wrap items-center gap-2">

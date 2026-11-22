@@ -67,8 +67,10 @@ export function CustomerOverview() {
   const promoServices = (servicesData?.services ?? []).slice(0, 2);
 
   const stats = [
-    { label: "Total appointments", value: data ? data.totalAppointments : "—" },
-    { label: "Upcoming", value: data ? data.confirmedAppointments : "—" },
+    { label: "Total requests", value: data ? data.totalAppointments : "—" },
+    { label: "Pending", value: data ? data.pendingAppointments : "—" },
+    { label: "Confirmed", value: data ? data.confirmedAppointments : "—" },
+    { label: "Cancelled", value: data ? data.cancelledAppointments : "—" },
     { label: "Completed", value: appointmentsData ? completed : "—" },
     {
       label: "Total spent",
@@ -138,8 +140,10 @@ export function CustomerOverview() {
               key={stat.label}
               className={cn(
                 "px-5 py-5",
-                index > 0 && "border-l border-line",
-                index === 2 && "md:border-l",
+                index > 0 && index % 2 === 1 && "border-l border-line",
+                index > 0 && index % 4 !== 0 && "md:border-l md:border-line",
+                index >= 2 && index < 4 && "border-t border-line md:border-t-0",
+                index >= 4 && "border-t border-line",
               )}
             >
               <p className="text-[0.62rem] font-medium uppercase tracking-[0.14em] text-ink-muted">

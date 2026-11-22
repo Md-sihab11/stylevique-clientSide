@@ -87,7 +87,8 @@ Stripe secret keys and webhook secrets are required on the server only and must 
 
 ## Live website link
 
-_TBD — add the deployed frontend URL here after deployment._
+- **Frontend:** https://stylevique.vercel.app
+- **API:** https://stylevique-server.onrender.com
 
 ---
 
@@ -141,3 +142,13 @@ Never put real secrets or credential values in the README.
 - Logged-in users remain authenticated.
 - Stripe Checkout and the webhook update payment status on the live site.
 - Admin credentials work on the live site.
+
+---
+
+## Evaluation admin access
+
+Admin accounts are never created through public registration. The admin role is
+assigned on the backend by setting `ADMIN_EMAIL` and running
+`npm run promote-admin -- <email>` from the server repository. The credentials used
+for evaluation are supplied separately in the submission; no admin secret is
+stored in either repository.
