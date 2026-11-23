@@ -23,7 +23,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
         className="flex h-full flex-col overflow-hidden rounded-lg border border-border/70 bg-card transition-all duration-500 hover:-translate-y-1 hover:border-primary/50 hover:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background"
       >
         {/* Service Image */}
-        <div className="relative aspect-[4/5] overflow-hidden bg-secondary">
+        <div className="relative aspect-square overflow-hidden bg-secondary">
           <SafeImage
             src={service.image}
             alt={service.serviceName}
