@@ -16,6 +16,8 @@ interface ReviewCarouselProps {
   serviceId?: string;
   /** Smaller padding for embedding on a detail page. */
   compact?: boolean;
+  /** Keep the arrow controls and also scroll the row horizontally on its own. */
+  marquee?: boolean;
 }
 
 function Stars({ rating }: { rating: number }) {
@@ -41,10 +43,13 @@ function Stars({ rating }: { rating: number }) {
  * Public review carousel. Only approved reviews are returned by the backend;
  * this component never decides which reviews are visible.
  */
-export function ReviewCarousel({ serviceId, compact = false }: ReviewCarouselProps) {
+export function ReviewCarousel({ serviceId, compact = false, marquee = false }: ReviewCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  const pausedRef = useRef(false);
+  const reducedMotionRef = useRef(false);
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { data, error, isLoading, reload } = useApiResource(
     () => getReviews({ serviceId, page: 1, limit: 12 }),
@@ -54,6 +59,9 @@ export function ReviewCarousel({ serviceId, compact = false }: ReviewCarouselPro
     () => getReviewSummary(serviceId),
     `review-summary-${serviceId ?? "all"}`,
   );
+
+  const reviews = data?.reviews ?? [];
+  const canMarquee = marquee && !isLoading && !error && reviews.length > 0;
 
   const checkEdges = useCallback(() => {
     const el = scrollRef.current;
@@ -73,11 +81,67 @@ export function ReviewCarousel({ serviceId, compact = false }: ReviewCarouselPro
   const scrollByPage = (direction: 1 | -1) => {
     const el = scrollRef.current;
     if (!el) return;
+
+    if (canMarquee) {
+      // Let the arrow's smooth scroll finish before the marquee takes over.
+      pausedRef.current = true;
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = setTimeout(() => {
+        pausedRef.current = false;
+      }, 600);
+    }
+
     el.scrollBy({ left: direction * el.clientWidth, behavior: "smooth" });
     requestAnimationFrame(checkEdges);
   };
 
-  const reviews = data?.reviews ?? [];
+  // Honour the visitor's motion preference. When auto-scroll is off, the arrow
+  // controls are still there for manual browsing.
+  useEffect(() => {
+    if (!canMarquee) return;
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    reducedMotionRef.current = query.matches;
+    const handleChange = (event: MediaQueryListEvent) => {
+      reducedMotionRef.current = event.matches;
+    };
+    query.addEventListener("change", handleChange);
+    return () => query.removeEventListener("change", handleChange);
+  }, [canMarquee]);
+
+  // Continuous horizontal marquee. Cards are rendered twice, so once the
+  // first copy has passed we jump back by exactly one copy's width — the seam
+  // is invisible. Clicking an arrow simply changes scrollLeft and the loop
+  // carries on from the new position.
+  useEffect(() => {
+    if (!canMarquee) return;
+
+    let frame = 0;
+    let previous = performance.now();
+    const speed = 0.06; // pixels per millisecond (~60px/s)
+
+    const step = (now: number) => {
+      const el = scrollRef.current;
+      const elapsed = Math.min(now - previous, 64);
+      previous = now;
+
+      if (el && !pausedRef.current && !reducedMotionRef.current) {
+        const copyWidth = el.scrollWidth / 2;
+        if (copyWidth > 0) {
+          let next = el.scrollLeft + speed * elapsed;
+          if (next >= copyWidth) next -= copyWidth;
+          el.scrollLeft = next;
+        }
+      }
+
+      frame = requestAnimationFrame(step);
+    };
+
+    frame = requestAnimationFrame(step);
+    return () => {
+      cancelAnimationFrame(frame);
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    };
+  }, [canMarquee]);
 
   return (
     <section className={compact ? "py-12" : "section-space bg-secondary/40"}>
@@ -132,13 +196,41 @@ export function ReviewCarousel({ serviceId, compact = false }: ReviewCarouselPro
             <>
               <div
                 ref={scrollRef}
-                className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto scroll-smooth"
+                className={cn(
+                  "no-scrollbar flex overflow-x-auto",
+                  canMarquee ? "marquee-mask" : "snap-x snap-mandatory scroll-smooth",
+                )}
                 role="region"
                 aria-label="Customer reviews carousel"
+                tabIndex={canMarquee ? 0 : undefined}
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse") pausedRef.current = true;
+                }}
+                onPointerLeave={(event) => {
+                  if (event.pointerType === "mouse") pausedRef.current = false;
+                }}
+                onPointerDown={() => {
+                  pausedRef.current = true;
+                }}
+                onPointerUp={(event) => {
+                  if (event.pointerType !== "mouse") pausedRef.current = false;
+                }}
+                onPointerCancel={() => {
+                  pausedRef.current = false;
+                }}
+                onFocus={() => {
+                  pausedRef.current = true;
+                }}
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                    pausedRef.current = false;
+                  }
+                }}
               >
-                {reviews.map((review) => (
+                {(canMarquee ? [...reviews, ...reviews] : reviews).map((review, index) => (
                   <div
-                    key={review.id}
+                    key={`${review.id}-${index}`}
+                    aria-hidden={canMarquee && index >= reviews.length ? true : undefined}
                     className="w-full shrink-0 snap-start px-2 sm:w-1/2 sm:px-3 lg:w-1/3"
                   >
                     <article className="flex h-full flex-col rounded-lg border border-border bg-card/80 p-6">
