@@ -83,6 +83,9 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,
+    // Registration should not create a session: new users are sent to the
+    // sign-in page first, then to the home page once they sign in.
+    autoSignIn: false,
   },
 
   socialProviders: {

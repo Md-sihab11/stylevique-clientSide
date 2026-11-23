@@ -5,7 +5,7 @@
  */
 export function getSafeCallbackUrl(
   value: string | null | undefined,
-  fallback = "/dashboard",
+  fallback = "/",
 ) {
   if (!value) return fallback;
 

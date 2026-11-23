@@ -59,7 +59,7 @@ const passwordChecks = [
 export function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = getSafeCallbackUrl(searchParams.get("callbackUrl"), "/dashboard/customer");
+  const callbackUrl = getSafeCallbackUrl(searchParams.get("callbackUrl"), "/");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -101,9 +101,9 @@ export function SignUpForm() {
     }
 
     toast.success("Your Stylevique account is ready.", {
-      description: "Welcome in. Your dashboard is ready for your first appointment.",
+      description: "Sign in to explore services and book your first appointment.",
     });
-    router.push(callbackUrl);
+    router.push("/sign-in");
     router.refresh();
   }
 
