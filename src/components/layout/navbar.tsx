@@ -110,10 +110,6 @@ export function Navbar() {
             />
           ) : user ? (
             <>
-              <Link href="/services" className={ctaButtonClasses}>
-                Book Appointment
-              </Link>
-
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 rounded-full p-1 pr-2 outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring">
                   <Avatar className="size-9">
