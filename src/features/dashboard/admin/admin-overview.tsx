@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getAdminDashboard } from "@/features/dashboard/api";
 import { getAdminAppointments } from "@/features/appointments/api";
 import { getAdminTransactions } from "@/features/transactions/api";
@@ -144,23 +144,14 @@ export function AdminOverview() {
 
   return (
     <div className="space-y-7">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.26em] text-ink-faint">
-            Overview
-          </p>
-          <h1 className="mt-2 font-heading text-4xl font-medium tracking-tight text-ink sm:text-[2.6rem]">
-            The Studio Overview.
-          </h1>
-          <p className="mt-1 text-sm text-ink-muted">{todayLabel}</p>
-        </div>
-        <Link
-          href="/services"
-          className="inline-flex h-10 items-center gap-2 rounded-md border border-white/20 bg-ink px-5 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#4a403c] dark:text-background dark:hover:bg-ink/80"
-        >
-          <Plus className="size-3.5" aria-hidden="true" />
-          New appointment
-        </Link>
+      <div>
+        <p className="text-[0.62rem] font-semibold uppercase tracking-[0.26em] text-ink-faint">
+          Overview
+        </p>
+        <h1 className="mt-2 font-heading text-4xl font-medium tracking-tight text-ink sm:text-[2.6rem]">
+          The Studio Overview.
+        </h1>
+        <p className="mt-1 text-sm text-ink-muted">{todayLabel}</p>
       </div>
 
       {Boolean(error) && (
