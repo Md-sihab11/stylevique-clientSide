@@ -77,20 +77,21 @@ export default function HomePage() {
       ---------------------------------------------------------------- */}
       <section>
         <div className="relative overflow-hidden bg-on-dark">
-          {/* Auto-playing salon photo carousel with layered gradients so the
-              copy stays readable on every crop of every image. */}
+          {/* Auto-playing salon photo carousel. Keep the scrim light so the
+              photos stay visible in both themes; a soft text-shadow on the
+              copy below handles readability instead of a heavy full overlay. */}
           <HeroCarousel />
           <div
-            className="absolute inset-0 bg-gradient-to-r from-on-dark/95 via-on-dark/80 to-on-dark/35 dark:from-on-dark/70 dark:via-on-dark/45 dark:to-on-dark/15"
+            className="absolute inset-0 bg-gradient-to-r from-on-dark/55 via-on-dark/25 via-40% to-transparent dark:from-on-dark/50 dark:via-on-dark/20 dark:via-40% dark:to-transparent"
             aria-hidden="true"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-on-dark/80 via-on-dark/10 to-on-dark/45 dark:from-on-dark/55 dark:via-on-dark/5 dark:to-on-dark/20"
+            className="absolute inset-0 bg-gradient-to-t from-on-dark/35 via-transparent to-transparent dark:from-on-dark/30"
             aria-hidden="true"
           />
 
           <div className="page-width relative flex min-h-[calc(100svh-5.5rem)] flex-col justify-center py-16 lg:min-h-[calc(100svh-6.5rem)] lg:py-20">
-            <div className="max-w-2xl">
+            <div className="hero-text-shadow max-w-2xl">
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-on-dark-text/85">
                 The Art of Modern Style
               </p>

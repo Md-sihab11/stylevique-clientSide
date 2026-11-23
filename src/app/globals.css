@@ -257,6 +257,18 @@ html.dark body:has([data-dashboard]) {
     filter: sepia(0.18) saturate(0.85) contrast(1.02);
   }
 
+  /* Soft, local shadow behind hero copy so light text stays legible over the
+     photos without hiding the banner. Works in both light and dark themes. */
+  .hero-text-shadow {
+    text-shadow:
+      0 2px 18px rgba(26, 25, 23, 0.55),
+      0 1px 3px rgba(26, 25, 23, 0.35);
+  }
+
+  .hero-text-shadow :is(a, button) {
+    text-shadow: none;
+  }
+
   .text-balance {
     text-wrap: balance;
   }
